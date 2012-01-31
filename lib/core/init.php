@@ -1,15 +1,15 @@
 <?php
 
-include_once(PU_CWD . 'slib/util.php');
-include_once(PU_CWD . 'slib/log.php');
-include_once(PU_CWD . 'slib/db.php');
-include_once(PU_CWD . 'slib/dbm.php');
-include_once(PU_CWD . 'slib/form.php');
-include_once(PU_CWD . 'slib/request.php');
-include_once(PU_CWD . 'slib/view.php');
-include_once(PU_CWD . 'slib/controller.php');
-include_once(PU_CWD . 'slib/crud.php');
-include_once(PU_CWD . 'slib/mailer.php');
+include_once(PU_CWD . 'lib/core/util.php');
+include_once(PU_CWD . 'lib/core/log.php');
+include_once(PU_CWD . 'lib/core/db.php');
+include_once(PU_CWD . 'lib/core/dbm.php');
+include_once(PU_CWD . 'lib/core/form.php');
+include_once(PU_CWD . 'lib/core/request.php');
+include_once(PU_CWD . 'lib/core/view.php');
+include_once(PU_CWD . 'lib/core/controller.php');
+include_once(PU_CWD . 'lib/core/crud.php');
+include_once(PU_CWD . 'lib/core/mailer.php');
 
 
 function pu_main()

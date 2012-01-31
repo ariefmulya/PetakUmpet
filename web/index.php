@@ -7,7 +7,7 @@
 // All Rights Reserved.
 //  
 
-define('PU_CWD',dirname(__FILE__) . '/../');
+define('PU_CWD', dirname(__FILE__) . '/../');
 
 include_once(PU_CWD . 'lib/core/init.php');
 
