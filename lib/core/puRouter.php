@@ -1,5 +1,6 @@
 <?php
-class puRouting {
+
+class puRouter {
 	const INDEX_PAGE = 'default/index';
 
 	protected $Request;

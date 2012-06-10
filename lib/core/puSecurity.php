@@ -1,6 +1,7 @@
 <?php
 
 class puSecurity {
+
 	function __construct() {}
 	function __destruct() {}
 
@@ -8,5 +9,6 @@ class puSecurity {
 	{
 		return true;
 	}
+
 	
 }

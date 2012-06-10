@@ -1,0 +1,277 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+DS	web/index.php	/^define('DS', DIRECTORY_SEPARATOR); \/\/ quicker$/;"	d
+Output	lib/core/puResponse.php	/^		$Output = new puLayout($this);$/;"	v
+PU_DBCRED	lib/core/db.php	/^define('PU_DBCRED', '1');$/;"	d
+PU_DBHOST	lib/core/db.php	/^define('PU_DBHOST', 'localhost');$/;"	d
+PU_DBNAME	lib/core/db.php	/^define('PU_DBNAME', 'petak_umpet');$/;"	d
+PU_DBTYPE	lib/core/db.php	/^define('PU_DBTYPE', 'pgsql');$/;"	d
+PU_DBUSER	lib/core/db.php	/^define('PU_DBUSER', 'dbsys');$/;"	d
+PU_DEFAULT_ACTION	lib/core/controller.php	/^define('PU_DEFAULT_ACTION', 'index');$/;"	d
+PU_DEFAULT_LAYOUT	lib/core/controller.php	/^define('PU_DEFAULT_LAYOUT', 'layout_default');$/;"	d
+PU_DEFAULT_MODULE	lib/core/controller.php	/^define('PU_DEFAULT_MODULE', 'default');$/;"	d
+PU_DIR	lib/core/init.php	/^define('PU_DIR',  __DIR__ . DS . '..' . DS . '..' . DS);$/;"	d
+PU_LOGOUT_ACTION	lib/core/controller.php	/^define('PU_LOGOUT_ACTION', 'logout');$/;"	d
+PU_LOGOUT_MODULE	lib/core/controller.php	/^define('PU_LOGOUT_MODULE', 'security');$/;"	d
+PU_LOG_DEBUG	lib/core/log.php	/^define("PU_LOG_DEBUG",3);$/;"	d
+PU_LOG_NORMAL	lib/core/log.php	/^define("PU_LOG_NORMAL",1);$/;"	d
+PU_LOG_VERBOSE	lib/core/log.php	/^define("PU_LOG_VERBOSE",2);$/;"	d
+PU_SECURE	lib/core/controller.php	/^define('PU_SECURE', true);$/;"	d
+PU_SECURE_ACTION	lib/core/controller.php	/^define('PU_SECURE_ACTION', 'login');$/;"	d
+PU_SECURE_MODULE	lib/core/controller.php	/^define('PU_SECURE_MODULE', 'security');$/;"	d
+Request	lib/core/puRouter.php	/^		$this->Request  = $Request;$/;"	v
+Request	lib/core/puRouter.php	/^	protected $Request;$/;"	v
+Response	lib/core/puLayout.php	/^		$this->Response = $Response;$/;"	v
+Response	lib/core/puLayout.php	/^	protected $Response;$/;"	v
+Response	lib/core/puRouter.php	/^			$Response = new $cname;$/;"	v
+Response	lib/core/puRouter.php	/^			$Response = new defaultResponse;$/;"	v
+Router	lib/core/init.php	/^$Router  = new puRouter(new puRequest, new puSession, new puSecurity);$/;"	v
+Security	lib/core/puRouter.php	/^		$this->Security = $Security;$/;"	v
+Security	lib/core/puRouter.php	/^	protected $Security;$/;"	v
+Session	lib/core/puRouter.php	/^		$this->Session  = $Session;$/;"	v
+Session	lib/core/puRouter.php	/^	protected $Session;$/;"	v
+__construct	lib/core/puLayout.php	/^	function __construct(puResponse $Response, $template=null, $app=true) $/;"	f
+__construct	lib/core/puRequest.php	/^	function __construct()$/;"	f
+__construct	lib/core/puResponse.php	/^	function __construct() {}$/;"	f
+__construct	lib/core/puRouter.php	/^	function __construct(puRequest $Request, puSession $Session, puSecurity $Security) $/;"	f
+__construct	lib/core/puSecurity.php	/^	function __construct() {}$/;"	f
+__construct	lib/core/puSession.php	/^	function __construct() $/;"	f
+__destruct	lib/core/puRequest.php	/^	function __destruct()$/;"	f
+__destruct	lib/core/puResponse.php	/^	function __destruct() {}$/;"	f
+__destruct	lib/core/puRouter.php	/^	function __destruct() $/;"	f
+__destruct	lib/core/puSecurity.php	/^	function __destruct() {}$/;"	f
+__destruct	lib/core/puSession.php	/^  function __destruct() {}$/;"	f
+__mainContent	lib/core/controller.php	/^  $__mainContent = '';$/;"	v
+__mainContent	lib/core/controller.php	/^  $__mainContent = ob_get_contents();$/;"	v
+__mainContent	lib/core/request.php	/^  $__mainContent = '<html><head><title>404 - Page Not Found<\/title><link rel="stylesheet" href="css\/main.css"><\/head><body><div id="container"><h1><font color="red">404<\/font> - Page Not Found<\/h1><p>The function you requested is not available.<\/p><\/body><\/html>';$/;"	v
+__mainContents	lib/core/puLayout.php	/^		$__mainContents = $this->Response->contents;$/;"	v
+a	lib/core/crud.php	/^    $a = dbm_select_one_row($db, $tablename, array(request_getvar_or_404($request, 'i')));$/;"	v
+a	lib/core/crud.php	/^    $a = form_get_values($request);$/;"	v
+a	lib/core/form.php	/^  $a = form_get_values($request);$/;"	v
+a	lib/core/puRequest.php	/^		$a = $this->getData(self::ACT_ACCESSOR);$/;"	v
+a	lib/core/util.php	/^  $a = explode('\/', $link);$/;"	v
+act	lib/core/controller.php	/^  $act = isset($request['act']) ? $request['act'] : PU_DEFAULT_ACTION;$/;"	v
+act	lib/core/util.php	/^  $act = (isset($a[1]) ? $a[1] : 'index');$/;"	v
+action	lib/core/controller.php	/^  $action = (dirname (__FILE__) . '\/..\/mod\/'. $mod . '\/' . $act . '.php');$/;"	v
+action	lib/core/puResponse.php	/^		$this->action = $act;$/;"	v
+action	lib/core/puResponse.php	/^	protected $action;$/;"	v
+check	lib/core/puSecurity.php	/^	function check(puRequest $Request, puSession $Session)$/;"	f
+cname	lib/core/puRouter.php	/^			$cname = $act.'Response';$/;"	v
+cnt	lib/core/dbm.php	/^  $cnt = db_query_fetch_one($db, $count_query);$/;"	v
+col	lib/core/dbm.php	/^    $col = $c['column'];$/;"	v
+columns	lib/core/dbm.php	/^  $columns = $new_values = $pkeys = $pkvals = array() ;$/;"	v
+config_class_dirs	lib/core/config.php	/^$config_class_dirs = array($/;"	v
+contents	lib/core/puResponse.php	/^		$this->contents = ob_get_contents();$/;"	v
+count_query	lib/core/dbm.php	/^  $count_query = sprintf("SELECT COUNT(*) as cnt FROM ( "$/;"	v
+ctrl_action_view	lib/core/controller.php	/^function ctrl_action_view($mod, $act, $db, $request, $view)$/;"	f
+ctrl_check_security	lib/core/controller.php	/^function ctrl_check_security($mod='', $act='')$/;"	f
+ctrl_execute_auth	lib/core/controller.php	/^function ctrl_execute_auth($target_mod, $target_act, $db, $request, $view)$/;"	f
+ctrl_start_engine	lib/core/controller.php	/^function ctrl_start_engine($db, $request, $view)$/;"	f
+ctrl_valid_action	lib/core/controller.php	/^function ctrl_valid_action($mod, $act)$/;"	f
+db	lib/core/db.php	/^    $db = new PDO(db_generate_dsn($dbtype, $host, $dbname, $extra), $user, $cred);$/;"	v
+db	lib/core/db.php	/^  $db = db_connect(PU_DBTYPE, PU_DBHOST, PU_DBNAME, PU_DBUSER, PU_DBCRED);$/;"	v
+db_connect	lib/core/db.php	/^function db_connect($dbtype, $host, $dbname, $user, $cred, $extra=null)$/;"	f
+db_generate_dsn	lib/core/pgsql.php	/^function db_generate_dsn($dbtype, $host, $dbname, $extra=null)$/;"	f
+db_get_error	lib/core/db.php	/^function db_get_error($db)$/;"	f
+db_get_table_schema	lib/core/pgsql.php	/^function db_get_table_schema($db, $tablename)$/;"	f
+db_get_table_schema_query	lib/core/pgsql.php	/^function db_get_table_schema_query()$/;"	f
+db_init	lib/core/db.php	/^function db_init()$/;"	f
+db_prepared_query	lib/core/db.php	/^function db_prepared_query($db, $query, $params=array())$/;"	f
+db_query	lib/core/db.php	/^function db_query($db, $query, $trans=false)$/;"	f
+db_query_fetch_all	lib/core/db.php	/^function db_query_fetch_all($db, $query, $trans=false)$/;"	f
+db_query_fetch_one	lib/core/db.php	/^function db_query_fetch_one($db, $query, $trans=false)$/;"	f
+db_query_fetch_row	lib/core/db.php	/^function db_query_fetch_row($db, $query, $params=array(), $trans=false)$/;"	f
+db_set_error	lib/core/db.php	/^function db_set_error(&$db, &$st)$/;"	f
+db_set_error_text	lib/core/db.php	/^function db_set_error_text(&$db, $text)$/;"	f
+dbm_addedit_row	lib/core/dbm.php	/^function dbm_addedit_row($db, $tablename, $values)$/;"	f
+dbm_create_form_for_table	lib/core/dbm.php	/^function dbm_create_form_for_table($db, $tablename, $custom=array())$/;"	f
+dbm_get_modified_cols	lib/core/dbm.php	/^function dbm_get_modified_cols($schema, $values)$/;"	f
+dbm_get_row_by_pkeys	lib/core/dbm.php	/^function dbm_get_row_by_pkeys($db, $tablename, $pkvals)$/;"	f
+dbm_get_table_pkeys	lib/core/dbm.php	/^function dbm_get_table_pkeys($schema)$/;"	f
+dbm_guess_table_schema	lib/core/dbm.php	/^function dbm_guess_table_schema($db, $tablename=null, $with_cache=true)$/;"	f
+dbm_select_one_row	lib/core/dbm.php	/^function dbm_select_one_row($db, $tablename, $pkvals=array(), $pkeys=array('id'))$/;"	f
+dbm_select_paging	lib/core/dbm.php	/^function dbm_select_paging(&$db, &$request, $tablename, $columns=array(), $filter='', $page=1, $rows=10)$/;"	f
+display	lib/core/puLayout.php	/^	function display()$/;"	f
+doublecheck	lib/core/form.php	/^  $doublecheck = (isset($field['doublecheck']) ? $field['doublecheck'] : '');$/;"	v
+end	lib/core/dbm.php	/^      $end = " WHERE (".implode(', ', $pkeys).") =  (".implode(', ', $marker).") ; ";$/;"	v
+end	lib/core/form.php	/^  $end = '<\/select>';$/;"	v
+execute	lib/core/puResponse.php	/^	function execute($mod=null, $act=null)$/;"	f
+extra	lib/core/form.php	/^  $extra = (isset($field['extra']) ? $field['extra'] : '');$/;"	v
+f	lib/core/form.php	/^      $f =  util_entity_decode($f);$/;"	v
+fields	lib/core/dbm.php	/^    $fields = array();$/;"	v
+form	lib/core/dbm.php	/^    $form = form_create($tablename, $fields, $custom);$/;"	v
+form	lib/core/form.php	/^  $form = array();$/;"	v
+form_bind_values	lib/core/form.php	/^function form_bind_values(&$form, $values=array())$/;"	f
+form_create	lib/core/form.php	/^function form_create($name='Form', $fields = array())$/;"	f
+form_display	lib/core/form.php	/^function form_display(&$form)$/;"	f
+form_draw_field_hidden	lib/core/form.php	/^function form_draw_field_hidden($name, $field)  $/;"	f
+form_draw_field_input	lib/core/form.php	/^function form_draw_field_input($name, $field)  $/;"	f
+form_draw_field_password	lib/core/form.php	/^function form_draw_field_password($name, $field)  $/;"	f
+form_draw_field_select	lib/core/form.php	/^function form_draw_field_select($name, $field)$/;"	f
+form_draw_field_textarea	lib/core/form.php	/^function form_draw_field_textarea($name, $field)  $/;"	f
+form_echo_label	lib/core/form.php	/^function form_echo_label($label)$/;"	f
+form_field_hidden	lib/core/form.php	/^function form_field_hidden(&$form, $name='hidden_field', $values='', $extra='')$/;"	f
+form_field_input	lib/core/form.php	/^function form_field_input(&$form, $name='input_text', $values='', $extra='')$/;"	f
+form_field_password	lib/core/form.php	/^function form_field_password(&$form, $name='password', $doublecheck=true, $extra='')$/;"	f
+form_field_select	lib/core/form.php	/^function form_field_select(&$form, $name='input_select', $options = array(), $values=array(), $multiple=false, $extra='')$/;"	f
+form_field_textarea	lib/core/form.php	/^function form_field_textarea(&$form, $name='input_textarea', $values='', $extra='', $advance=true)$/;"	f
+form_get_values	lib/core/form.php	/^function form_get_values($request)$/;"	f
+form_get_values_bind	lib/core/form.php	/^function form_get_values_bind(&$form, $request)$/;"	f
+form_html_decode	lib/core/form.php	/^function form_html_decode(&$frmdata)$/;"	f
+forward	lib/core/puRouter.php	/^	function forward()$/;"	f
+forwardToLogin	lib/core/puRouter.php	/^	function forwardToLogin()$/;"	f
+function_full_name	lib/core/puResponse.php	/^		$function_full_name = 'show' . ucfirst($act);$/;"	v
+getContents	lib/core/puLayout.php	/^	function getContents()$/;"	f
+getData	lib/core/puRequest.php	/^	function getData($name, $default=null)$/;"	f
+getDataOrSet	lib/core/puSession.php	/^  function getDataOrSet($name, $value=null)$/;"	f
+getPage	lib/core/puRequest.php	/^	function getPage()$/;"	f
+handle	lib/core/puRouter.php	/^	function handle()$/;"	f
+https	lib/core/puRequest.php	/^		$https =& $_SERVER['HTTPS'];$/;"	v
+https	lib/core/request.php	/^  $https = $_SERVER['HTTPS'];$/;"	v
+indexResponse	app/mod/default/response/index.php	/^class indexResponse extends puResponse {$/;"	c
+init_logfile	lib/core/log.php	/^function init_logfile($appname='main', $level=PU_LOG_DEBUG)$/;"	f
+is_post	lib/core/puRequest.php	/^		$this->is_post = $this->request_method == 'POST' ;$/;"	v
+is_post	lib/core/puRequest.php	/^	protected $is_post;$/;"	v
+layout	lib/core/controller.php	/^  $layout = view_get_layout($view);$/;"	v
+layout	lib/core/puLayout.php	/^			$this->layout = PU_DIR . DS . 'app' . DS . 'layout' . DS . $/;"	v
+layout	lib/core/puLayout.php	/^			$this->layout = PU_DIR . DS . 'app' . DS . 'mod' . DS . $/;"	v
+list_columns	lib/core/crud.php	/^  $list_columns    = (isset($config['list_columns']) ? $config['list_columns'] : array());$/;"	v
+load	lib/core/puRouter.php	/^	function load($page)$/;"	f
+load404	lib/core/puRouter.php	/^	function load404()$/;"	f
+load_main_classes	lib/core/init.php	/^function load_main_classes($name)$/;"	f
+log_debug	lib/core/log.php	/^function log_debug($message, $level=PU_LOG_DEBUG)$/;"	f
+log_message	lib/core/log.php	/^function log_message($message)$/;"	f
+logfile	lib/core/log.php	/^  $logfile = init_logfile();$/;"	v
+logfile	lib/core/log.php	/^  static $logfile = null;$/;"	v
+m	lib/core/puRequest.php	/^		$m = $this->getData(self::MOD_ACCESSOR);$/;"	v
+mailer	lib/core/mailer.php	/^    $mailer = $_SESSION['mailer'];$/;"	v
+mailer	lib/core/mailer.php	/^  $mailer    = Swift_Mailer::newInstance($transport);$/;"	v
+message	lib/core/mailer.php	/^  $message   = Swift_Message::newInstance($subject)->setFrom($mailer->from)->setTo($to)->setBody($body, $type);$/;"	v
+mod	lib/core/controller.php	/^  $mod = isset($request['mod']) ? $request['mod'] : PU_DEFAULT_MODULE;$/;"	v
+mod	lib/core/util.php	/^  $mod = $a[0];$/;"	v
+modact	lib/core/controller.php	/^  $modact = $mod . '\/' . $act;$/;"	v
+mode	lib/core/crud.php	/^  $mode = request_getvar($request, 'o');$/;"	v
+model_cache	lib/core/dbm.php	/^  static $model_cache;$/;"	v
+module	lib/core/puResponse.php	/^		$this->module = $mod; $/;"	v
+module	lib/core/puResponse.php	/^	protected $module;$/;"	v
+module_response	lib/core/puRouter.php	/^		$module_response = PU_DIR . DS . 'app' . DS . 'mod' . DS . $mod . DS . 'response' . DS . 'default.php';$/;"	v
+multiple	lib/core/form.php	/^  $multiple = (isset($field['multiple']) ? $field['multiple'] : '');$/;"	v
+n	lib/core/dbm.php	/^        $n = 1;$/;"	v
+n	lib/core/dbm.php	/^      $n = 0;$/;"	v
+offset	lib/core/dbm.php	/^  $offset = $rows * $page - $rows; $/;"	v
+opt	lib/core/form.php	/^  $opt = $multiple ? '' : '<option value="NULL">---<\/option>';$/;"	v
+options	lib/core/form.php	/^  $options = (isset($field['options']) ? $field['options'] : '');$/;"	v
+order_by	lib/core/dbm.php	/^    $order_by = $columns[0];$/;"	v
+order_by	lib/core/dbm.php	/^  $order_by = 'id'; \/\/ FIXME: need more clever way to figure out default sort$/;"	v
+page	lib/core/crud.php	/^    $page = (isset($request['page']) ? $request['page'] : 1);$/;"	v
+page_response	lib/core/puRouter.php	/^		$page_response = PU_DIR . DS . 'app' . DS . 'mod' . DS . $mod . DS . 'response' . DS . $act . '.php';$/;"	v
+params	lib/core/dbm.php	/^      $params = array_values($new_values);$/;"	v
+params	lib/core/dbm.php	/^      $params = array_values(array_merge($new_values, $pkvals));$/;"	v
+params	lib/core/dbm.php	/^  $params = array();$/;"	v
+pkeys	lib/core/dbm.php	/^  $pkeys = array();$/;"	v
+pkeys	lib/core/dbm.php	/^  $pkeys = dbm_get_table_pkeys($table_schema);$/;"	v
+port	lib/core/puRequest.php	/^		$port  =& $_SERVER['SERVER_PORT'];$/;"	v
+port	lib/core/request.php	/^  $port  = $_SERVER['SERVER_PORT'];$/;"	v
+process	app/mod/default/response/index.php	/^	public function process() $/;"	f
+profile	lib/core/controller.php	/^      $profile = 'stpl_' . $profile;$/;"	v
+profile	lib/core/controller.php	/^    $profile = call_user_func('_pu_page_profile');$/;"	v
+profile	lib/core/controller.php	/^  $profile = null;$/;"	v
+protocol	lib/core/puRequest.php	/^		$protocol = 'http';$/;"	v
+protocol	lib/core/puRequest.php	/^	    	$protocol = 'https';$/;"	v
+protocol	lib/core/request.php	/^    $protocol = 'https';$/;"	v
+protocol	lib/core/request.php	/^  $protocol = 'http';$/;"	v
+puLayout	lib/core/puLayout.php	/^class puLayout {$/;"	c
+puRequest	lib/core/puRequest.php	/^class puRequest {$/;"	c
+puResponse	lib/core/puResponse.php	/^abstract class puResponse {$/;"	c
+puRouter	lib/core/puRouter.php	/^class puRouter {$/;"	c
+puSecurity	lib/core/puSecurity.php	/^class puSecurity {$/;"	c
+puSession	lib/core/puSession.php	/^class puSession {$/;"	c
+pu_crud_form_handler	lib/core/crud.php	/^function pu_crud_form_handler(&$db, &$request, &$view, $tablename, $mode, $schema=null, $saving_callback='dbm_addedit_row')$/;"	f
+pu_crud_request_handler	lib/core/crud.php	/^function pu_crud_request_handler(&$db, &$request, &$view, $tablename, $schema=null, $saving_callback='dbm_addedit_row', $list_columns=array())$/;"	f
+pu_crud_setup	lib/core/crud.php	/^function pu_crud_setup(&$db, &$request, &$view, $config)$/;"	f
+pu_email_send	lib/core/mailer.php	/^function pu_email_send($mailer, $subject='(no subject)', $to=array(), $body='', $type='text\/plain')$/;"	f
+pu_email_setup	lib/core/mailer.php	/^function pu_email_setup($server='smtp.life2play.net', $port='25', $username='arief@life2play.net', $password='4ngk4s4lu4r', $from=array('relay@life2play.net' => 'Life2play Relay'))$/;"	f
+query	lib/core/dbm.php	/^      $query = $start . $set . $end;$/;"	v
+query	lib/core/dbm.php	/^      $query = sprintf('INSERT INTO %s ('.implode(', ', $columns).') VALUES ('.implode(', ', $marker).');', $tablename);$/;"	v
+query	lib/core/dbm.php	/^    $query = sprintf("SELECT * FROM ( "$/;"	v
+query	lib/core/dbm.php	/^  $query  = sprintf("SELECT * FROM %s ", $tablename);$/;"	v
+query	lib/core/dbm.php	/^  $query = "SELECT * FROM %s WHERE (" . implode(', ', $pkeys) . ") = (" . implode(', ', $marker). ") ; ";$/;"	v
+query	lib/core/dbm.php	/^  $query = '';$/;"	v
+query	lib/core/dbm.php	/^  $query = sprintf($query, $tablename);$/;"	v
+query_string	lib/core/puRequest.php	/^		$this->query_string = $_SERVER['QUERY_STRING'];$/;"	v
+query_string	lib/core/puRequest.php	/^	protected $query_string;$/;"	v
+request	lib/core/request.php	/^$request =& $_REQUEST;$/;"	v
+request_base_url	lib/core/puRequest.php	/^		$this->request_base_url = $protocol . ':\/\/' . $_SERVER['SERVER_NAME'] . $/;"	v
+request_base_url	lib/core/puRequest.php	/^	protected $request_base_url;$/;"	v
+request_data	lib/core/puRequest.php	/^		$this->request_data =& $_REQUEST;$/;"	v
+request_data	lib/core/puRequest.php	/^	protected $request_data;$/;"	v
+request_full_url	lib/core/puRequest.php	/^		$this->request_full_url = $this->request_base_url . '?' . $this->query_string;$/;"	v
+request_full_url	lib/core/puRequest.php	/^	protected $request_full_url;$/;"	v
+request_get_full_url	lib/core/request.php	/^function request_get_full_url()$/;"	f
+request_get_method	lib/core/request.php	/^function request_get_method()$/;"	f
+request_get_url	lib/core/request.php	/^function request_get_url()$/;"	f
+request_getvar	lib/core/request.php	/^function request_getvar($request, $name)$/;"	f
+request_getvar_or_404	lib/core/request.php	/^function request_getvar_or_404($request, $name)$/;"	f
+request_init	lib/core/request.php	/^function & request_init()$/;"	f
+request_is_post	lib/core/request.php	/^function request_is_post()$/;"	f
+request_method	lib/core/puRequest.php	/^		$this->request_method = $_SERVER['REQUEST_METHOD'];$/;"	v
+request_method	lib/core/puRequest.php	/^	protected $request_method;$/;"	v
+request_return_404	lib/core/request.php	/^function request_return_404()$/;"	f
+res	lib/core/dbm.php	/^    $res = db_get_table_schema($db, $tablename);$/;"	v
+res	lib/core/dbm.php	/^  $res = db_prepared_query($db, $query, (array) $pkvals);$/;"	v
+ret	lib/core/controller.php	/^ $ret = (isset($_SESSION['PU_USER_ID']) && isset($_SESSION['PU_USER_AUTH']) && $_SESSION['PU_USER_AUTH'] === true && (in_array($modact, $_SESSION['PU_USER_PROFILE']) || $_SESSION['PU_IS_ADMIN']));$/;"	v
+ret	lib/core/crud.php	/^    $ret = call_user_func($saving_callback, $db, $tablename, $a);$/;"	v
+row	lib/core/crud.php	/^    $row = 2; \/\/ FIXME: should be tuneable$/;"	v
+s	lib/core/view.php	/^      $s = implode(' ', $view[$index]);$/;"	v
+s	lib/core/view.php	/^    $s = $view[$index];$/;"	v
+s	lib/core/view.php	/^  $s = $default;$/;"	v
+saving_callback	lib/core/crud.php	/^  $saving_callback = (isset($config['saving_callback']) ? $config['saving_callback'] : 'dbm_addedit_row');$/;"	v
+schema	lib/core/crud.php	/^  $schema    = (isset($config['schema']) ? $config['schema'] : null);$/;"	v
+schema	lib/core/dbm.php	/^  $schema = dbm_guess_table_schema($db, $tablename);$/;"	v
+session_data	lib/core/puSession.php	/^    $this->session_data =& $_SESSION;$/;"	v
+session_data	lib/core/puSession.php	/^  protected $session_data;$/;"	v
+set	lib/core/dbm.php	/^      $set = '';$/;"	v
+setLayout	lib/core/puLayout.php	/^	function setLayout($template = null, $app=true)$/;"	f
+show_columns	lib/core/dbm.php	/^    $show_columns = implode(',' , $columns);$/;"	v
+show_columns	lib/core/dbm.php	/^  $show_columns = '*';$/;"	v
+st	lib/core/db.php	/^    $st = db_prepared_query($db, $query, $params);$/;"	v
+st	lib/core/db.php	/^    $st = db_query($db, $query, $trans);$/;"	v
+st	lib/core/db.php	/^  $st = $db->prepare($query);$/;"	v
+st	lib/core/db.php	/^  $st = db_query($db, $query, $trans);$/;"	v
+start	lib/core/dbm.php	/^      $start = sprintf('UPDATE %s SET ', $tablename);$/;"	v
+start	lib/core/form.php	/^  $start = '<select name="frm['.$name.'][]" id="'.$name.'" '.($multiple ? 'multiple="multiple"' : '').' >';$/;"	v
+table_schema	lib/core/dbm.php	/^  $table_schema = dbm_guess_table_schema($db, $tablename);$/;"	v
+tablename	lib/core/crud.php	/^  $tablename = $config['tablename'];$/;"	v
+tag	lib/core/form.php	/^  $tag =  '<input type="hidden" name="frm['.$name.']" id="'.$name.'" value="__DEFAULT_FIELD_VALUE__" ' . $extra . ' >';$/;"	v
+tag	lib/core/form.php	/^  $tag =  '<input type="password" name="frm['.$name.']" id="'.$name.'" value="" ' . $extra . ' >';$/;"	v
+tag	lib/core/form.php	/^  $tag =  '<input type="text" name="frm['.$name.']" id="'.$name.'" value="__DEFAULT_FIELD_VALUE__" ' . $extra . ' >';$/;"	v
+tag	lib/core/form.php	/^  $tag =  '<textarea name="frm['.$name.']" id="'.$name.'" '.$extra.' >__DEFAULT_FIELD_VALUE__<\/textarea>';$/;"	v
+template	lib/core/controller.php	/^    $template = (dirname (__FILE__) . '\/..\/mod\/'. $mod . '\/tpl_' . ($tpl === null ? $act : $act .'_'. $tpl) . '.php' );$/;"	v
+template	lib/core/controller.php	/^    $template = (dirname (__FILE__) . '\/..\/stpl\/' . $tpl . '.php' );$/;"	v
+test	app/mod/default/response/index.php	/^		$this->test = array('World');$/;"	v
+tpl	lib/core/controller.php	/^    $tpl = $profile;$/;"	v
+tpl	lib/core/controller.php	/^  $tpl = _pu_exec($db, $request, $view);$/;"	v
+transport	lib/core/mailer.php	/^  $transport = Swift_SmtpTransport::newInstance($server, $port)->setUsername($username)->setPassword($password);$/;"	v
+util_echo_full_link	lib/core/util.php	/^function util_echo_full_link($title, $link)$/;"	f
+util_echo_link	lib/core/util.php	/^function util_echo_link($title, $link)$/;"	f
+util_echo_ucwords	lib/core/util.php	/^function util_echo_ucwords($s)$/;"	f
+util_entity_decode	lib/core/util.php	/^function util_entity_decode($s)$/;"	f
+util_format_link	lib/core/util.php	/^function util_format_link($mod, $act, $title)$/;"	f
+util_parse_link	lib/core/util.php	/^function util_parse_link($link)$/;"	f
+util_url_for	lib/core/util.php	/^function util_url_for($link)$/;"	f
+values	lib/core/form.php	/^  $values = (isset($field['values']) ? $field['values'] : '');$/;"	v
+view	lib/core/puResponse.php	/^		$view = PU_DIR . DS . 'app' . DS . 'mod' . DS . $mod . DS . 'view' . DS . $act . '.php';$/;"	v
+view	lib/core/view.php	/^  $view = array();$/;"	v
+view_echo_db_error	lib/core/view.php	/^function view_echo_db_error($view)$/;"	f
+view_echo_default	lib/core/view.php	/^function view_echo_default($view, $index, $default)$/;"	f
+view_echo_flash	lib/core/view.php	/^function view_echo_flash()$/;"	f
+view_get_layout	lib/core/view.php	/^function view_get_layout($view)$/;"	f
+view_getvar_default	lib/core/view.php	/^function view_getvar_default($view, $index, $default)$/;"	f
+view_init	lib/core/view.php	/^function view_init()$/;"	f
+view_set_db_error	lib/core/view.php	/^function view_set_db_error(&$view, $db)$/;"	f
+view_set_flash	lib/core/view.php	/^function view_set_flash($message)$/;"	f
+view_set_layout	lib/core/view.php	/^function view_set_layout(&$view, $layout)$/;"	f

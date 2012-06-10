@@ -21,6 +21,6 @@ function load_main_classes($name)
 spl_autoload_register('load_main_classes');
 
 
-$Routing  = new puRouting(new puRequest, new puSession, new puSecurity);
+$Router  = new puRouter(new puRequest, new puSession, new puSecurity);
 
-$Routing->handle();
+$Router->handle();
