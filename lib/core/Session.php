@@ -1,6 +1,7 @@
 <?php
+namespace PetakUmpet;
 
-class puSession {
+class Session {
 
   protected $session_data;
 
@@ -9,9 +10,7 @@ class puSession {
     $this->session_data =& $_SESSION;
   }
 
-  function __destruct() {}
-
-  function getDataOrSet($name, $value=null)
+  function getOrSet($name, $value=null)
   {
     if (isset($this->session_data[$name])) {
       return $this->session_data[$name];

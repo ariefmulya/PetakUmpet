@@ -1,8 +1,9 @@
 <?php
+namespace PetakUmpet;
 
-class puRequest {
-  const MOD_ACCESSOR = 'pu_mod';
-  const ACT_ACCESSOR = 'pu_act';
+class Request {
+  const MOD_ACCESSOR = 'm';
+  const ACT_ACCESSOR = 'r';
 
   protected $request_data;
   protected $request_base_url;
@@ -30,10 +31,6 @@ class puRequest {
     $this->is_post = $this->request_method == 'POST' ;
   }
 
-  function __destruct()
-  {
-  }
-
   function getData($name, $default=null)
   {
     if (isset($this->request_data[$name])) {
@@ -55,4 +52,16 @@ class puRequest {
     }
     return '/';
   }
+
+  function getModule()
+  {
+    return $this->getData(self::MOD_ACCESSOR);
+  }
+
+  function getAction()
+  {
+    return $this->getData(self::ACT_ACCESSOR);
+  }
+
 }
+
