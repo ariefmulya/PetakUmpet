@@ -64,7 +64,7 @@ class Database {
       }
     } 
 
-    return $this->db->query($query, PDO::FETCH_ASSOC);
+    return $this->db->query($query, \PDO::FETCH_ASSOC);
   }
 
   function preparedQuery($query, $params=array())
