@@ -9,5 +9,5 @@
 
 define('DS', DIRECTORY_SEPARATOR); // quicker
 
-require_once __DIR__ . DS . '..' . DS . 'lib' . DS . 'core' . DS . 'init.php';
+require_once __DIR__ . DS . '..' . DS . 'lib' . DS . 'PetakUmpet' . DS . 'init.php';
 

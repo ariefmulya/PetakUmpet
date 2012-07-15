@@ -1,6 +1,6 @@
 <?php
 
-namespace PetakUmpet;
+namespace PetakUmpet\Database;
 
 class PostgreSQLDatabase {
 

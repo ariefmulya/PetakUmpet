@@ -20,7 +20,7 @@ class Database {
     $db_cred = Configuration::Database($dbConfigIndex, Configuration::DBCRED);
     $db_name = Configuration::Database($dbConfigIndex, Configuration::DBNAME);
 
-    $class_name = '\\PetakUmpet\\' .  $db_type . 'Database';
+    $class_name = '\\PetakUmpet\\Database\\' .  $db_type . 'Database';
 
     $this->baseDatabaseObject = new $class_name;
 

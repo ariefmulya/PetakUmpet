@@ -10,13 +10,8 @@ class Loader {
 
   public function __construct()
   {
-    $root = PU_DIR;
     $this->namespaces = array('\\');
-    $this->rootdirs = array(
-        $root . 'lib' . DS . 'core'
-      , $root . 'lib' . DS . 'component'
-      , $root . 'lib' . DS . 'extra'
-    );
+
   }
 
   public function register($prepend=false)
@@ -39,20 +34,18 @@ class Loader {
 
     $name = str_replace('_', DS, $name);
 
-    foreach ($this->rootdirs as $d) {
-      $file = $d . DS . str_replace('\\', DS, $namespace) . DS . $name . '.php';
-      if (is_file($file)) {
-        return $file;
-      }
+    $libdir = PU_DIR . 'lib';
+
+    $file = $libdir . DS . str_replace('\\', DS, $namespace) . DS . $name . '.php';
+    if (is_file($file)) {
+      return $file;
     }
     
     // try again with existing namespaces
-    foreach ($this->rootdirs as $d) {
-      foreach ($this->namespaces as $ns) {
-        $file = $d . DS . str_replace('\\', DS, $ns) . DS . $name . '.php';
-        if (is_file($file)) {
-          return $file;
-        }
+    foreach ($this->namespaces as $ns) {
+      $file = $libdir . DS . str_replace('\\', DS, $ns) . DS . $name . '.php';
+      if (is_file($file)) {
+        return $file;
       }
     }
 
