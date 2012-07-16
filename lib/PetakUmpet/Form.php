@@ -2,9 +2,12 @@
 
 namespace PetakUmpet;
 
+use PetakUmpet\Form\FormField as FormField;
+use PetakUmpet\Form\FormField as FormButton;
+
 class Form {
 
-  private $fields;
+  private $childs;
   private $method;
 
   function __construct($method='POST')
@@ -16,8 +19,8 @@ class Form {
   {
     $s = '<form method="' . $this->method . '">'; 
 
-    if (count($this->fields) > 0) {
-      foreach ($this->fields as $f) {
+    if (count($this->childs) > 0) {
+      foreach ($this->childs as $f) {
         $s .= $f; 
       }
     }
@@ -30,19 +33,24 @@ class Form {
   {
     $status = true;
 
-    foreach ($this->fields as $f) {
-      $f->setValue($request->getData($f->getName()));
-      if (!$f->isValid()) {
-        $status = false;
+    foreach ($this->childs as $f) {
+      $val = $request->getData($f->getName());
+
+      if ($val !== null && $val != '' && $f instanceof FormField) {
+        $f->setValue($val);
       }
+
+      //iif (!$f->isValid()) {
+      //  $status = false;
+      //}
     }
 
     return $status;
   }
 
-  public function addField($field)
+  public function add($child)
   {
-    $this->fields[] = $field;
+    $this->childs[] = $child;
   }
 
 }
