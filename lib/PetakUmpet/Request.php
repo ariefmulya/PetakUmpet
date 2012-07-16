@@ -31,6 +31,11 @@ class Request {
     $this->is_post = $this->request_method == 'POST' ;
   }
 
+  function isPost()
+  {
+    return $this->is_post;
+  }
+
   function getData($name, $default=null)
   {
     if (isset($this->request_data[$name])) {
