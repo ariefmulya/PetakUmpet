@@ -10,7 +10,6 @@ class Textarea extends BaseFormField {
 
     $this->startTag = '<textarea ';
     $this->endTag = '></textarea>';
-    if ($label === null) $this->setLabel($name);
   }
 
 }

@@ -8,7 +8,6 @@ class Text extends BaseFormField {
   {
     parent::__construct($name, $extra, $label, $id);
     $this->setType('text');
-    if ($label === null) $this->setLabel($name);
   }
 
 }
