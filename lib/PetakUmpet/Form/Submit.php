@@ -6,8 +6,10 @@ class Submit extends BaseFormField {
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
-    parent::__construct($name === null ? 'Submit' : $name, $extra, $label, $id);
+    if ($name === null) $name = 'Go';
+    parent::__construct($name, $extra, $label, $id);
     $this->setType('submit');
-    $this->setValue('Go');
+    $this->setValue($name);
+    $this->setLabel(null);
   }
 }

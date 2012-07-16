@@ -60,16 +60,17 @@ class Form {
   public function add($child, $name=null, $extra=null, $label=null, $id=null)
   {
     if (!($child instanceof BaseFormField)) {
-      $class_name = '\\PetakUmpet\\Form\\' . $child;
+      $class_name = '\\PetakUmpet\\Form\\' . ucfirst($child);
       if (class_exists($class_name)) {
         $child = new $class_name($name, $extra, $label, $id);
       } else {
         $type = $child;
-        $child = new BaseFormField($name, $extra, $label===null ? $name:$label, $id);
+        $child = new BaseFormField($name, $extra, $label, $id);
         $child->setType($type);
       }
     }
-   $this->childs[] = $child;
+    assert($child instanceof BaseFormField);
+    $this->childs[] = $child;
   }
 
 }

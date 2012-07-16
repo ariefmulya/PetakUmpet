@@ -13,6 +13,7 @@ class BaseFormField {
     if ($name === null ) throw new \Exception('TextboxField need to have name');
 
     if ($id === null) $id = $name;
+    if ($label === null) $label = ucfirst($name);
     
     $this->attributes = array(
       'name' => $name,
