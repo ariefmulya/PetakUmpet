@@ -5,8 +5,10 @@ namespace PetakUmpet\Form;
 class BaseFormField {
 
   protected $startTag;
+  protected $closeStartTag;
   protected $endTag;
   protected $attributes;
+  protected $useInnerValue;
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
@@ -33,7 +35,9 @@ class BaseFormField {
     }
  
     $this->startTag = '<input ';
-    $this->endTag = ' />';
+    $this->closeStartTag = '';
+    $this->endTag = '>';
+    $this->useInnerValue = false;
   }
 
   public function __call($name, $arg)
@@ -51,13 +55,15 @@ class BaseFormField {
   }
   public function getAttribute($key)
   {
-    return $this->attributes[$key];
+    if (isset($this->attributes[$key])) return $this->attributes[$key];
+    return null;
   }
 
   public function printAttributes()
   {
     $s = '';
     foreach ($this->attributes as $k => $v) {
+      if ($this->useInnerValue && $k == 'value') continue; 
       $s .= ' ' . $k . '="' . $v .'"';
     }
     return $s;
@@ -66,19 +72,21 @@ class BaseFormField {
   public function getLabelTag()
   {
     $s = '';
-    if (isset($this->attributes['label']) && $this->attributes['label'] !== null) {
+    if (($lb = $this->getAttribute('label')) !== null) {
       $nm = $this->attributes['name'];
-      $lb = $this->attributes['label'];
       $s  = '<label for="'.$nm.'">'.$lb.'</label>';
     }
     return $s;
   } 
+  
   public function __toString()
   {
     $s = '';
 
     $s .= $this->startTag;
     $s .= $this->printAttributes();
+    $s .= $this->closeStartTag;
+    if ($this->useInnerValue && ($val = $this->getAttribute('value')) !== null) $s .= $val;
     $s .= $this->endTag;
     $s .= "\n";
     return $s;

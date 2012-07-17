@@ -9,7 +9,9 @@ class Textarea extends BaseFormField {
     parent::__construct($name, $extra, $label, $id);
 
     $this->startTag = '<textarea ';
-    $this->endTag = '></textarea>';
+    $this->closeStartTag = '>';
+    $this->endTag = '</textarea>';
+    $this->useInnerValue = true;
   }
 
 }
