@@ -9,20 +9,22 @@ class Database {
   const FETCH_TYPE_ALL = 4;
 
   private $db;
-  private $baseDatabaseObject;
+  private $baseDriverObject;
   private $errorInfo;
 
-  function __construct($dbConfigIndex=0)
+  function __construct($dbConfigIndex=null)
   {
+    if ($dbConfigIndex===null) $dbConfigIndex = 0;
+
     $db_type = Configuration::Database($dbConfigIndex, Configuration::DBTYPE);
     $db_host = Configuration::Database($dbConfigIndex, Configuration::DBHOST);
     $db_user = Configuration::Database($dbConfigIndex, Configuration::DBUSER);
     $db_cred = Configuration::Database($dbConfigIndex, Configuration::DBCRED);
     $db_name = Configuration::Database($dbConfigIndex, Configuration::DBNAME);
 
-    $class_name = '\\PetakUmpet\\Database\\' .  $db_type . 'Database';
+    $class_name = '\\PetakUmpet\\Database\\' .  $db_type . 'Driver';
 
-    $this->baseDatabaseObject = new $class_name;
+    $this->baseDriverObject = new $class_name;
 
     $this->db = $this->Connect($db_host, $db_name, $db_user, $db_cred);
 
@@ -30,13 +32,45 @@ class Database {
       throw Exception;
     }
 
-    $this->baseDatabaseObject->setDbo($this->db);
+    $this->baseDriverObject->setDbo($this);
+  }
+
+  function __call($name, $args)
+  {
+    if (substr($name, 0, 10) == 'QueryFetch') {
+      $fetchName = strtolower(substr($name, 10));
+
+      switch ($fetchName) {
+        case 'row':
+          $fetchType = self::FETCH_TYPE_ROW;
+          break;
+        case 'one':
+          $fetchType = self::FETCH_TYPE_ONE;
+          break;
+        case 'all':
+          $fetchType = self::FETCH_TYPE_ALL;
+          break;
+        default:
+          throw new \Exception('Fetch type unknown');
+      }
+
+      return $this->QueryFetch(
+          $args[0], 
+          (isset($args[1]) ? $args[1] : null), 
+          $fetchType, 
+          (isset($args[2]) ? $args[2] : false)
+        );
+    }
+  }
+  function getBaseDbo()
+  {
+    return $this->baseDriverObject;
   }
 
   function Connect($host, $dbname, $user, $cred, $extra=null)
   {
     try {
-      $db = new \PDO($this->baseDatabaseObject->generateDSN($host, $dbname, $extra), $user, $cred);
+      $db = new \PDO($this->baseDriverObject->generateDSN($host, $dbname, $extra), $user, $cred);
     } catch (Exception $e) {
       echo 'Have you setup the database and update Configuration class?';
 
@@ -67,12 +101,13 @@ class Database {
     return $this->db->query($query, \PDO::FETCH_ASSOC);
   }
 
-  function preparedQuery($query, $params=array())
+  function preparedQuery($query, $params=array(), $trans=false)
   {
     $st = $this->db->prepare($query);
-    $st->setFetchMode(PDO::FETCH_ASSOC);
+    $st->setFetchMode(\PDO::FETCH_ASSOC);
 
-    Logger::log('Database: preparedQuery-> ' . $st->queryString);
+    Logger::log('Database: preparedQuery QUERY  = ' . $st->queryString);
+    Logger::log('Database: preparedQuery PARAMS = (' . implode(',', $params) . ')');
 
     if (!$st->execute($params)) {
       $this->errorInfo = array('query' => $st->queryString, 'error' => $st->errorInfo());
@@ -85,13 +120,17 @@ class Database {
     return $st;
   }
 
-  function QueryAndFetch($query, $fetch_type, $trans=false)
+  private function QueryFetch($query, $params=array(), $fetch_type=self::FETCH_TYPE_ALL, $trans=false)
   {
-    $st = $this->Query($query, $trans);
+    if (is_array($params) && count($params) > 0) {
+      $st = $this->preparedQuery($query, $params, $trans);
+    } else {
+      $st = $this->Query($query, $trans);
+    }
 
     if ($st) {
       if ($fetch_type == self::FETCH_TYPE_ONE) return $st->fetchColumn();
-      if ($fetch_type == self::FETCH_TYPE_ROW) return $st->fetchRow();
+      if ($fetch_type == self::FETCH_TYPE_ROW) return $st->fetch();
       if ($fetch_type == self::FETCH_TYPE_ALL) return $st->fetchAll();
     }
     return false;
@@ -100,6 +139,25 @@ class Database {
   function getErrorText()
   {
     return $this->errorInfo['error'][2];
+  }
+
+  /* taken from http://stackoverflow.com/questions/574805/how-to-escape-strings-in-mssql-using-php */
+  function escapeInput($data) {
+    if ( !isset($data) or empty($data) ) return '';
+    if ( is_numeric($data) ) return $data;
+
+    $non_displayables = array(
+        '/%0[0-8bcef]/',            // url encoded 00-08, 11, 12, 14, 15
+        '/%1[0-9a-f]/',             // url encoded 16-31
+        '/[\x00-\x08]/',            // 00-08
+        '/\x0b/',                   // 11
+        '/\x0c/',                   // 12
+        '/[\x0e-\x1f]/'             // 14-31
+    );
+    foreach ( $non_displayables as $regex )
+        $data = preg_replace( $regex, '', $data );
+    $data = str_replace("'", "''", $data );
+    return $data;
   }
 
 }
