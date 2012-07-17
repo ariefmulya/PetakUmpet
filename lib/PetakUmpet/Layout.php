@@ -3,28 +3,34 @@ namespace PetakUmpet;
 
 class Layout {
 
-	protected $response;
+	private $layout;
 	
-	function __construct(Response $Response, $layout=null)
+	function __construct(Response $response, $layout=null, $variables=null)
 	{
-		$this->response = $Response;
+		// setting up
 		$this->setLayout($layout);
-	}
 
-	function getContents()
-	{
-		$this->response->contents;
+		$this->request = Singleton::acquire('\\PetakUmpet\\Request'); 
+		$this->session = Singleton::acquire('\\PetakUmpet\\Session'); 
+
+		// get template/layout variables
+		extract(get_object_vars($this));
+		extract($variables);
+
+		// configuration variables
+		$ProjectTitle = Configuration::ProjectTitle;
+
+		// response contents
+		$__mainContents = $response->contents;
+
+		Logger::log('Layout: rendering  using ' . $this->layout);
+
+		// render them
+		include_once($this->layout);
 	}
 
 	function setLayout($layout=null)
 	{
 		$this->layout = PU_DIR . DS . 'res' . DS . 'View' . DS . ($layout === null ? 'layout' : $layout) . '.php' ;
-	}
-
-	function render()
-	{
-		$__mainContents = $this->response->contents;
-		Logger::log('Layout: rendering  using ' . $this->layout);
-		include_once($this->layout);
 	}
 }

@@ -3,11 +3,20 @@ namespace PetakUmpet;
 
 class Session {
 
-  protected $session_data;
+  private $session_data;
 
 	function __construct() 
   {
     $this->session_data =& $_SESSION;
+  }
+
+  function get($name) 
+  {
+    if (isset($this->session_data[$name])) {
+      return $this->session_data[$name];
+    }
+
+    return null;
   }
 
   function getOrSet($name, $value=null)

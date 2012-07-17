@@ -8,9 +8,8 @@ define('PU_DIR',  __DIR__ . DS . '..' . DS . '..' . DS);
 
 include(__DIR__ . DS . 'Loader.php');
 
-
 $loader = new Loader;
 $loader->register();
 
-$router  = new Router(new Request, new Session);
+$router  = new Router(Singleton::acquire('\\PetakUmpet\\Request'), Singleton::acquire('\\PetakUmpet\\Session'));
 $router->handle();

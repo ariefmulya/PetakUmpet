@@ -53,8 +53,7 @@ class Response {
 		$this->contents = ob_get_contents();
 		ob_end_clean();
 
-		$Output = new Layout($this, $layout);
-		return $Output->render();
+		return new Layout($this, $layout, $variables);
 	}
 
 }
