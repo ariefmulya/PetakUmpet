@@ -9,6 +9,7 @@ class BaseFormField {
   protected $endTag;
   protected $attributes;
   protected $useInnerValue;
+  protected $errorText;
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
@@ -38,6 +39,7 @@ class BaseFormField {
     $this->closeStartTag = '';
     $this->endTag = '>';
     $this->useInnerValue = false;
+    $this->errorText = '';
   }
 
   public function __call($name, $arg)
@@ -45,7 +47,7 @@ class BaseFormField {
     if (substr($name, 0,3) == 'set')
       return $this->setAttribute(strtolower(substr($name, 3)), $arg);
 
-    if (substr($name, 0, 3) == 'get')
+    if (substr($name, 0, 3) == 'get' || substr($name, 0, 2) == 'is')
       return $this->getAttribute(strtolower(substr($name, 3)));
   }
 
@@ -69,12 +71,12 @@ class BaseFormField {
     return $s;
   }
 
-  public function getLabelTag()
+  public function getLabelTag($labelClass='label')
   {
     $s = '';
     if (($lb = $this->getAttribute('label')) !== null) {
       $nm = $this->attributes['name'];
-      $s  = '<label for="'.$nm.'">'.$lb.'</label>';
+      $s  = '<label class="'.$labelClass.'" for="'.$nm.'">'.$lb.'</label>';
     }
     return $s;
   } 
@@ -90,6 +92,16 @@ class BaseFormField {
     $s .= $this->endTag;
     $s .= "\n";
     return $s;
+  }
+
+  public function getErrorText()
+  {
+    return $this->errorText;
+  }
+
+  public function setErrorText($error)
+  {
+    $this->errorText = $error;
   }
 
 }

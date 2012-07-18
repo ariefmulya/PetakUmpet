@@ -6,57 +6,96 @@ use PetakUmpet\Form\BaseFormField as BaseFormField;
 
 class Form {
 
-  const GRID_TABLE = 1;
+  const GRID_BOOTSTRAP = 1;
 
-  private $childs;
-  private $method;
+  protected $childs;
+  protected $name;
+  protected $method;
+  protected $validator;
 
-  private $gridFormat;
+  protected $gridFormat;
 
-  function __construct($method='POST')
+  function __construct($name='Form', $method='POST')
   {
-    $this->method = 'POST';
-    $this->gridFormat = self::GRID_TABLE;
+    $this->name = $name;
+    $this->method = $method;
+    $this->gridFormat = self::GRID_BOOTSTRAP;
+
+    $this->formClass = array(
+        self::GRID_BOOTSTRAP => 'form-horizontal'
+      );
+
+    $this->formStart = array(
+        self::GRID_BOOTSTRAP => '<fieldset>'
+      );
+    $this->formEnd = array(
+        self::GRID_BOOTSTRAP => '</fieldset>'
+      );
+
+    $this->fieldRowStart['normal'] = array(
+        self::GRID_BOOTSTRAP => '<div class="control-group">'
+      );
+    $this->fieldRowStart['error'] = array(
+        self::GRID_BOOTSTRAP => '<div class="control-group error">'
+      );
+    $this->fieldRowEnd['normal'] = array(
+        self::GRID_BOOTSTRAP => '</div>'
+      );
+    $this->fieldRowEnd['error'] = array(
+        self::GRID_BOOTSTRAP => '</div>'
+      );
+    $this->fieldLabelClass = array(
+        self::GRID_BOOTSTRAP => 'control-label'
+      );
+    $this->fieldStart = array(
+        self::GRID_BOOTSTRAP => '<div class="controls">'
+      );
+    $this->fieldEnd = array(
+        self::GRID_BOOTSTRAP => '</div>'
+      );
+    $this->fieldHelpTagFormat = array(
+        self::GRID_BOOTSTRAP => '<span class="help-inline">%s</span>'
+      );
   }
 
   function __toString()
   {
-    $s = '<form method="' . $this->method . '">'; 
+    $s = '<form method="' . $this->method . '" class="'.$this->formClass[$this->gridFormat].'" >'; 
 
     if (count($this->childs) > 0) { 
-      $s .= $this->gridFormat === self::GRID_TABLE ? '<table>' : '';
-      foreach ($this->childs as $f) {
-        $s .= $this->gridFormat === self::GRID_TABLE ? '<tr><td>' : '';
-        $s .= $f->getLabelTag();
-        $s .= $this->gridFormat === self::GRID_TABLE ? '<td>' : '';
+      $s .= $this->formStart[$this->gridFormat];
+      foreach ($this->childs as $k => $f) {
+
+        $errorText = $f->getErrorText();
+        $fieldStatus = $errorText == '' ? 'normal' : 'error';
+
+        $s .= $this->fieldRowStart[$fieldStatus][$this->gridFormat];
+        $s .= $f->getLabelTag($this->fieldLabelClass[$this->gridFormat]);
+        $s .= $this->fieldStart[$this->gridFormat];
         $s .= $f; 
+        if ($errorText != '')
+          $s .= sprintf($this->fieldHelpTagFormat[$this->gridFormat], $errorText);
+        $s .= $this->fieldEnd[$this->gridFormat];
+        $s .= $this->fieldRowEnd[$fieldStatus][$this->gridFormat];
+
       }
-      $s .= $this->gridFormat === self::GRID_TABLE ? '</table>' : '';
+      $s .= $this->formEnd[$this->gridFormat];
     }
     $s .= '</form>';
 
     return $s;
   }
 
-  function bind(Request $request)
+  function __call($name, $args)
   {
-    $status = true;
+    if (substr($name, 0, 3) == 'get') {
+      $index = strtolower(substr($name, 3));
 
-    foreach ($this->childs as $f) {
-      $val = $request->getData($f->getName());
+      if (!isset($this->childs[$index])) return null;
 
-      if ($val !== null && $val != '' && $f instanceof BaseFormField) {
-        $f->setValue($val);
-      }
-
-      //iif (!$f->isValid()) {
-      //  $status = false;
-      //}
+      return $this->childs[$index]->getValue();
     }
-
-    return $status;
   }
-
   public function add($child, $name=null, $extra=null, $label=null, $id=null)
   {
     if (!($child instanceof BaseFormField)) {
@@ -70,7 +109,32 @@ class Form {
       }
     }
     assert($child instanceof BaseFormField);
-    $this->childs[] = $child;
+    $this->childs[strtolower($name)] = $child;
+  }
+
+  public function setValidator(\PetakUmpet\Validator $validator)
+  {
+    $this->validator = $validator;
+  }
+
+  function bindAndValidate(Request $request)
+  {
+    $status = true;
+
+    foreach ($this->childs as $k => $f) {
+      $name = $f->getName();
+      $value = $request->get($name);
+
+      if ($value !== null && $value != '' && $f instanceof BaseFormField) {
+        $f->setValue($value);
+      }
+
+      if (!$this->validator->check($name, $f->getValue())) {
+        $f->setErrorText($this->validator->getErrorText($name));
+        $status = false;
+      }
+    }
+    return $status;
   }
 
 }
