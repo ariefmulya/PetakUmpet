@@ -5,7 +5,7 @@ class Layout {
 
 	private $layout;
 	
-	function __construct(Response $response, $layout=null, $variables=null)
+	function __construct(Response $response, $variables=null, $layout=null)
 	{
 		// setting up
 		$this->setLayout($layout);
@@ -13,7 +13,8 @@ class Layout {
 		$this->request = Singleton::acquire('\\PetakUmpet\\Request'); 
 		$this->session = Singleton::acquire('\\PetakUmpet\\Session'); 
 
-		// get template/layout variables
+		/* XXX at this point existing member vars of 
+		this class will be available to template XXX */	
 		extract(get_object_vars($this));
 		extract($variables);
 

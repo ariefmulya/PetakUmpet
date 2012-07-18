@@ -12,8 +12,9 @@ abstract class Configuration {
   const DBCRED = 16;
 
   // configuration constants
-  const ProjectTitle = 'Informasi Farmasi';
-  const StartPage    = 'Login/index';
+  const ProjectTitle = 'Aplikasi Monitoring dan Evaluasi DepKes';
+  const LoginPage    = 'Login/index';
+  const StartPage    = 'Home/index';
 
   public static function Database($index, $type)
   {
@@ -28,5 +29,14 @@ abstract class Configuration {
       );
 
     return (isset ($config[$index][$type]) ? $config[$index][$type] : null);
+  }
+
+  public static function getAnonymousPages()
+  {
+    return array(
+        'Login/index',
+        'Home/about',
+        'Home/contact',
+      );
   }
 }

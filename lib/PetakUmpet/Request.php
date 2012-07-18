@@ -2,8 +2,8 @@
 namespace PetakUmpet;
 
 class Request {
-  const MOD_ACCESSOR = 'm';
-  const ACT_ACCESSOR = 'r';
+  const APP_ACCESSOR = 'm';
+  const ACT_ACCESSOR = 'a';
 
   protected $request_data;
   protected $request_base_url;
@@ -31,12 +31,34 @@ class Request {
     $this->is_post = $this->request_method == 'POST' ;
   }
 
+  function __call($name, $args)
+  {
+    if (substr($name, 0,3) == 'get') 
+      return $this->get(strtolower(substr($name, 3)));
+    if (substr($name, 0,3) == 'set') 
+      return $this->set(strtolower(substr($name, 3)), $args[0]);
+  }
+
+  function isSecureAjax()
+  {
+    $ajax = false;
+    $secure = true;
+
+    if( !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ) {
+      $ajax = true;
+    }
+    // TODO: Check for secure ajax
+
+    return ($ajax && $secure);
+  }
+
   function isPost()
   {
     return $this->is_post;
   }
 
-  function getData($name, $default=null)
+  function get($name, $default=null)
   {
     if (isset($this->request_data[$name])) {
       return $this->request_data[$name];
@@ -46,8 +68,8 @@ class Request {
 
   function getPage()
   {
-    $m = $this->getData(self::MOD_ACCESSOR);
-    $a = $this->getData(self::ACT_ACCESSOR);
+    $m = $this->get(self::APP_ACCESSOR);
+    $a = $this->get(self::ACT_ACCESSOR);
 
     if (!$m) {
       return '/';
@@ -55,17 +77,17 @@ class Request {
     if (!$a) {
       return $m . '/index';
     }
-    return '/';
+    return $m.'/'.$a;
   }
 
   function getModule()
   {
-    return $this->getData(self::MOD_ACCESSOR);
+    return $this->get(self::APP_ACCESSOR);
   }
 
   function getAction()
   {
-    return $this->getData(self::ACT_ACCESSOR);
+    return $this->get(self::ACT_ACCESSOR);
   }
 
 }

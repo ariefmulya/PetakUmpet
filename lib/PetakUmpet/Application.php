@@ -4,17 +4,28 @@ namespace PetakUmpet;
 
 abstract class Application {
 
-  public function __construct(Request $request, Session $session)
+  protected $router;
+  protected $request;
+  protected $session;
+
+  public function __construct(Router $router, Request $request, Session $session)
   {
+    $this->router  = $router;
     $this->request = $request;
-    $this->session = $session; 
+    $this->session = $session;
   }
 
-  public function render($view=null, $variables=array())
+  public function render($view=null, $variables=array(), $layout=null)
   {
-    $response = new Response($this->request, $this->session);
+    $response = new Response();
 
-    return $response->render($view, $variables);
+    return $response->render($view, $variables, $layout);
+  }
+
+  public function redirect($page)
+  {
+    return $this->router->redirect($page);
   }
   
+
 }

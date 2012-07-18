@@ -5,27 +5,28 @@ class Response {
 
 	private $response;
 
-	protected $request;
-	protected $session;
+	private $request;
+	private $session;
 
-	private $layout;
-
-	function __construct(Request $request, Session $session)
+	function __construct($responseText=null, $httpStatusCode='200')
 	{
-		$this->response = $this;
-		$this->request = $request;
-		$this->session = $session;
+		// normal mode
+		if ($responseText === null) {
+			$this->response = $this;
+			$this->request = Singleton::acquire('\\PetakUmpet\\Request');
+			$this->session = Singleton::acquire('\\PetakUmpet\\Session');
+			return;
+		}
 
-		$this->layout = null;
+		// direct response mode
+		// need to implement more status code until php 5.4 is everywhere
+		// by then we can just use http_response_code()
+		header('HTTP/1.1 ' . $httpStatusCode . ' OK');
+		echo $responseText;
+		exit();
 	}
 
-	function setLayout($layout)
-	{
-		$this->layout = $layout;
-		return $this;
-	}
-
-	function render($view=null, $variables=null)
+	function render($view=null, $variables=null, $layout=null)
 	{
 		$template = PU_DIR . DS . 'res' . DS . 'View' 
 						. DS . $this->request->getModule() . DS . $this->request->getAction() . '.php';
@@ -53,7 +54,12 @@ class Response {
 		$this->contents = ob_get_contents();
 		ob_end_clean();
 
-		return new Layout($this, $layout, $variables);
+		// no layout on Ajax Call
+		if ($this->request->isSecureAjax()) {
+			echo $this->contents;
+			exit();
+		}
+		return new Layout($this, $variables, $layout);
 	}
 
 }
