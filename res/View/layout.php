@@ -16,16 +16,16 @@
         <div class="container">
           <a class="brand" href="#"><?php echo $ProjectTitle; ?></a>
 
-          <?php if ($session->get('user')) : ?>
+          <?php if ($session->getUser()) : ?>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="icon-user"></i> <?php echo $session->get('user')->getName() ?>
+              <i class="icon-user"></i> <?php echo $session->getUser() ?>
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
               <li><a href="#">Profile</a></li>
               <li class="divider"></li>
-              <li><a href="#">Sign Out</a></li>
+              <li><a href="index.php?m=Logout">Sign Out</a></li>
             </ul>
           </div>
           <?php endif ?>
@@ -33,7 +33,7 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
-              <li><a href="index.php?m=about">About</a></li>
+              <li><a href="index.php?m=Home&a=about">About</a></li>
               <li><a href="#contact">Contact</a></li>
             </ul>
           </div><!--/.nav-collapse -->
