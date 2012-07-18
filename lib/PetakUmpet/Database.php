@@ -22,7 +22,7 @@ class Database {
     $db_cred = Configuration::Database($dbConfigIndex, Configuration::DBCRED);
     $db_name = Configuration::Database($dbConfigIndex, Configuration::DBNAME);
 
-    $class_name = '\\PetakUmpet\\Database\\' .  $db_type . 'Driver';
+    $class_name = '\\PetakUmpet\\Database\\Driver\\' .  $db_type;
 
     $this->baseDriverObject = new $class_name;
 

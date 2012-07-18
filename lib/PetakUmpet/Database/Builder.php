@@ -1,7 +1,7 @@
 <?php
 
 namespace PetakUmpet\Database;
-use PetakUmpet\Database\Builder;
+use PetakUmpet\Singleton;
 
 class Builder {
 
@@ -15,7 +15,7 @@ class Builder {
   private $pkeys; // primary keys
   private $fkeys; // foreign keys
 
-  function __construct($db=null, $tableName)
+  function __construct($tableName, $db)
   {
     if ($db === null) 
       $db = Singleton::acquire('\\PetakUmpet\\Database');

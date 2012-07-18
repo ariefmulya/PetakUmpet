@@ -1,13 +1,14 @@
 <?php
 
 namespace PetakUmpet\Database;
+use PetakUmpet\Singleton;
 
 class Accessor {
 
   private $db;
   private $tableName;
 
-  function __construct($db=null, $tableName)
+  function __construct($tableName, $db=null)
   {
     if ($db === null) 
       $db = Singleton::acquire('\\PetakUmpet\\Database');
@@ -84,8 +85,8 @@ class Accessor {
     if (count($marker) == 0) 
       throw new \Exception ('findBy on table '.$this->tableName.' with no params');
 
-    $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) . ";" ;
-    $query = $this->db->getBaseDbo(generateLimit($query, 1));
+    $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) ;
+    $query = $this->db->getBaseDbo()->generateLimit($query, 1);
 
     return $this->db->QueryFetchRow($query, $keyval);
   }
