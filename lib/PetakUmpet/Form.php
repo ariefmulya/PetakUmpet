@@ -22,7 +22,7 @@ class Form {
     $this->gridFormat = self::GRID_BOOTSTRAP;
 
     $this->formClass = array(
-        self::GRID_BOOTSTRAP => 'form-horizontal'
+        self::GRID_BOOTSTRAP => 'well'
       );
 
     $this->formStart = array(
@@ -65,6 +65,10 @@ class Form {
     if (count($this->childs) > 0) { 
       $s .= $this->formStart[$this->gridFormat];
       foreach ($this->childs as $k => $f) {
+        if ($f instanceof \PetakUmpet\Form\Hidden) {
+          $s .= $f;
+          continue;
+        }
 
         $errorText = $f->getErrorText();
         $fieldStatus = $errorText == '' ? 'normal' : 'error';
@@ -73,8 +77,9 @@ class Form {
         $s .= $f->getLabelTag($this->fieldLabelClass[$this->gridFormat]);
         $s .= $this->fieldStart[$this->gridFormat];
         $s .= $f; 
-        if ($errorText != '')
+        if ($errorText != '') {
           $s .= sprintf($this->fieldHelpTagFormat[$this->gridFormat], $errorText);
+        }
         $s .= $this->fieldEnd[$this->gridFormat];
         $s .= $this->fieldRowEnd[$fieldStatus][$this->gridFormat];
 
@@ -117,7 +122,7 @@ class Form {
     $this->validator = $validator;
   }
 
-  function bindAndValidate(Request $request)
+  function bindValidate(Request $request)
   {
     $status = true;
 
@@ -129,9 +134,12 @@ class Form {
         $f->setValue($value);
       }
 
-      if (!$this->validator->check($name, $f->getValue())) {
-        $f->setErrorText($this->validator->getErrorText($name));
-        $status = false;
+
+      if (isset($this->validator)) {
+        if (!$this->validator->check($name, $f->getValue())) {
+          $f->setErrorText($this->validator->getErrorText($name));
+          $status = false;
+        }
       }
     }
     return $status;

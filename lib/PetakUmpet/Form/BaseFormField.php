@@ -65,7 +65,7 @@ class BaseFormField {
   {
     $s = '';
     foreach ($this->attributes as $k => $v) {
-      if ($this->useInnerValue && $k == 'value') continue; 
+      if (($this->useInnerValue && $k == 'value') || $k=='label') continue; 
       $s .= ' ' . $k . '="' . $v .'"';
     }
     return $s;
