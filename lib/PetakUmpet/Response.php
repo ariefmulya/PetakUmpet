@@ -3,8 +3,6 @@ namespace PetakUmpet;
 
 class Response {
 
-	private $response;
-
 	private $request;
 	private $session;
 
@@ -12,7 +10,6 @@ class Response {
 	{
 		// normal mode
 		if ($responseText === null) {
-			$this->response = $this;
 			$this->request = Singleton::acquire('\\PetakUmpet\\Request');
 			$this->session = Singleton::acquire('\\PetakUmpet\\Session');
 			return;
@@ -26,7 +23,7 @@ class Response {
 		exit();
 	}
 
-	function render($view=null, $variables=null, $layout=null)
+	function render($view=null, $variables=null, Template $T)
 	{
 		$template = PU_DIR . DS . 'res' . DS . 'View' 
 						. DS . $this->request->getModule() . DS . $this->request->getAction() . '.php';
@@ -54,12 +51,8 @@ class Response {
 		$this->contents = ob_get_contents();
 		ob_end_clean();
 
-		// no layout on Ajax Call
-		if ($this->request->isSecureAjax()) {
-			echo $this->contents;
-			exit();
-		}
-		return new Layout($this, $variables, $layout);
+		return $this->contents;
+
 	}
 
 }

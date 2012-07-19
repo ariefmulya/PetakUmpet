@@ -66,6 +66,11 @@ class Request {
     return $default;
   }
 
+  public function getData()
+  {
+    return $this->request_data;
+  }
+  
   function getPage()
   {
     $m = $this->get(self::APP_ACCESSOR);

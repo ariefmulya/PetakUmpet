@@ -12,7 +12,8 @@ abstract class Configuration {
   const DBCRED = 16;
 
   // configuration constants
-  const ProjectTitle = 'Aplikasi Monitoring dan Evaluasi DepKes';
+  const ProjectTitle = 'Aplikasi eYanFar';
+  
   const LoginPage    = 'Login/index';
   const StartPage    = 'Home/index';
 

@@ -3,51 +3,63 @@
   <head>
     <title><?php echo $ProjectTitle; ?></title>
     <link href="css/bootstrap.css" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/bootstrap-docs.css" rel="stylesheet">
+    <link href="css/bootstrap-datepicker.css" rel="stylesheet">
   </head>
-  <body>
+  <body data-offset="50" data-target=".subnav">
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="#"><?php echo $ProjectTitle; ?></a>
+          <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
 
-          <?php if ($session->getUser()) : ?>
-          <div class="btn-group pull-right">
-            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="icon-user"></i> <?php echo $session->getUser() ?>
-              <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Profile</a></li>
-              <li class="divider"></li>
-              <li><a href="index.php?m=Logout">Sign Out</a></li>
-            </ul>
-          </div>
-          <?php endif ?>
-
-          <div class="nav-collapse">
+          <div class="nav-collapse collapse">
+            <?php if ($session->getUser()) : ?>
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="index.php?m=Home&a=about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <?php $menu = array(
+                  'Home' => 'Home/index',
+                  'About' => 'Home/about',
+                  'Input Data' => 'Data/index',
+                  'Laporan' => 'Laporan/index',
+                  'Setting' => 'Admin/index',
+                );
+              ?>
+              <?php echo $T->navMenu($menu, $request->getPage()) ?>
             </ul>
+            <div class="btn-group pull-right">
+              <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="icon-user"></i> <?php echo $session->getUser() ?>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><?php echo $T->link('Profile', 'User/profile') ?></li>
+                <li class="divider"></li>
+                <li><?php echo $T->link('Logout', 'Logout/index') ?></li>
+              </ul>
+            </div>
+            <?php else: ?>
+            <ul class="nav">
+              <?php echo $T->navMenu(array('Home' => 'Home/index', 'About' => 'Home/about'), $request->getPage()) ?>
+            </ul>
+            <?php endif ?>
           </div><!--/.nav-collapse -->
+          <a class="brand" href="#"><?php echo $ProjectTitle ?></a>
         </div>
       </div>
     </div>
 
-    <div class="container-fluid">
+    <div class="container">
       <div class="row-fluid">
-        <div class="span2">
-          <?php echo isset($__navContents) ? $__navContents : '' ?>
-        </div>
         <div class="span10">
           <?php echo $__mainContents; ?>
+        </div>
+         <div class="span2">
+          <input id="dp1" type="text" value="2012-12-12">
         </div>
       </div>
     </div>
@@ -59,6 +71,7 @@
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/bootstrap-transition.js"></script>
     <script src="js/bootstrap-alert.js"></script>
     <script src="js/bootstrap-modal.js"></script>
@@ -71,6 +84,6 @@
     <script src="js/bootstrap-collapse.js"></script>
     <script src="js/bootstrap-carousel.js"></script>
     <script src="js/bootstrap-typeahead.js"></script>
-
+    <script type="text/javascript">$('#dp1').datepicker();</script>
   </body>
 </html>

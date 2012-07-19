@@ -17,9 +17,8 @@ abstract class Application {
 
   public function render($view=null, $variables=array(), $layout=null)
   {
-    $response = new Response();
-
-    return $response->render($view, $variables, $layout);
+    $T = new Template;
+    return $T->render($view, $variables, $layout);
   }
 
   public function redirect($page)

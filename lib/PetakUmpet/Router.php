@@ -44,6 +44,8 @@ class Router {
 
 				Logger::log("Router: loading $class_name->$function_full_name");
 
+				Event::log("loading");
+
 				return call_user_func(array($app, $function_full_name));
 			}
 		}
