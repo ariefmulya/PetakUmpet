@@ -11,7 +11,9 @@ class PostgreSQL {
     // PostgreSQL 9 query to get column details
     // might also worked in 8 and above
     return  "SELECT a.attnum as colnum, a.attname as column, c.typname as type, "
-        . "a.atttypmod as maxlen, a.attlen as varlen, case when d.contype ='p' then 1 else 0 end as primary "
+        . "a.atttypmod as maxlen, a.attlen as varlen, "
+        . "case when d.contype ='p' then 1 else 0 end as primary, "
+        . "case when a.attnotnull ='t' then 1 else 0 end as notnull "
         . "FROM pg_attribute a JOIN pg_class b ON a.attrelid=b.oid "
         . "JOIN pg_type c ON a.atttypid = c.oid "
         . "LEFT JOIN pg_constraint d on a.attrelid = d.conrelid AND a.attnum = ANY(d.conkey) "

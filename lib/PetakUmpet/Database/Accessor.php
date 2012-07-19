@@ -99,6 +99,8 @@ class Accessor {
 
   function insert($data)
   {
+    if (count($data) == 0) return false;
+    
     $marker = array();
     foreach ($data as $k => $v) {
       $marker[] = ":$k";
