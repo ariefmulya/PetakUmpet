@@ -21,5 +21,15 @@ CREATE TABLE user_group (
   FOREIGN KEY (group_id) REFERENCES groupdata (id)
 );
 
+CREATE TABLE event (
+  id serial,
+  user_id integer,
+  application varchar(100),
+  action varchar(100),
+  event text,
+  created_at timestamp,
+  PRIMARY KEY(id),
+  FOREIGN KEY (user_id) REFERENCES userdata (id)
+);
 
 INSERT INTO userdata (name, password) VALUES ('arief', '1');
