@@ -24,7 +24,7 @@ abstract class Configuration {
     $config[0] = array(
         self::DBTYPE => 'PostgreSQL',
         self::DBHOST => 'localhost',
-        self::DBNAME => 'eyanfar'
+        self::DBNAME => 'eyanfar',
         self::DBUSER => 'eyanfar',
         self::DBCRED => 'eyanfar2007#',
       );
