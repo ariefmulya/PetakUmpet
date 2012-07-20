@@ -22,7 +22,7 @@ class Event {
         'application' => $request->getModule(),
         'action' => $request->getAction(),
         'event' => $message,
-        'created_at' => $time->format('Y-m-d h:i:s'),
+        'created_at' => $time->format('Y-m-d H:i:s'),
       );
 
     $builder->import($data);
