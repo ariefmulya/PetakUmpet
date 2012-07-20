@@ -14,4 +14,8 @@ class Textarea extends BaseFormField {
     $this->useInnerValue = true;
   }
 
+  public function getInnerValue()
+  {
+    return $this->getValue();
+  }
 }

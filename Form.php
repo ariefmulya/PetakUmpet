@@ -15,15 +15,13 @@ class Form {
 
   protected $gridFormat;
 
-  function __construct($name='Form', $method='POST')
+  function __construct($name='Form', $class='well', $method='POST')
   {
     $this->name = $name;
     $this->method = $method;
     $this->gridFormat = self::GRID_BOOTSTRAP;
 
-    $this->formClass = array(
-        self::GRID_BOOTSTRAP => 'well'
-      );
+    $this->formClass = $class;
 
     $this->formStart = array(
         self::GRID_BOOTSTRAP => '<fieldset>'
@@ -60,7 +58,7 @@ class Form {
 
   function __toString()
   {
-    $s = '<form method="' . $this->method . '" class="'.$this->formClass[$this->gridFormat].'" >'; 
+    $s = '<form method="' . $this->method . '" class="'.$this->formClass.'" >'; 
 
     if (count($this->childs) > 0) { 
       $s .= $this->formStart[$this->gridFormat];
@@ -114,7 +112,7 @@ class Form {
       }
     }
     assert($child instanceof BaseFormField);
-    $this->childs[strtolower($name)] = $child;
+    $this->childs[strtolower($child->getName())] = $child;
   }
 
   public function setValidator(\PetakUmpet\Validator $validator)

@@ -13,7 +13,7 @@ class BaseFormField {
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
-    if ($name === null ) throw new \Exception('TextboxField need to have name');
+    if ($name === null ) throw new \Exception('Form field need to have name');
 
     if ($id === null) $id = $name;
     if ($label === null) $label = ucfirst($name);
@@ -47,7 +47,7 @@ class BaseFormField {
     if (substr($name, 0,3) == 'set')
       return $this->setAttribute(strtolower(substr($name, 3)), $arg);
 
-    if (substr($name, 0, 3) == 'get' || substr($name, 0, 2) == 'is')
+    if (substr($name, 0, 3) == 'get')
       return $this->getAttribute(strtolower(substr($name, 3)));
   }
 
@@ -55,6 +55,7 @@ class BaseFormField {
   {
     $this->attributes[$key] = $val[0];
   }
+
   public function getAttribute($key)
   {
     if (isset($this->attributes[$key])) return $this->attributes[$key];
@@ -71,7 +72,7 @@ class BaseFormField {
     return $s;
   }
 
-  public function getLabelTag($labelClass='label')
+  public function getLabelTag($labelClass='control-label')
   {
     $s = '';
     if (($lb = $this->getAttribute('label')) !== null) {
@@ -89,7 +90,7 @@ class BaseFormField {
     $s .= $this->startTag;
     $s .= $this->printAttributes();
     $s .= $this->closeStartTag;
-    if ($this->useInnerValue && ($val = $this->getAttribute('value')) !== null) $s .= $val;
+    if ($this->useInnerValue && ($val = $this->getInnerValue()) !== null) $s .= $val;
     $s .= $this->endTag;
     $s .= "\n";
     return $s;
