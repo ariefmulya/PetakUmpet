@@ -24,9 +24,9 @@ abstract class Configuration {
     $config[0] = array(
         self::DBTYPE => 'PostgreSQL',
         self::DBHOST => 'localhost',
-        self::DBNAME => 'project_sehat',
-        self::DBUSER => 'dbsys',
-        self::DBCRED => '1',
+        self::DBNAME => 'eyanfar'
+        self::DBUSER => 'eyanfar',
+        self::DBCRED => 'eyanfar2007#',
       );
 
     return (isset ($config[$index][$type]) ? $config[$index][$type] : null);
