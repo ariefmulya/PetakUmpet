@@ -75,6 +75,7 @@ class BaseFormField {
   {
     $s = '';
     if (($lb = $this->getAttribute('label')) !== null) {
+      $lb = ucwords(str_replace('_', ' ', $lb));
       $nm = $this->attributes['name'];
       $s  = '<label class="'.$labelClass.'" for="'.$nm.'">'.$lb.'</label>';
     }

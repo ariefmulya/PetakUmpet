@@ -18,6 +18,9 @@ class DBConnector extends Form {
     $a = array(
         'text' => 'textarea',
         'hidden' => 'hidden',
+        'date' => 'date',
+        'timestamp' => 'date',
+        'datetime' => 'date',
       );
     if (isset($a[$coltype])) return $a[$coltype];
 
