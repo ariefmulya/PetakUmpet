@@ -58,9 +58,6 @@
         <div class="span10">
           <?php echo $__mainContents; ?>
         </div>
-         <div class="span2">
-          <input id="dp1" type="text" value="2012-12-12">
-        </div>
       </div>
     </div>
 
@@ -84,6 +81,6 @@
     <script src="js/bootstrap-collapse.js"></script>
     <script src="js/bootstrap-carousel.js"></script>
     <script src="js/bootstrap-typeahead.js"></script>
-    <script type="text/javascript">$('#dp1').datepicker();</script>
+    <script type="text/javascript">$('input[datepicker|=datepicker]').datepicker({format: 'dd-mm-yyyy'});</script>
   </body>
 </html>
