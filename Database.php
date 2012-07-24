@@ -12,7 +12,7 @@ class Database {
   private $baseDriverObject;
   private $errorInfo;
 
-  function __construct($dbConfigIndex=null)
+  function __construct($dbConfigIndex=null, $initialize=true)
   {
     if ($dbConfigIndex===null) $dbConfigIndex = 0;
 
@@ -26,10 +26,8 @@ class Database {
 
     $this->baseDriverObject = new $class_name;
 
-    $this->db = $this->Connect($db_host, $db_name, $db_user, $db_cred);
-
-    if ($this->db === false) {
-      throw Exception;
+    if ($initialize) {
+      $this->Connect($db_host, $db_name, $db_user, $db_cred);
     }
 
     $this->baseDriverObject->setDbo($this);
@@ -62,6 +60,12 @@ class Database {
         );
     }
   }
+
+  function getDbo()
+  {
+    return $this->db;
+  }
+
   function getBaseDbo()
   {
     return $this->baseDriverObject;
@@ -70,16 +74,20 @@ class Database {
   function Connect($host, $dbname, $user, $cred, $extra=null)
   {
     try {
-      $db = new \PDO($this->baseDriverObject->generateDSN($host, $dbname, $extra), $user, $cred);
+      $this->db = new \PDO($this->baseDriverObject->generateDSN($host, $dbname, $extra), $user, $cred);
     } catch (Exception $e) {
       echo 'Have you setup the database and update Configuration class?';
 
       Logger::log('Database: connection failed, ' . $e);
       return false;
     }
-    return $db;
   }
 
+  function Close()
+  {
+    $this->db = null;
+  }
+  
   function Query($query, $trans=false)
   {
     Logger::log('Database: Query-> ' . $query);
@@ -98,7 +106,11 @@ class Database {
       }
     } 
 
-    return $this->db->query($query, \PDO::FETCH_ASSOC);
+    if (! ($res = $this->db->query($query, \PDO::FETCH_ASSOC)) ) {
+      $this->errorInfo = $this->db->errorInfo();
+      return false;
+    }
+    return $res;
   }
 
   function preparedQuery($query, $params=array(), $trans=false)
@@ -110,7 +122,7 @@ class Database {
     Logger::log('Database: preparedQuery PARAMS = (' . implode(',', $params) . ')');
 
     if (!$st->execute($params)) {
-      $this->errorInfo = array('query' => $st->queryString, 'error' => $st->errorInfo());
+      $this->errorInfo = $st->errorInfo();
 
       Logger::log('Database: preparedQuery ERROR: ' . implode(' ', $st->errorInfo()));
 
@@ -138,7 +150,7 @@ class Database {
 
   function getErrorText()
   {
-    return $this->errorInfo['error'][2];
+    return $this->errorInfo[2];
   }
 
   /* taken from http://stackoverflow.com/questions/574805/how-to-escape-strings-in-mssql-using-php */

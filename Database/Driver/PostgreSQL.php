@@ -44,6 +44,8 @@ class PostgreSQL {
 
   function generateDSN($host, $dbname, $extra=null)
   {
+    if ($dbname===null) $dbname='template1';
+    
     return 'pgsql:host='.$host.';dbname='.$dbname . ($extra==null ? '' : ';' . $extra);
   }
 
