@@ -50,6 +50,7 @@ class Pager {
 
         $s .= '<tr>';
         foreach ($this->header as $h) {
+          $val = '';
           if (isset($d[$h])) {
             $val = $d[$h];
             if (is_bool($d[$h])) {
