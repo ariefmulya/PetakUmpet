@@ -11,9 +11,16 @@ class Date extends Text {
     $extra['datepicker'] = 'datepicker';
 
     // set value default to today
-    $extra['value'] = $d->format('d-m-Y'); 
+    $extra['value'] = $d->format('Y-m-d'); 
 
     parent::__construct($name, $extra, $label, $id);
   }
 
+  public function setValue($value)
+  {
+    if ($value) {
+      $v = \DateTime::createFromFormat('Y-m-d', $value);
+      parent::setValue($v->format('Y-m-d'));
+    }
+  }
 }

@@ -7,11 +7,13 @@ use PetakUmpet\Form;
 use PetakUmpet\Validator;
 use PetakUmpet\Database\Builder;
 
-class DBConnector extends Form {
+class DBConnector {
 
   private $tableName;
   private $builder;
-
+  private $fields;
+  private $validator;
+  private $form;
 
   private function columnTypeMap($coltype)
   {
@@ -21,6 +23,8 @@ class DBConnector extends Form {
         'date' => 'date',
         'timestamp' => 'date',
         'datetime' => 'date',
+        'boolean' => 'radioGroup',
+        'bool' => 'radioGroup',
       );
     if (isset($a[$coltype])) return $a[$coltype];
 
@@ -29,13 +33,13 @@ class DBConnector extends Form {
 
   public function __construct($tableName, $columns=array(), $skip=array())
   {
-    parent::__construct($tableName);
+    $this->tableName = $tableName;
 
     $this->builder = new Builder($tableName);
 
-    $this->tableName = $tableName;
+    $this->form = new Form($tableName);
 
-    $count = 0;
+    $this->fields = array();
 
     $vld = new Validator;
 
@@ -50,7 +54,7 @@ class DBConnector extends Form {
       }
 
       if ($s[Builder::SC_PRIMARY]) {
-        $this->add('hidden', $name);
+        $this->fields[$name]['type'] = 'hidden'; 
         continue;
       }
 
@@ -58,24 +62,54 @@ class DBConnector extends Form {
         // TODO: add ability to configure fields, need to save the fields in a list variables first
         $vld->set($name, new Validator\Required);
       }
-      $this->add($type, $name);
-      $count++;
+      $this->fields[$name]['type'] = $type;
+    }
+    $this->validator = $vld;
+  }
+
+  public function setOptions($name, $options)
+  {
+    if (isset($this->fields[$name])) {
+      $this->fields[$name]['options'] = $options;
+    }
+  }
+
+  public function setType($name, $type)
+  {
+    if (isset($this->fields[$name])) {
+      $this->fields[$name]['type'] = $type;
+    }
+  }
+
+  public function build()
+  {
+    $form =& $this->form;
+    foreach ($this->fields as $name => $f) {
+      $child = $form->createField($f['type'], $name);
+      if (isset($f['options'])) $child->setOptions($f['options']);
+
+      $form->add($child);
     }
 
-    if ($count > 0) {
-      $this->add(new Form\Submit);
-      $this->setValidator($vld);
+    if (count($this->fields) > 0) {
+      $form->add('submit', 'Submit');
+      $form->setValidator($this->validator);
     }
+    return $form;
+  }
 
+  public function __toString()
+  {
+    return (string) $this->form;
   }
 
   public function bindValidateSave(Request $request)
   {
-    $status = parent::bindValidate($request);
+    $status = $this->form->bindValidate($request);
 
     if (!$status) return false;
-   
-    $this->builder->import($request->getData());   
+
+    $this->builder->import($this->form->getValues());
 
     return $this->builder->save();
   }

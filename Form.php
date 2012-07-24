@@ -74,7 +74,7 @@ class Form {
         $s .= $this->fieldRowStart[$fieldStatus][$this->gridFormat];
         $s .= $f->getLabelTag($this->fieldLabelClass[$this->gridFormat]);
         $s .= $this->fieldStart[$this->gridFormat];
-        $s .= $f; 
+        $s .= (string) $f; 
         if ($errorText != '') {
           $s .= sprintf($this->fieldHelpTagFormat[$this->gridFormat], $errorText);
         }
@@ -99,25 +99,49 @@ class Form {
       return $this->childs[$index]->getValue();
     }
   }
+  public function createField($child, $name=null, $extra=null, $label=null, $id=null)
+  {
+    // some hard-coded aliases
+    if ($child == 'checkbox') $child = 'checkboxGroup';
+    if ($child == 'radio') $child = 'radioGroup';
+    // funnily the above hardcode is actually good to keep our 
+    // class names reasonable while still providing fallback for user-error
+
+    $class_name = '\\PetakUmpet\\Form\\' . ucfirst($child);
+    if (class_exists($class_name)) {
+      $child = new $class_name($name, $extra, $label, $id);
+    } else {
+      $type = $child;
+      $child = new BaseFormField($name, $extra, $label, $id);
+      $child->setType($type);
+    }
+    assert($child instanceof BaseFormField);
+    return $child;
+  }
+
   public function add($child, $name=null, $extra=null, $label=null, $id=null)
   {
     if (!($child instanceof BaseFormField)) {
-      $class_name = '\\PetakUmpet\\Form\\' . ucfirst($child);
-      if (class_exists($class_name)) {
-        $child = new $class_name($name, $extra, $label, $id);
-      } else {
-        $type = $child;
-        $child = new BaseFormField($name, $extra, $label, $id);
-        $child->setType($type);
-      }
+      $f = $this->createField($child, $name, $extra, $label, $id);
+      if ($f) $this->childs[strtolower($f->getName())] = $f;
+
+    } else {
+      $this->childs[$child->getName()] = $child;
     }
-    assert($child instanceof BaseFormField);
-    $this->childs[strtolower($child->getName())] = $child;
   }
 
   public function setValidator(\PetakUmpet\Validator $validator)
   {
     $this->validator = $validator;
+  }
+
+  function getValues()
+  {
+    $v = array();
+    foreach ($this->childs as $name => $f) {
+      $v[$name] = $f->getValue();
+    }
+    return $v;
   }
 
   function bindValidate(Request $request)

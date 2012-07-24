@@ -24,12 +24,12 @@ class GroupFormField extends BaseFormField {
     $this->multiple = false;
   }
 
-  protected function setType($type)
+  public function setType($type)
   {
     $this->type = $type;
   }
 
-  protected function getType()
+  public function getType()
   {
     return $this->type;
   }
