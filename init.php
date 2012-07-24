@@ -11,5 +11,5 @@ include(__DIR__ . DS . 'Loader.php');
 $loader = new Loader;
 $loader->register();
 
-$router  = new Router(Singleton::acquire('\\PetakUmpet\\Request'), Singleton::acquire('\\PetakUmpet\\Session'));
-$router->handle();
+$process  = new Process(Singleton::acquire('\\PetakUmpet\\Request'), Singleton::acquire('\\PetakUmpet\\Session'));
+$process->run();

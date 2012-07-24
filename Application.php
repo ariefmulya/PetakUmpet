@@ -8,9 +8,9 @@ abstract class Application {
   protected $request;
   protected $session;
 
-  public function __construct(Router $router, Request $request, Session $session)
+  public function __construct(Process $process, Request $request, Session $session)
   {
-    $this->router  = $router;
+    $this->process = $process;
     $this->request = $request;
     $this->session = $session;
   }
@@ -23,7 +23,7 @@ abstract class Application {
 
   public function redirect($page)
   {
-    return $this->router->redirect($page);
+    return $this->process->redirect($page);
   }
   
 

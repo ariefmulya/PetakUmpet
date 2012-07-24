@@ -1,7 +1,7 @@
 <?php
 namespace PetakUmpet;
 
-class Router {
+class Process {
 
 	protected $request;
 	protected $session;
@@ -12,9 +12,9 @@ class Router {
 		$this->session  = $session;
 	}
 
-	function handle()
+	function run()
 	{
-		Logger::log('Router->handle() called');
+		Logger::log('Process->run() called');
 		
 		$this->load($this->request->getPage());
 	}
@@ -32,7 +32,7 @@ class Router {
 
 		$target  = PU_DIR . DS . 'src' . DS . $mod . 'Application.php';
 
-		Logger::log("Router: getting application $target");
+		Logger::log("Process: getting application $target");
 
 		if (is_file($target)) {
 			include($target);
@@ -42,7 +42,7 @@ class Router {
 
 			if ($app instanceof \PetakUmpet\Application && is_callable(array($app, $function_full_name))) {
 
-				Logger::log("Router: loading $class_name->$function_full_name");
+				Logger::log("Process: loading $class_name->$function_full_name");
 
 				Event::log("loading");
 
