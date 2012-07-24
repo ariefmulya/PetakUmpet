@@ -15,7 +15,7 @@ class Form {
 
   protected $gridFormat;
 
-  function __construct($name='Form', $class='well', $method='POST')
+  function __construct($name='Form', $class='well form-horizontal', $method='POST')
   {
     $this->name = $name;
     $this->method = $method;

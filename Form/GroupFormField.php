@@ -61,14 +61,19 @@ class GroupFormField extends BaseFormField {
     }
   }
 
+  public function getLabelTag()
+  {
+    return '<label class="control-label">'.$this->getLabel().'</label>';
+  }
+
   public function __toString()
   {
-    $s = '<label class="control-label">'.$this->getLabel().'</label>';
+    $s = '';
 
     $inputVal = $this->getValue();
 
     foreach ($this->childs as $c) {
-      $s .= '<label class="'.$this->getType().'">';
+      $s .= '<label class="'.$this->getType().' inline">';
 
       if ($this->multiple) {
         if (
