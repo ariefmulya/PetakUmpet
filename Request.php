@@ -66,6 +66,11 @@ class Request {
     return $default;
   }
 
+  function set($name, $value)
+  {
+    $this->request_data[$name] = $value;
+  }
+
   public function getData()
   {
     return $this->request_data;

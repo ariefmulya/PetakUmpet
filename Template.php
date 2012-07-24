@@ -45,10 +45,10 @@ class Template {
 		$this->layout = PU_DIR . DS . 'res' . DS . 'View' . DS . ($layout === null ? 'layout' : $layout) . '.php' ;
 	}
 
-  public function link($name, $page)
+  public function link($name, $page, $class="")
   {
     $page = str_replace('/', '&a=', $page);
-    return '<a href="index.php?m='.$page.'">' . $name . '</a>';
+    return '<a class="'.$class.'" href="index.php?m='.$page.'">' . $name . '</a>';
   }
 
   public function navMenu($menu, $selected)
@@ -71,6 +71,7 @@ class Template {
   {
   	$snippet_file = PU_DIR . DS . 'res' . DS . 'View' . DS . 'Snippet' . DS . $name . '.php';
   	if (is_file($snippet_file)) {
+      $T = $this;
     	extract(get_object_vars($this));
   		include_once $snippet_file;
   	}
