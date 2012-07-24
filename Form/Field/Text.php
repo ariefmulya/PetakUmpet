@@ -1,14 +1,13 @@
 <?php
 
-namespace PetakUmpet\Form;
+namespace PetakUmpet\Form\Field;
 
-class CheckboxGroup extends GroupFormField {
+class Text extends BaseField {
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
     parent::__construct($name, $extra, $label, $id);
-    $this->setType('checkbox');
-    $this->multiple = true;
+    $this->setType('text');
   }
 
 }

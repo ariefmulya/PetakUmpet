@@ -1,8 +1,8 @@
 <?php
 
-namespace PetakUmpet\Form;
+namespace PetakUmpet\Form\Field;
 
-class Submit extends BaseFormField {
+class Submit extends BaseField {
 
   public function __construct($name=null, $extra=array('class' => 'btn btn-primary'), $label=null, $id=null)
   {

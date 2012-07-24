@@ -1,6 +1,6 @@
 <?php
 
-namespace PetakUmpet\Form;
+namespace PetakUmpet\Form\Field;
 
 class Date extends Text {
 

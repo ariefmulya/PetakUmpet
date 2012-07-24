@@ -1,8 +1,8 @@
 <?php
 
-namespace PetakUmpet\Form;
+namespace PetakUmpet\Form\Field;
 
-class BaseFormField {
+class BaseField {
 
   protected $startTag;
   protected $closeStartTag;

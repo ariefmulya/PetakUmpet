@@ -1,8 +1,8 @@
 <?php
 
-namespace PetakUmpet;
+namespace PetakUmpet\Form\Custom;
 
-use PetakUmpet\Form\Text;
+use PetakUmpet\Form\Field\Text;
 
 class SearchForm {
 

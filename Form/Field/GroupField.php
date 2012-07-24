@@ -1,8 +1,8 @@
 <?php
 
-namespace PetakUmpet\Form;
+namespace PetakUmpet\Form\Field;
 
-class GroupFormField extends BaseFormField {
+class GroupField extends BaseField {
 
   private $childs;
 
@@ -48,7 +48,7 @@ class GroupFormField extends BaseFormField {
   public function setOptions(array $options)
   {
     foreach ($options as $k => $v) {
-      $c = new BaseFormField(
+      $c = new BaseField(
           $this->name . ($this->multiple == true ? '[]' : ''), 
           $this->extra, 
           $this->label, 

@@ -4,6 +4,8 @@ namespace PetakUmpet\Form;
 
 use PetakUmpet\Request;
 use PetakUmpet\Form;
+use PetakUmpet\Form\Field;
+
 use PetakUmpet\Validator;
 use PetakUmpet\Database\Builder;
 
@@ -123,7 +125,7 @@ class DBConnector {
     }
 
     if (count($this->fields) > 0) {
-      $form->add(new Form\Submit, 'Submit');
+      $form->add(new Field\Submit, 'Submit');
       $form->setValidator($this->validator);
     }
     return $form;

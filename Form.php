@@ -2,7 +2,7 @@
 
 namespace PetakUmpet;
 
-use PetakUmpet\Form\BaseFormField as BaseFormField;
+use PetakUmpet\Form\Field\BaseField;
 
 class Form {
 
@@ -64,7 +64,7 @@ class Form {
     if (count($this->childs) > 0) { 
       $s .= $this->formStart[$this->gridFormat];
       foreach ($this->childs as $k => $f) {
-        if ($f instanceof \PetakUmpet\Form\Hidden) {
+        if ($f instanceof \PetakUmpet\Form\Field\Hidden) {
           $s .= $f;
           continue;
         }
@@ -108,21 +108,21 @@ class Form {
     // funnily the above hardcode is actually good to keep our 
     // class names reasonable while still providing fallback for user-error
 
-    $class_name = '\\PetakUmpet\\Form\\' . ucfirst($child);
+    $class_name = '\\PetakUmpet\\Form\\Field\\' . ucfirst($child);
     if (class_exists($class_name)) {
       $child = new $class_name($name, $extra, $label, $id);
     } else {
       $type = $child;
-      $child = new BaseFormField($name, $extra, $label, $id);
+      $child = new BaseField($name, $extra, $label, $id);
       $child->setType($type);
     }
-    assert($child instanceof BaseFormField);
+    assert($child instanceof BaseField);
     return $child;
   }
 
   public function add($child, $name=null, $extra=null, $label=null, $id=null)
   {
-    if (!($child instanceof BaseFormField)) {
+    if (!($child instanceof BaseField)) {
       $f = $this->createField($child, $name, $extra, $label, $id);
       if ($f) $this->childs[strtolower($f->getName())] = $f;
 
@@ -138,7 +138,7 @@ class Form {
 
   public function setChildValue($name, $value)
   {
-    if (isset($this->childs[$name]) && $this->childs[$name] instanceof BaseFormField) {
+    if (isset($this->childs[$name]) && $this->childs[$name] instanceof BaseField) {
       $this->childs[$name]->setValue($value);
       return true;
     }
@@ -162,7 +162,7 @@ class Form {
       $name = $f->getName();
       $value = $request->get($name);
 
-      if ($value !== null && $value != '' && $f instanceof BaseFormField) {
+      if ($value !== null && $value != '' && $f instanceof BaseField) {
         $f->setValue($value);
       }
 

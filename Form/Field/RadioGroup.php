@@ -1,9 +1,8 @@
 <?php
 
+namespace PetakUmpet\Form\Field;
 
-namespace PetakUmpet\Form;
-
-class RadioGroup extends GroupFormField {
+class RadioGroup extends GroupField {
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {

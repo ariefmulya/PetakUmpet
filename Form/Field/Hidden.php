@@ -1,8 +1,8 @@
 <?php
 
-namespace PetakUmpet\Form;
+namespace PetakUmpet\Form\Field;
 
-class Hidden extends BaseFormField {
+class Hidden extends BaseField {
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {

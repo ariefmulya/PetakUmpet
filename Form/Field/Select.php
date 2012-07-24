@@ -1,9 +1,9 @@
 <?php
 
 
-namespace PetakUmpet\Form;
+namespace PetakUmpet\Form\Field;
 
-class Select extends BaseFormField {
+class Select extends BaseField {
 
   private $options;
 

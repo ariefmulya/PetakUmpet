@@ -1,8 +1,8 @@
 <?php
 
-namespace PetakUmpet\Form;
+namespace PetakUmpet\Form\Field;
 
-class Textarea extends BaseFormField {
+class Textarea extends BaseField {
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
