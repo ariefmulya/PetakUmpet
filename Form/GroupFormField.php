@@ -22,6 +22,7 @@ class GroupFormField extends BaseFormField {
     $this->label = $label;
     $this->id = $id;
     $this->multiple = false;
+    $this->useOptions = true;
   }
 
   public function setType($type)

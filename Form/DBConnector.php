@@ -37,8 +37,6 @@ class DBConnector {
 
     $this->builder = new Builder($tableName);
 
-    $this->form = new Form($tableName);
-
     $this->fields = array();
 
     $vld = new Validator;
@@ -59,12 +57,25 @@ class DBConnector {
       }
 
       if ($s[Builder::SC_NOTNULL]) {
-        // TODO: add ability to configure fields, need to save the fields in a list variables first
         $vld->set($name, new Validator\Required);
       }
+
+      $options = $this->builder->getOptionsFromRelations($name);
+
+      if (count($options) > 0) {
+        $type = 'select';
+        $this->fields[$name]['options'] = $options;
+      }
       $this->fields[$name]['type'] = $type;
+      $this->fields[$name]['label'] = ucwords(str_replace('_', ' ', str_replace('_id', '', $name)));
+
     }
     $this->validator = $vld;
+  }
+
+  public function __toString()
+  {
+    return (string) $this->form;
   }
 
   public function setOptions($name, $options)
@@ -81,26 +92,41 @@ class DBConnector {
     }
   }
 
+  public function setValue($name, $value)
+  {
+    if ($this->form->setChildValue($name, $value)) 
+      return true;
+
+    if (isset($this->fields[$name])) {
+        $this->fields[$name]['value'] = $value;
+      return true;
+    }
+    return false;
+  }
+
   public function build()
   {
     $form =& $this->form;
+
+    $form = new Form($this->tableName);
+
     foreach ($this->fields as $name => $f) {
-      $child = $form->createField($f['type'], $name);
-      if (isset($f['options'])) $child->setOptions($f['options']);
+      $label = isset($f['label']) ? $f['label'] : null;
+      
+      $child = $form->createField($f['type'], $name, null, $label);
+
+      if (isset($f['options']) && $child->useOptions()) {
+        $child->setOptions($f['options']);
+      }
 
       $form->add($child);
     }
 
     if (count($this->fields) > 0) {
-      $form->add('submit', 'Submit');
+      $form->add(new Form\Submit, 'Submit');
       $form->setValidator($this->validator);
     }
     return $form;
-  }
-
-  public function __toString()
-  {
-    return (string) $this->form;
   }
 
   public function bindValidateSave(Request $request)
@@ -111,7 +137,27 @@ class DBConnector {
 
     $this->builder->import($this->form->getValues());
 
-    return $this->builder->save();
+    $id = $this->builder->save();
+
+    if ($id) {
+      $this->setValue('id', $id);
+      return $id;
+    }
+    return false;
+  }
+
+  public function importById($id)
+  {
+    $this->builder->importById($id);
+
+    if (!isset($this->form)) {
+      $this->build();
+    }
+
+    foreach ($this->builder->getTableData() as $d) {
+      $this->form->bind($d);
+      break; // only support 1 row data for now
+    }
   }
 
 }

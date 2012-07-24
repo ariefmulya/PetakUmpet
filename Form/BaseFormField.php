@@ -38,8 +38,10 @@ class BaseFormField {
     $this->startTag = '<input ';
     $this->closeStartTag = '';
     $this->endTag = '>';
-    $this->useInnerValue = false;
     $this->errorText = '';
+
+    $this->useInnerValue = false;
+    $this->useOptions = false;
   }
 
   public function __call($name, $arg)
@@ -49,6 +51,11 @@ class BaseFormField {
 
     if (substr($name, 0, 3) == 'get')
       return $this->getAttribute(strtolower(substr($name, 3)));
+  }
+
+  public function useOptions()
+  {
+    return $this->useOptions;
   }
 
   public function setAttribute($key, $val)
@@ -72,15 +79,19 @@ class BaseFormField {
     return $s;
   }
 
-  public function getLabelTag($labelClass='control-label')
+  public function getLabel()
   {
-    $s = '';
+    $lb = '';
     if (($lb = $this->getAttribute('label')) !== null) {
       $lb = ucwords(str_replace('_', ' ', $lb));
-      $nm = $this->attributes['name'];
-      $s  = '<label class="'.$labelClass.'" for="'.$nm.'">'.$lb.'</label>';
     }
-    return $s;
+    return $lb;
+  }
+
+  public function getLabelTag($labelClass='control-label')
+  {
+    $nm = $this->attributes['name'];
+    return '<label class="'.$labelClass.'" for="'.$nm.'">'.$this->getLabel().'</label>';
   } 
   
   public function __toString()

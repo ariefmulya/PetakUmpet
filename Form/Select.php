@@ -14,6 +14,7 @@ class Select extends BaseFormField {
     $this->closeStartTag = '>';
     $this->endTag = '</select>';
     $this->useInnerValue = true;
+    $this->useOptions = true;
   }
 
   public function setOptions(array $options)

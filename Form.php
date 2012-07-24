@@ -13,6 +13,7 @@ class Form {
   protected $method;
   protected $validator;
 
+  protected $formClass;
   protected $gridFormat;
 
   function __construct($name='Form', $class='well form-horizontal', $method='POST')
@@ -135,6 +136,15 @@ class Form {
     $this->validator = $validator;
   }
 
+  public function setChildValue($name, $value)
+  {
+    if (isset($this->childs[$name]) && $this->childs[$name] instanceof BaseFormField) {
+      $this->childs[$name]->setValue($value);
+      return true;
+    }
+    return false;
+  }
+
   function getValues()
   {
     $v = array();
@@ -156,7 +166,6 @@ class Form {
         $f->setValue($value);
       }
 
-
       if (isset($this->validator)) {
         if (!$this->validator->check($name, $f->getValue())) {
           $f->setErrorText($this->validator->getErrorText($name));
@@ -165,6 +174,16 @@ class Form {
       }
     }
     return $status;
+  }
+
+  public function bind($data)
+  {
+    foreach ($this->childs as $k => $f) {
+      $name = $f->getName();
+      if (isset($data[$name])) {
+        $f->setValue($data[$name]);
+      }
+    }
   }
 
 }
