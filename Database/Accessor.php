@@ -41,7 +41,7 @@ class Accessor {
   {
     $marker = array();
 
-    foreach($pvals as $k => $v) {
+    foreach($pkvals as $k => $v) {
       $marker[] = ":$k";
     }
 
@@ -108,9 +108,15 @@ class Accessor {
 
     $query =  "INSERT INTO " . $this->tableName 
             . " (" . implode(',', array_keys($data)) . ") "
-            . "VALUES ( " . implode(',', $marker) . ") ;"  ;
+            . "VALUES ( " . implode(',', $marker) . ") " 
+            . $this->db->getBaseDbo()->getLastIdQuery() 
+             ;
 
-    return $this->db->preparedQuery($query, $data);
+    $res = $this->db->preparedQuery($query, $data);
+    if ($res) {
+      return $res->fetchColumn();
+    }
+    return false;
   }
 
   function update($data, $keyval)
@@ -133,10 +139,15 @@ class Accessor {
 
     $query =  " UPDATE " . $this->tableName 
             . " SET " . implode(', ', $marker_data)
-            . " WHERE " . implode(' AND ', $marker_keys);
+            . " WHERE " . implode(' AND ', $marker_keys) 
+            . $this->db->getBaseDbo()->getLastIdQuery() ;
 
     $params = array_merge($data, $keyval);
 
-    return $this->db->preparedQuery($query, $params);
+    $res = $this->db->preparedQuery($query, $params);
+    if ($res) {
+      return $res->fetchColumn();
+    }
+    return false;
   }
 }

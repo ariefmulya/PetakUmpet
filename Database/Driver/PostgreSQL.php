@@ -57,4 +57,10 @@ class PostgreSQL {
 
     return $s;
   }
+
+  function getLastIdQuery($idCol = 'id')
+  {
+    return " RETURNING " . $this->db->escapeInput($idCol) ;
+  }
+
 }

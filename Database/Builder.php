@@ -14,7 +14,7 @@ class Builder {
   const SC_NOTNULL = 'notnull';
 
   private $db;
-  private $dbm;
+  private $dba;
 
   private $tableName;
   private $tableData;
@@ -56,29 +56,76 @@ class Builder {
 
   }
 
-  function getSchema()
+  public function getSchema()
   {
     return $this->mc;
   }
 
+  public function getColumnNames()
+  {
+    return $this->columns;
+  }
+
+  public function getOptionsFromRelations($colName, $descriptionCol='name')
+  {
+    $opt = array();
+    $db =& $this->db;
+
+    foreach ($this->fkeys as $rel) {
+      if ($rel['childcol'] == $colName) {
+        $parent_id = $db->escapeInput($rel['parentcol']);
+        $parent_text = $db->escapeInput($descriptionCol);
+        $parent_table = $db->escapeInput($rel['parenttable']);
+        $query = sprintf("SELECT %s, %s FROM %s",
+                    $parent_id, $parent_text, $parent_table 
+                  );
+
+        if (($res = $db->QueryFetchAll($query))) {
+          foreach ($res as $r) {
+            $opt[$r[$parent_id]] = $r[$parent_text]; 
+          }
+        }
+      }
+    }
+    return $opt;
+  }
+
   public function import($data)
   {
+    if (count($data) == 0) 
+      return;
+
     if (!isset($data[0])) {
       $data = array ( 0 => $data );
     }
     $tableData = array();
 
     foreach ($data as $d) {
-      $selected = array();
+      $filterData = array();
 
       foreach ($this->columns as $c) {
-        if (isset($d[$c]) && $d[$c] !== null && $d[$c] != '') $selected[$c] = $d[$c];
+        if (isset($d[$c]) && $d[$c] !== null && ($d[$c] != '' || $d[$c] === false)) $filterData[$c] = $d[$c];
       }       
 
-      $tableData[] = $selected;
+      $tableData[] = $filterData;
 
     }
     if (count($tableData) > 0) $this->tableData = $tableData;
+  }
+
+  public function getTableData()
+  {
+    return $this->tableData;
+  }
+
+  public function importById($value)
+  {
+    return $this->import($this->dba->findByPk(array('id'), array($value)));
+  }
+
+  public function importAll()
+  {
+    return $this->import($this->dba->findAll());
   }
 
   public function save()
@@ -96,10 +143,15 @@ class Builder {
         $pkvals[$pk] = $d[$pk];
       }
 
-      if ($insertMode) $this->dba->insert($d);
-      else $this->dba->update($d, $pkvals);
+      if ($insertMode) {
+        $ret = $this->dba->insert($d);
+      } else { 
+        $ret = $this->dba->update($d, $pkvals);
+      }
 
       unset($pkvals);
     }
+
+    return $ret;
   }
 }
