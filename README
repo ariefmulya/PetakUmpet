@@ -1,0 +1,30 @@
+README
+
+Copyright (C) 2012
+Arief M Utama <arief@life2play.net>
+Arief M Utama <arief.utama@gmail.com>
+
+
+PetakUmpet (version-2) is an advance php framework which designed for
+robustness and simplicity.
+
+Processing concept in PetakUmpet
+
+Every new Request is handled by a Process object.
+
+Process will match Request module and action parameter to find the target
+application action to execute.
+
+Application can process request and then display output through Template
+object which will use Response to manage the contents.
+
+If needed Application can use Response object directly to render output.
+
+Template view files shall be ordinary php scripts. With application and response objects available for them. Special $T template object shall be available for access to Template helper functions.
+
+Standard view will be rendered inside a layout. There is a standard layout but applications can set their own layouts by calling Template's setLayout() function.
+
+
+
+
+
