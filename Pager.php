@@ -53,7 +53,7 @@ class Pager {
           if (isset($d[$h])) {
             $val = $d[$h];
             if (is_bool($d[$h])) {
-              $val = $d[$h] ? 'true' : 'false';
+              $val = $d[$h] ? '<i class="icon-ok"></i>' : '<i class="icon-remove"></i>';
             }
           }
           $s .= '<td>'.$val.'</td>';
