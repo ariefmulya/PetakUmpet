@@ -52,7 +52,7 @@ class PostgreSQL {
   function generateLimit($query, $limit, $offset=null)
   {
     $s = $query . " LIMIT " . $this->db->escapeInput((string) $limit) ;
-    if ($offset !== null) 
+    if ($offset !== null && $offset != 0) 
       $s .= " OFFSET " . $this->db->escapeInput((string) $offset);
 
     return $s;

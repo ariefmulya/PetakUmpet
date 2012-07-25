@@ -96,7 +96,7 @@ class DBConnector {
 
   public function setValue($name, $value)
   {
-    if ($this->form->setChildValue($name, $value)) 
+    if ($this->form->setFieldValue($name, $value)) 
       return true;
 
     if (isset($this->fields[$name])) {
@@ -104,6 +104,22 @@ class DBConnector {
       return true;
     }
     return false;
+  }
+
+  public function getValue($name)
+  {
+    if ($this->form->getFieldValue($name))
+      return true;
+
+    if (isset($this->fields[$name])) {
+        return $this->fields[$name]['value'];
+    }
+    return false;
+  }
+
+  public function getForm()
+  {
+    return $this->form;
   }
 
   public function build()
@@ -125,10 +141,16 @@ class DBConnector {
     }
 
     if (count($this->fields) > 0) {
-      $form->add(new Field\Submit, 'Submit');
+      $form->addAction(new Field\Submit('Submit'));
+      $form->addAction(new Field\Submit('Submit and Close', array('class' => 'btn')));
       $form->setValidator($this->validator);
     }
     return $form;
+  }
+
+  public function isClose()
+  {
+    return ($this->form->getActionValue() == 'Submit and Close');
   }
 
   public function bindValidateSave(Request $request)

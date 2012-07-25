@@ -12,7 +12,7 @@ class Request {
   protected $request_method;
   protected $is_post;
 
-  function __construct()
+  public function __construct()
   {
     $port  =& $_SERVER['SERVER_PORT'];
     $https =& $_SERVER['HTTPS'];
@@ -31,7 +31,7 @@ class Request {
     $this->is_post = $this->request_method == 'POST' ;
   }
 
-  function __call($name, $args)
+  public function __call($name, $args)
   {
     if (substr($name, 0,3) == 'get') 
       return $this->get(strtolower(substr($name, 3)));
@@ -39,7 +39,7 @@ class Request {
       return $this->set(strtolower(substr($name, 3)), $args[0]);
   }
 
-  function isSecureAjax()
+  public function isSecureAjax()
   {
     $ajax = false;
     $secure = true;
@@ -53,12 +53,12 @@ class Request {
     return ($ajax && $secure);
   }
 
-  function isPost()
+  public function isPost()
   {
     return $this->is_post;
   }
 
-  function get($name, $default=null)
+  public function get($name, $default=null)
   {
     if (isset($this->request_data[$name])) {
       return $this->request_data[$name];
@@ -66,9 +66,14 @@ class Request {
     return $default;
   }
 
-  function set($name, $value)
+  public function set($name, $value)
   {
     $this->request_data[$name] = $value;
+  }
+
+  public function getFullUrl()
+  {
+    return $this->request_full_url;
   }
 
   public function getData()
@@ -76,7 +81,7 @@ class Request {
     return $this->request_data;
   }
   
-  function getPage()
+  public function getPage()
   {
     $m = $this->get(self::APP_ACCESSOR);
     $a = $this->get(self::ACT_ACCESSOR);
@@ -90,12 +95,17 @@ class Request {
     return $m.'/'.$a;
   }
 
-  function getModule()
+  public function getAppUrl($page)
+  {
+    return $this->request_base_url . '?m=' . str_replace('/', '&a=', $page);
+  }
+
+  public function getModule()
   {
     return $this->get(self::APP_ACCESSOR);
   }
 
-  function getAction()
+  public function getAction()
   {
     return $this->get(self::ACT_ACCESSOR);
   }

@@ -9,6 +9,8 @@ class Form {
   const GRID_BOOTSTRAP = 1;
 
   protected $childs;
+  protected $actions;
+
   protected $name;
   protected $method;
   protected $validator;
@@ -16,7 +18,7 @@ class Form {
   protected $formClass;
   protected $gridFormat;
 
-  function __construct($name='Form', $class='well form-horizontal', $method='POST')
+  function __construct($name='Form', $class='form-horizontal', $method='POST')
   {
     $this->name = $name;
     $this->method = $method;
@@ -24,6 +26,7 @@ class Form {
 
     $this->formClass = $class;
 
+    // FIXME: these maybe better delegated to a formatter class
     $this->formStart = array(
         self::GRID_BOOTSTRAP => '<fieldset>'
       );
@@ -55,6 +58,12 @@ class Form {
     $this->fieldHelpTagFormat = array(
         self::GRID_BOOTSTRAP => '<span class="help-inline">%s</span>'
       );
+    $this->actionStart = array(
+        self::GRID_BOOTSTRAP => '<div class="form-actions">'
+      );
+    $this->actionEnd = array(
+        self::GRID_BOOTSTRAP => '</div>'
+      );
   }
 
   function __toString()
@@ -83,6 +92,14 @@ class Form {
         $s .= $this->fieldRowEnd[$fieldStatus][$this->gridFormat];
 
       }
+
+      if (count($this->actions) > 0 ) {
+        $s .= $this->actionStart[$this->gridFormat];
+        foreach ($this->actions as $f) 
+          $s .= (string) $f;
+        $s .= $this->actionEnd[$this->gridFormat];
+      }
+
       $s .= $this->formEnd[$this->gridFormat];
     }
     $s .= '</form>';
@@ -100,6 +117,12 @@ class Form {
       return $this->childs[$index]->getValue();
     }
   }
+
+  public function setMethod($method)
+  {
+    $this->method = $method;
+  }
+  
   public function createField($child, $name=null, $extra=null, $label=null, $id=null)
   {
     // some hard-coded aliases
@@ -131,18 +154,37 @@ class Form {
     }
   }
 
+  public function addAction(BaseField $field)
+  {
+    $this->actions[] = $field;
+  }
+
   public function setValidator(\PetakUmpet\Validator $validator)
   {
     $this->validator = $validator;
   }
 
-  public function setChildValue($name, $value)
+  public function setFieldValue($name, $value)
   {
     if (isset($this->childs[$name]) && $this->childs[$name] instanceof BaseField) {
       $this->childs[$name]->setValue($value);
       return true;
     }
     return false;
+  }
+
+  public function getFieldValue($name)
+  {
+    if (isset($this->childs[$name]) && $this->childs[$name] instanceof BaseField) {
+      return $this->childs[$name]->getValue();
+    }
+    return false;
+  }
+
+  public function getActionValue($name='submit')
+  {
+    $request = Singleton::acquire('\\PetakUmpet\\Request');
+    return $request->get($name);
   }
 
   function getValues()

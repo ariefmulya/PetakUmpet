@@ -21,6 +21,7 @@ class Builder {
 
   private $mc;      // schema model cache
   private $columns; // column names
+  private $coldata; // column types indexed by names
   private $pkeys;   // primary keys
   private $fkeys;   // foreign keys
 
@@ -37,6 +38,17 @@ class Builder {
     $this->buildTableSchema();
   }
 
+  function isStringType($type)
+  {
+    $str_types = array(
+          'varchar' 
+        , 'text'
+        , 'char'
+      );
+
+    return in_array($type, $str_types);
+  }
+
   private function buildTableSchema()
   {
     $db =& $this->db;
@@ -50,8 +62,12 @@ class Builder {
         $this->pkeys[] = $s[self::SC_COLNAME];
       }
       $this->columns[] = $s[self::SC_COLNAME];
-    }
 
+      $this->coldata[$s[self::SC_COLNAME]] = array(
+                      'type' => $s[self::SC_COLTYPE], 
+                      'string' => $this->isStringType($s[self::SC_COLTYPE])
+                    );
+    }
     $this->fkeys = $db->QueryFetchAll($db->getBaseDbo()->getForeignKeyQuery(), array($this->tableName));
 
   }
@@ -90,6 +106,11 @@ class Builder {
     return $opt;
   }
 
+  public function getCountRows()
+  {
+    return $this->dba->CountAll();
+  }
+
   public function import($data)
   {
     if (count($data) == 0) 
@@ -126,6 +147,16 @@ class Builder {
   public function importAll()
   {
     return $this->import($this->dba->findAll());
+  }
+
+  public function getCountPagerData($filter=null)
+  {
+    return $this->dba->CountPagerData($filter, $this->columns, $this->coldata);
+  }
+
+  public function importPagerData($page, $nRows, $filter=null)
+  {
+    return $this->import($this->dba->findPagerData($page, $nRows, $filter, $this->columns, $this->coldata));
   }
 
   public function save()

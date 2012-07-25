@@ -37,6 +37,12 @@ class Accessor {
     return $this->db->QueryFetchOne($query, (array) $pkvals);
   }
 
+  function CountAll()
+  {
+    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
+    return $this->db->QueryFetchOne($query);
+  }
+
   function findByPK($pkeys, $pkvals)
   {
     $marker = array();
@@ -95,6 +101,53 @@ class Accessor {
   {
     $query =  "SELECT * FROM " . $this->tableName;
     return $this->db->QueryFetchAll($query);
+  }
+
+  private function generatePagerFilter($filter, $filterCols, $colData)
+  {
+    foreach ($filterCols as $c) {
+      if ($c == 'id') continue;
+
+      if (!$colData[$c]['string']) {
+        $c = "CAST ($c AS text) ";
+      }
+
+      $marker[] = $c ." ILIKE :filter" ;
+    }
+    if (count($marker) > 0 ) return " WHERE " . implode (' OR ', $marker);
+    return '';
+  } 
+
+  function CountPagerData($filter=null, $filterCols=array(), $colData=array())
+  {
+    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
+
+    $params = array();
+    if ($filter && count($filterCols) > 0) {
+      $query .= $this->generatePagerFilter($filter, $filterCols, $colData);
+      $params['filter'] = $filter;
+    }
+
+    return $this->db->QueryFetchOne($query, $params);
+  }
+
+  function findPagerData($page, $nRows, $filter=null, $filterCols=array(), $colData = array())
+  {
+    $offset = ($page-1) * $nRows;
+    $limit  = $nRows;
+    $query  =  "SELECT * FROM " . $this->tableName ;
+
+    $params = array();
+    if ($filter && count($filterCols) > 0) {
+      $query .= $this->generatePagerFilter($filter, $filterCols, $colData);
+      $params['filter'] = $filter;
+    }
+
+    $query .= " ORDER BY id ";
+
+    $query  = $this->db->getBaseDbo()->generateLimit($query, $limit, $offset);
+
+    return $this->db->QueryFetchAll($query, $params);
   }
 
   function insert($data)

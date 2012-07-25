@@ -33,10 +33,21 @@ class SearchForm {
     return $s;
   }
 
-  function bind(Request $request)
+  function bind(\PetakUmpet\Request $request)
   {
     if (($v = $request->getSearch())) {
       $this->input->setValue($v);
     }
   }
+
+  function getValue()
+  {
+    return $this->input->getValue(); 
+  }
+
+  function setValue($value)
+  {
+    return $this->input->setValue($value); 
+  }
+  
 }
