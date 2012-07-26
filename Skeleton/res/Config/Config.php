@@ -1,5 +1,7 @@
 <?php
 
+namespace Config;
+
 // class as configurator
 
 abstract class Config {
