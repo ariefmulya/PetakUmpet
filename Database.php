@@ -1,7 +1,7 @@
 <?php
 
 namespace PetakUmpet;
-use ConfigConfig as Config;
+use Config\Config as Config;
 
 class Database {
 
