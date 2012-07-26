@@ -7,6 +7,8 @@ use PetakUmpet\Database;
 use PetakUmpet\Database\Builder;
 use PetakUmpet\Database\Accessor;
 
+use \Config\Config as Config;
+
 class LoginApplication extends Application {
 
   public function indexAction() 
@@ -26,7 +28,7 @@ class LoginApplication extends Application {
           $this->session->setUserid($userdata['id']);
           $this->session->setAuthenticated(true);
           // authenticated, go to index
-          $this->redirect(\Config::StartPage);
+          $this->redirect(Config::StartPage);
 
         }
         // failed login
