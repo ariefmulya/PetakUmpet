@@ -3,7 +3,14 @@
 define('DS', DIRECTORY_SEPARATOR); // quicker
 define('PU_DIR',  __DIR__ . DS . '..' . DS . '..' . DS . '..' . DS);
 
-include(__DIR__ . DS . '..' . DS . 'Config.php');
+$configFile = PU_DIR . DS . 'res' . DS . 'Config' . DS . 'Config.php';
+
+if (!is_file($configFile)) {
+  echo "ERROR: Verify that the project is initialized properly and a res\Config\Config.php file is available";
+  exit();
+}
+
+include($configFile);
 include(__DIR__ . DS . '..' . DS . 'Loader.php');
 
 $loader = new PetakUmpet\Loader;
