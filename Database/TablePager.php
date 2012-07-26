@@ -20,7 +20,7 @@ class TablePager extends Pager {
     $this->filter=null;
   }
 
-  public function build($tableName)
+  public function build($tableName, $displayCols=array())
   {
     $this->tableName = $tableName;
 
@@ -32,9 +32,9 @@ class TablePager extends Pager {
     $this->totalPage = ceil($count/$this->pagerRows);
     if ($this->page > $this->totalPage) $this->page = $this->totalPage;
 
-    $this->setHeader($this->builder->getColumnNames());
+    $this->setHeader(count($displayCols) > 0 ? $displayCols : $this->builder->getColumnNames());
 
-    $this->builder->importPagerData($this->page, $this->pagerRows, $this->filter);
+    $this->builder->importPagerData($this->page, $this->pagerRows, $displayCols, $this->filter);
 
     $this->setPagerData($this->builder->getTableData());
 

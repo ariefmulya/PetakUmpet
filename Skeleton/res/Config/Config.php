@@ -1,9 +1,8 @@
 <?php
-namespace PetakUmpet;
 
 // class as configurator
 
-abstract class Configuration {
+abstract class Config {
   // real constants (all caps) DO NOT CHANGE
   const DBTYPE = 1;
   const DBHOST = 2;
@@ -12,7 +11,7 @@ abstract class Configuration {
   const DBCRED = 16;
 
   // configuration constants
-  const ProjectTitle = 'Aplikasi eYanFar';
+  const ProjectTitle = 'Project';
   
   const LoginPage    = 'Login/index';
   const StartPage    = 'Home/index';
@@ -24,9 +23,9 @@ abstract class Configuration {
     $config[0] = array(
         self::DBTYPE => 'PostgreSQL',
         self::DBHOST => 'localhost',
-        self::DBNAME => 'eyanfar',
-        self::DBUSER => 'eyanfar',
-        self::DBCRED => 'eyanfar2007#',
+        self::DBNAME => 'test',
+        self::DBUSER => 'test',
+        self::DBCRED => 'test',
       );
 
     return (isset ($config[$index][$type]) ? $config[$index][$type] : null);

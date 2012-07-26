@@ -1,6 +1,8 @@
 <?php
 namespace PetakUmpet;
 
+use \Config\Config as Config;
+
 class Process {
 
 	protected $request;
@@ -21,11 +23,11 @@ class Process {
 
 	function load($page)
 	{
-		if ($page == '/') $page = Configuration::StartPage;
+		if ($page == '/') $page = Config::StartPage;
 
 		// FIXME: this is not yet elegant ;-)
-		if (!$this->session->getAuthenticated() && !in_array($page, Configuration::getAnonymousPages())) {
-			return $this->redirect(Configuration::LoginPage);
+		if (!$this->session->getAuthenticated() && !in_array($page, Config::getAnonymousPages())) {
+			return $this->redirect(Config::LoginPage);
 		}
 
 		list($mod, $act) = explode('/', $page);

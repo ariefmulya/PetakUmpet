@@ -154,9 +154,9 @@ class Builder {
     return $this->dba->CountPagerData($filter, $this->columns, $this->coldata);
   }
 
-  public function importPagerData($page, $nRows, $filter=null)
+  public function importPagerData($page, $nRows, $displayCols=array(), $filter=null)
   {
-    return $this->import($this->dba->findPagerData($page, $nRows, $filter, $this->columns, $this->coldata));
+    return $this->import($this->dba->findPagerData($page, $nRows, $displayCols, $filter, $this->columns, $this->coldata));
   }
 
   public function save()

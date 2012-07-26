@@ -24,9 +24,6 @@
               <?php $menu = array(
                   'Home' => 'Home/index',
                   'About' => 'Home/about',
-                  'Input Data' => 'Data/index',
-                  'Laporan' => 'Laporan/index',
-                  'Setting' => 'Admin/index',
                 );
               ?>
               <?php echo $T->navMenu($menu, $request->getPage()) ?>

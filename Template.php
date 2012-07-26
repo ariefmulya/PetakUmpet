@@ -1,6 +1,8 @@
 <?php
 namespace PetakUmpet;
 
+use \Config\Config as Config;
+
 class Template {
 
 	private $layout;
@@ -20,7 +22,7 @@ class Template {
 		$T = $this;
 
 		// configuration variables
-		$ProjectTitle = Configuration::ProjectTitle;
+		$ProjectTitle = Config::ProjectTitle;
 
 		// response contents
 		$response = new Response;

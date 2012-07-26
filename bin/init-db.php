@@ -3,7 +3,7 @@
 define('DS', DIRECTORY_SEPARATOR); // quicker
 define('PU_DIR',  __DIR__ . DS . '..' . DS . '..' . DS . '..' . DS);
 
-include(__DIR__ . DS . '..' . DS . 'Configuration.php');
+include(__DIR__ . DS . '..' . DS . 'Config.php');
 include(__DIR__ . DS . '..' . DS . 'Loader.php');
 
 $loader = new PetakUmpet\Loader;
@@ -11,11 +11,12 @@ $loader->register();
 
 $dbConfigIndex = 0;
 
-use PetakUmpet\Configuration;
-$db_host = Configuration::Database($dbConfigIndex, Configuration::DBHOST);
-$db_user = Configuration::Database($dbConfigIndex, Configuration::DBUSER);
-$db_cred = Configuration::Database($dbConfigIndex, Configuration::DBCRED);
-$db_name = Configuration::Database($dbConfigIndex, Configuration::DBNAME);
+use \Config\Config as Config;
+
+$db_host = Config::Database($dbConfigIndex, Config::DBHOST);
+$db_user = Config::Database($dbConfigIndex, Config::DBUSER);
+$db_cred = Config::Database($dbConfigIndex, Config::DBCRED);
+$db_name = Config::Database($dbConfigIndex, Config::DBNAME);
 
 $dbi = new PetakUmpet\Database(0, false);
 $dbi->Connect($db_host, null, $db_user, $db_cred);

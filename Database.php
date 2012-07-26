@@ -1,6 +1,7 @@
 <?php
 
 namespace PetakUmpet;
+use ConfigConfig as Config;
 
 class Database {
 
@@ -16,11 +17,11 @@ class Database {
   {
     if ($dbConfigIndex===null) $dbConfigIndex = 0;
 
-    $db_type = Configuration::Database($dbConfigIndex, Configuration::DBTYPE);
-    $db_host = Configuration::Database($dbConfigIndex, Configuration::DBHOST);
-    $db_user = Configuration::Database($dbConfigIndex, Configuration::DBUSER);
-    $db_cred = Configuration::Database($dbConfigIndex, Configuration::DBCRED);
-    $db_name = Configuration::Database($dbConfigIndex, Configuration::DBNAME);
+    $db_type = Config::Database($dbConfigIndex, Config::DBTYPE);
+    $db_host = Config::Database($dbConfigIndex, Config::DBHOST);
+    $db_user = Config::Database($dbConfigIndex, Config::DBUSER);
+    $db_cred = Config::Database($dbConfigIndex, Config::DBCRED);
+    $db_name = Config::Database($dbConfigIndex, Config::DBNAME);
 
     $class_name = '\\PetakUmpet\\Database\\Driver\\' .  $db_type;
 
@@ -76,7 +77,7 @@ class Database {
     try {
       $this->db = new \PDO($this->baseDriverObject->generateDSN($host, $dbname, $extra), $user, $cred);
     } catch (Exception $e) {
-      echo 'Have you setup the database and update Configuration class?';
+      echo 'Have you setup the database and update Config class?';
 
       Logger::log('Database: connection failed, ' . $e);
       return false;
