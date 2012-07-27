@@ -1,7 +1,8 @@
 <?php
 
 namespace PetakUmpet;
-use Config\Config as Config;
+
+use PetakUmpet\Config;
 
 class Database {
 
@@ -13,15 +14,16 @@ class Database {
   private $baseDriverObject;
   private $errorInfo;
 
-  function __construct($dbConfigIndex=null, $initialize=true)
+  function __construct($configIndex=0, $initialize=true)
   {
-    if ($dbConfigIndex===null) $dbConfigIndex = 0;
+    $config  = Singleton::acquire('\\PetakUmpet\\Config');
+    $dbConfig = $config->getDbConfig($configIndex);
 
-    $db_type = Config::Database($dbConfigIndex, Config::DBTYPE);
-    $db_host = Config::Database($dbConfigIndex, Config::DBHOST);
-    $db_user = Config::Database($dbConfigIndex, Config::DBUSER);
-    $db_cred = Config::Database($dbConfigIndex, Config::DBCRED);
-    $db_name = Config::Database($dbConfigIndex, Config::DBNAME);
+    $db_type = $dbConfig[Config::DBTYPE];
+    $db_host = $dbConfig[Config::DBHOST];
+    $db_user = $dbConfig[Config::DBUSER];
+    $db_cred = $dbConfig[Config::DBCRED];
+    $db_name = $dbConfig[Config::DBNAME];
 
     $class_name = '\\PetakUmpet\\Database\\Driver\\' .  $db_type;
 
@@ -77,7 +79,7 @@ class Database {
     try {
       $this->db = new \PDO($this->baseDriverObject->generateDSN($host, $dbname, $extra), $user, $cred);
     } catch (Exception $e) {
-      echo 'Have you setup the database and update Config class?';
+      echo 'Have you setup the database and set configuration?';
 
       Logger::log('Database: connection failed, ' . $e);
       return false;

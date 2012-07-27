@@ -13,16 +13,12 @@ class Logger {
       self::DEBUG => 'PetakUmpet DEBUG: ',
     );
 
-    $logfile = PU_DIR . DS . 'res' . DS . 'log' . DS . 'app.log';
+    $request = Singleton::acquire('\\PetakUmpet\\Request');
+
+    $logfile = PU_DIR . DS . 'app' . DS . $request->getApplication() . DS . 'res' . DS . 'log' . DS . 'app.log';
     $curtime = new \DateTime;
 
     file_put_contents($logfile, '['. $curtime->format('Y-m-d H:i:s') . ']' . $marker[$level] . $message . "\n", FILE_APPEND | LOCK_EX);
-  }
-
-  public static function getLogContents()
-  {
-    $logfile = PU_DIR . DS . 'res' . DS . 'log' . DS . 'app.log';
-    echo file_get_contents($logfile);
   }
   
 }

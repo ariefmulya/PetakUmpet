@@ -5,13 +5,19 @@ class Response {
 
 	private $request;
 	private $session;
+	private $config;
+	
+	private $baseViewDir;
 
-	function __construct($responseText=null, $httpStatusCode='200')
+	public function __construct($responseText=null, $httpStatusCode='200')
 	{
 		// normal mode
 		if ($responseText === null) {
 			$this->request = Singleton::acquire('\\PetakUmpet\\Request');
 			$this->session = Singleton::acquire('\\PetakUmpet\\Session');
+			$this->config  = Singleton::acquire('\\PetakUmpet\\Config');
+
+	    $this->baseViewDir = PU_DIR . DS . 'app' . DS . $this->request->getApplication() . DS . 'View' . DS ;
 			return;
 		}
 
@@ -23,14 +29,13 @@ class Response {
 		exit();
 	}
 
-	function render($view=null, $variables=null, Template $T)
+	public function render($view, $variables=array(), Template $T)
 	{
-		$template = PU_DIR . DS . 'res' . DS . 'View' 
-						. DS . $this->request->getModule() . DS . $this->request->getAction() . '.php';
+		$template = $this->baseViewDir . str_replace('/', DS, $view) . '.php';
 
-		if ($view !== null) {
-			$view = str_replace('/', DS, $view);
-			$template = PU_DIR . DS . 'res' . DS . 'View' . DS . $view . '.php';
+		if (!is_file($template)) {
+			throw new \Exception("Template file $template does not exist\n");
+			return;
 		}
 
 		Logger::log('Response: using template '. $template);
@@ -44,15 +49,11 @@ class Response {
 		} 
 
 		ob_start();
-
-		if (is_file ($template)) {
-			require($template);
-		}
+		require($template);
 		$this->contents = ob_get_contents();
 		ob_end_clean();
 
 		return $this->contents;
-
 	}
 
 }

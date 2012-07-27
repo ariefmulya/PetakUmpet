@@ -1,28 +1,33 @@
 <?php
 namespace PetakUmpet;
 
-use \Config\Config as Config;
-
 class Template {
 
+  private $baseViewDir;
 	private $layout;
+
+  private $request;
+  private $session;
+  private $config;
 	
-	function __construct()
+	function __construct(Request $request, Session $session, Config $config)
 	{
-		$this->request = Singleton::acquire('\\PetakUmpet\\Request'); 
-		$this->session = Singleton::acquire('\\PetakUmpet\\Session'); 
+		$this->request = $request;
+		$this->session = $session;
+    $this->config  = $config;
+
+    $this->baseViewDir = PU_DIR . DS . 'app' . DS . $this->request->getApplication() . DS . 'View' . DS ;
 	}
 
-	function render($view, $variables=null, $layout=null)
+	function render($view, $variables=array(), $layout=null)
 	{
+    $app = $this->request->getApplication();
+
 		/* XXX at this point existing member vars of 
 		this class will be available to template XXX */	
 		extract(get_object_vars($this));
 		extract($variables);
 		$T = $this;
-
-		// configuration variables
-		$ProjectTitle = Config::ProjectTitle;
 
 		// response contents
 		$response = new Response;
@@ -44,13 +49,22 @@ class Template {
 
 	function setLayout($layout=null)
 	{
-		$this->layout = PU_DIR . DS . 'res' . DS . 'View' . DS . ($layout === null ? 'layout' : $layout) . '.php' ;
+		$this->layout =  $this->baseViewDir . ($layout === null ? 'layout' : $layout) . '.php' ;
 	}
 
   public function link($name, $page, $class="")
   {
     $page = str_replace('/', '&a=', $page);
-    return '<a class="'.$class.'" href="index.php?m='.$page.'">' . $name . '</a>';
+
+    $href = $this->request->getAppUrl($page);
+
+    return '<a class="'.$class.'" href="'.$href.'">' . $name . '</a>';
+  }
+
+  public function getResourceUrl($value)
+  {
+
+    return $this->request->getResourceBaseUrl() . $value;
   }
 
   public function navMenu($menu, $selected)
@@ -69,14 +83,21 @@ class Template {
     return $s;
   }
 
-  public function snippet($name)
+  public function includeFile($name, $variables = array())
   {
-  	$snippet_file = PU_DIR . DS . 'res' . DS . 'View' . DS . 'Snippet' . DS . $name . '.php';
-  	if (is_file($snippet_file)) {
+  	$file = $this->baseViewDir. str_replace('/', DS, $name) . '.php';
+
+  	if (is_file($file)) {
       $T = $this;
+      extract($variables);
     	extract(get_object_vars($this));
-  		include_once $snippet_file;
+  		include_once $file;
   	}
+  }
+
+  public function snippet($name, $variables = array())
+  {
+    return $this->includeFile('Snippet/' . $name, $variables);
   }
 
 }

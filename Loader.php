@@ -5,18 +5,16 @@ namespace PetakUmpet;
 // Autoloader class that has support for namespaces
 
 class Loader {
-  protected $namespaces;
 
+  private $namespaces;
 
   public function __construct()
   {
     $root = PU_DIR;
     $this->namespaces = array('\\');
-    $this->rootdirs = array(
-        $root . 'lib'
-      , $root . 'res'
-      , $root . 'src'
-    );
+    $this->rootdirs[] = $root. 'lib';
+    $this->rootdirs[] = $root. 'config';
+    $this->rootdirs[] = $root. 'app';
   }
 
   public function register($prepend=false)

@@ -2,11 +2,12 @@
 namespace PetakUmpet;
 
 class Request {
-  const APP_ACCESSOR = 'm';
+  const MOD_ACCESSOR = 'm';
   const ACT_ACCESSOR = 'a';
 
   protected $request_data;
   protected $request_base_url;
+  protected $resource_base_url;
   protected $query_string;
   protected $request_full_url;
   protected $request_method;
@@ -21,11 +22,17 @@ class Request {
         $protocol = 'https';
       }
 
-    $this->request_data =& $_REQUEST;
-    $this->request_base_url = $protocol . '://' . $_SERVER['SERVER_NAME'] . 
-                  ($port == '80' ? '' : ":$port" ) .  $_SERVER['SCRIPT_NAME'];
+    $this->request_data = $_REQUEST;
+    $this->request_root_url = $protocol . '://' . $_SERVER['SERVER_NAME'] . 
+                  ($port == '80' ? '' : ":$port" ) ;  
+
+    $this->request_base_url = $this->request_root_url . $_SERVER['SCRIPT_NAME'];
+
     $this->query_string = $_SERVER['QUERY_STRING'];
+
     $this->request_full_url = $this->request_base_url . '?' . $this->query_string;
+
+    $this->resource_base_url = $this->request_root_url . dirname ($_SERVER['SCRIPT_NAME']) . '/';
 
     $this->request_method = $_SERVER['REQUEST_METHOD'];
     $this->is_post = $this->request_method == 'POST' ;
@@ -71,6 +78,19 @@ class Request {
     $this->request_data[$name] = $value;
   }
 
+  public function getPathInfo()
+  {
+    $path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
+    if ($path != '/') rtrim($path, '/');
+
+    return $path;
+  }
+
+  public function getResourceBaseUrl()
+  {
+    return $this->resource_base_url;
+  }
+
   public function getFullUrl()
   {
     return $this->request_full_url;
@@ -83,7 +103,7 @@ class Request {
   
   public function getPage()
   {
-    $m = $this->get(self::APP_ACCESSOR);
+    $m = $this->get(self::MOD_ACCESSOR);
     $a = $this->get(self::ACT_ACCESSOR);
 
     if (!$m) {
@@ -95,14 +115,20 @@ class Request {
     return $m.'/'.$a;
   }
 
-  public function getAppUrl($page)
+  public function getAppUrl($page, $attr=array())
   {
-    return $this->request_base_url . '?m=' . str_replace('/', '&a=', $page);
+    $page = str_replace('/', '&' . self::ACT_ACCESSOR .'=', $page);
+
+    foreach ($attr as $k => $v) {
+      $page .= "&$k=$v";
+    }
+
+    return $this->request_base_url . $this->getPathInfo() . '?'.self::MOD_ACCESSOR.'=' . $page;
   }
 
   public function getModule()
   {
-    return $this->get(self::APP_ACCESSOR);
+    return $this->get(self::MOD_ACCESSOR);
   }
 
   public function getAction()
