@@ -21,7 +21,7 @@ class User {
   public function __construct($username, $password)
   {
     $dba = new Accessor('userdata');
-    $userdata = $dba->findOneBy(array('name' => $username, 'password' => $password));
+    $userdata = $dba->findOneBy(array('userid' => $username, 'password' => $password));
 
     $this->data = $userdata;
     $this->name = null;
@@ -62,26 +62,36 @@ class User {
     return $this->userid;
   }
 
-  public function getRoles()
+  public function hasAccess($page, $refresh=false)
   {
-    if (count($this->roles) <= 0) {
-      $db = Singleton::acquire('\\PetakUmpet\\Database');
-
-      $query = "SELECT name FROM groupdata g "
-              . "JOIN user_group ug ON g.id = ug.group_id "
-              . "JOIN userdata u ON ug.user_id = u.id "
-              . "WHERE u.id = ? ";
-
-      $roles = $db->QueryAndFetch($query, array($this->userid));
-
-      if (!$roles) {
-        return null;
+    if (count($this->access) > 0 && !$refresh) {
+      if (isset($this->access[$page]) && $this->access[$page] === true) {
+        return true;
       }
-      $this->roles = $roles;
+      return false;
+    } 
+
+    $query = "SELECT a.name FROM userdata u "
+            . "JOIN user_role ur ON u.id = ur.user_id "
+            . "JOIN role_access ra ON ra.role_id = ur.role_id "
+            . "JOIN accessdata a ON ra.access_id = a.id "
+            . "WHERE u.userid = ?" ;
+
+    $access = array();
+    $status = false;
+
+    $db = Singleton::acquire('\\PetakUmpet\\Database');
+
+    $rows = $db->QueryFetchAll($query, array($this->userid));
+
+    if ($rows) {
+      foreach ($rows as $r) {
+        $access[$r['name']] = true;
+        if ($page == $r['name']) $status = true;
+      }
     }
-
-    return $this->roles;
+    $this->access = $access;
+    return $status;
   }
-
 
 }

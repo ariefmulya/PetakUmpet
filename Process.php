@@ -25,9 +25,16 @@ class Process {
 
 		if ($page == '/') $page = $this->config->getStartPage();
 
-		// TODO: Add abilities to make all pages accessible 
-		if (!$this->session->getUser() && !$this->config->isAnonymousPage($page)) {
-			return $this->redirect($this->config->getLoginPage());
+		// TODO: Add abilities to make all pages accessible in a simple config
+		// useful for no-login type websites
+		$user = $this->session->getUser();
+		if (!$this->config->isAnonymousPage($page)) {
+			if (!$user) {
+				return $this->redirect($this->config->getLoginPage());
+			}
+			if (!$user->hasAccess($page)) {
+				return $this->redirect($this->config->getNoAccessPage());
+			}
 		}
 
 		list($mod, $act) = explode('/', $page);
