@@ -65,7 +65,6 @@
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="<?php echo $T->getResourceUrl('js/jquery.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/bootstrap.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootbox.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootstrap-datepicker.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootstrap-transition.js') ?>"></script>
