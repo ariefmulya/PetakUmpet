@@ -15,7 +15,7 @@ class Config {
   public function __construct()
   {
     /* project environment setup */
-    $this->projectTitle = 'Aplikasi eYanFar';
+    $this->projectTitle = 'Application Name';
     $this->loginPage    = 'Login/index';
     $this->startPage    = 'Home/index';
     $this->noAccessPage = 'User/noAccess';
@@ -37,9 +37,9 @@ class Config {
     $this->dbConfig[0] = array(
         self::DBTYPE => 'PostgreSQL',
         self::DBHOST => 'localhost',
-        self::DBNAME => 'eyanfar',
-        self::DBUSER => 'eyanfar',
-        self::DBCRED => 'eyanfar2007#',
+        self::DBNAME => 'test',
+        self::DBUSER => 'test',
+        self::DBCRED => 'test',
       );
   }
 

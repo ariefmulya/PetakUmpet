@@ -24,9 +24,6 @@
               <?php $menu = array(
                   'Home' => 'Home/index',
                   'About' => 'Home/about',
-                  'Input Data' => 'Data/index',
-                  'Laporan' => 'Laporan/index',
-                  'Setting' => 'Admin/index',
                 );
               ?>
               <?php echo $T->navMenu($menu, $request->getPage()) ?>
@@ -68,6 +65,8 @@
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="<?php echo $T->getResourceUrl('js/jquery.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/bootstrap.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/bootbox.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootstrap-datepicker.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootstrap-transition.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootstrap-alert.js') ?>"></script>
