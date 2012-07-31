@@ -1,4 +1,4 @@
-<?php $T->snippet('flash_message'); ?>
+<?php $T->snippet('flash-message'); ?>
 
 <div class="row-fluid">
   <div class="span6">

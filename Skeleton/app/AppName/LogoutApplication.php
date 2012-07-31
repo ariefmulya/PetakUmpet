@@ -1,13 +1,14 @@
 <?php
 
+namespace eYanFar;
+
 use PetakUmpet\Application;
-use Config\Config as Config;
 
 class LogoutApplication extends Application {
 
   public function indexAction()
   {
     $this->session->destroy();
-    $this->redirect(Config::LoginPage);
+    $this->redirectToLoginPage();
   }
 }
