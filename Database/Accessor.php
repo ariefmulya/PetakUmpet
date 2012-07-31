@@ -205,4 +205,21 @@ class Accessor {
     }
     return false;
   }
+
+  function delete($params = array())
+  {
+    foreach ($params as $k=>$v) {
+      $marker[] = "$k = :$k";
+    }
+
+    $query = " DELETE FROM " . $this->tableName
+            . " WHERE " . implode(' AND ', $marker)
+            ;
+
+    $res = $this->db->preparedQuery($query, $params);
+
+    if ($res) return true;
+    else return false;
+  }
+
 }

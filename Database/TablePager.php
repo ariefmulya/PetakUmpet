@@ -12,6 +12,7 @@ class TablePager extends Pager {
   private $builder;
   private $filter;
   private $editAction;
+  private $deleteAction;
 
   public function __construct(Request $request, $pagerRows=8)
   {
@@ -54,6 +55,11 @@ class TablePager extends Pager {
     $this->editAction = $target;
   }
 
+  public function setDeleteAction($target)
+  {
+    $this->deleteAction = $target;
+  }
+
   public function headerCallback($headerData)
   {
     return '<th>ACTIONS</th>';
@@ -63,10 +69,17 @@ class TablePager extends Pager {
   {
     $id = $rowData['id'];
 
-    $href = $this->editAction . '&id=' . $id;
+    $editHref = $this->editAction . '&id=' . $id;
+    $deleteHref = $this->deleteAction . '&id=' . $id;
 
-    $link  = '<td><a class="label label-info" href="'.$href.'">Edit</a>&nbsp;';
-    $link .= '<a class="label label-info" href="'.$href.'">Delete</a></td>';
+    $link  = '<td><div class="btn-group">' 
+            . '<a class="btn btn-mini btn-primary" href="'.$editHref.'">'
+            . '<i class="icon-pencil icon-white"></i> Edit</a>&nbsp;'
+            . '<a class="btn btn-mini btn-warning" href="#" ' 
+            . "onclick=\"bootbox.confirm('Are you sure?', function(result) "
+            . "   { if (result) return location.href = '$deleteHref'});\"> "
+            . '<i class="icon-remove icon-white"></i> Delete</a>&nbsp;'
+            . '</div></td>';
 
     return $link;
   }
