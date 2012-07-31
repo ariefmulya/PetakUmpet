@@ -61,10 +61,9 @@ class GroupField extends BaseField {
       $this->childs[] = $c;
     }
   }
-
-  public function getLabelTag()
+  public function getLabelTag($labelClass='control-label')
   {
-    return '<label class="control-label">'.$this->getLabel().'</label>';
+    return '<label class="'.$labelClass.'">'.$this->getLabel().'</label>';
   }
 
   public function __toString()
