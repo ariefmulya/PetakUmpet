@@ -15,7 +15,7 @@ $mode = isset($argv[2]) ? $argv[2] : '--normal';
 if ($mode=='') $mode='--normal';
 
 function rcopy($src, $dst, $mode) {
-  if (is_dir($src) && ( (!is_dir($dst) && !is_file($dst)) || $mode == '--reset')  {
+  if (is_dir($src) && ( (!is_dir($dst) && !is_file($dst)) || $mode == '--reset'))  {
     echo "    - Initialize " . basename($src) . "\n";
     mkdir($dst);
     $files = scandir($src);
@@ -38,10 +38,10 @@ foreach ($dirs as $d) {
 
 // rename to the supplied application name
 
-echo "  init-project: Setting up Application... $app\n"
+echo "  init-project: Setting up Application... $app\n" ;
 rename(TARGETDIR . DS . 'app' . DS . 'AppName', TARGETDIR . DS . 'app' . DS . $app);
 
 echo "  init-project: Fixing log mode\n";
 chmod (TARGETDIR . 'res' . DS . 'log' . DS . 'app.log', '0666');
 
-echo "\n  init-project: Finished.\n"
+echo "\n  init-project: Finished.\n";
