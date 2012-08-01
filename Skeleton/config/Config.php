@@ -29,7 +29,7 @@ class Config {
 
     /* available applications, indexed by path */
     $this->pathApps = array(
-        '/' => 'eYanFar',
+        '/' => 'AppName',
       ); 
 
     /* database configuration 
