@@ -42,6 +42,6 @@ echo "  init-project: Setting up Application... $app\n" ;
 rename(TARGETDIR . DS . 'app' . DS . 'AppName', TARGETDIR . DS . 'app' . DS . $app);
 
 echo "  init-project: Fixing log mode\n";
-chmod (TARGETDIR . 'res' . DS . 'log' . DS . 'app.log', '0666');
+chmod (TARGETDIR . DS . 'app' . DS . $app . 'res' . DS . 'log' . DS . 'app.log', '0666');
 
 echo "\n  init-project: Finished.\n";
