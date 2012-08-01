@@ -41,8 +41,28 @@ foreach ($dirs as $d) {
 echo "  init-project: Setting up Application... $app\n" ;
 rename(TARGETDIR . DS . 'app' . DS . 'AppName', TARGETDIR . DS . 'app' . DS . $app);
 
+// updating AppName to provided application name
+
+
+// in config file
 $cfgfile = TARGETDIR . DS . 'config' . DS . 'Config.php';
 file_put_contents($cfgfile,str_replace('AppName', $app, file_get_contents($cfgfile)));
+
+// in form login file
+$frmfile = TARGETDIR . DS . 'app' . DS . $app . DS . 'Form' . DS . 'LoginForm.php';
+file_put_contents($cfgfile,str_replace('AppName', $app, file_get_contents($frmfile)));
+
+
+// in application files
+$appfiles = scandir (TARGETDIR . DS . 'app' . DS . $app . DS);
+foreach ($appfiles as $f) {
+  if ($f == '.' || $f == '..') continue;
+  if (is_file($f) && strstr($f, 'Application')) {
+    file_put_contents(TARGETDIR . DS . 'app' . DS . $app . DS . $f, 
+      str_replace('AppName', $app, 
+        file_get_contents($TARGETDIR . DS . 'app' . DS . $app . DS . $f)));
+  }
+}
 
 echo "  init-project: Fixing log mode\n";
 chmod (TARGETDIR . DS . 'app' . DS . $app . DS . 'res' . DS . 'log' . DS . 'app.log', '0666');
