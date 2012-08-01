@@ -20,7 +20,7 @@ function rcopy($src, $dst, $mode) {
     mkdir($dst);
     $files = scandir($src);
     foreach ($files as $file) {
-      if ($file != "." && $file != "..") rcopy("$src/$file", "$dst/$file");
+      if ($file != "." && $file != "..") rcopy("$src/$file", "$dst/$file", $mode);
     }
   }
   if (is_file($src) && !file_exists($dst)) copy($src, $dst);
