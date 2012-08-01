@@ -1,6 +1,6 @@
 <?php
 
-namespace eYanFar;
+namespace AppName;
 
 use PetakUmpet\Application;
 use PetakUmpet\Response;

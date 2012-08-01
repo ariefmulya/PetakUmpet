@@ -1,6 +1,6 @@
 <?php
 
-namespace eYanFar\Form;
+namespace AppName\Form;
 
 use PetakUmpet\Form;
 use PetakUmpet\Validator;
