@@ -71,32 +71,6 @@ CREATE TABLE event (
   FOREIGN KEY (user_id) REFERENCES userdata (id)
 );
 
-CREATE TABLE provinsi (
-  id serial,
-  name varchar(200),
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE kabupaten (
-  id serial,
-  name varchar(200),
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE puskesmas (
-  id serial,
-  tanggal date,
-  kabupaten_id integer,
-  nama_pasien varchar(200) not null,
-  umur integer,
-  jumlah_obat integer,
-  antibiotik boolean,
-  konseling boolean,
-  PRIMARY KEY (id),
-  FOREIGN KEY (kabupaten_id) REFERENCES kabupaten (id) 
-);
-
-
 INSERT INTO userdata (userid, name, password) VALUES ('admin', 'Administrator', '1');
 INSERT INTO userdata (userid, name, password) VALUES ('arief', 'Arief M Utama', '1');
 
