@@ -41,7 +41,7 @@ foreach ($dirs as $d) {
 echo "  init-project: Setting up Application... $app\n" ;
 rename(TARGETDIR . DS . 'app' . DS . 'AppName', TARGETDIR . DS . 'app' . DS . $app);
 
-$cfgfile = TARGETDIR . DS . 'app' . DS . $app . DS  . 'config' . DS . 'Config.php';
+$cfgfile = TARGETDIR . DS . 'config' . DS . 'Config.php';
 file_put_contents($cfgfile,str_replace('AppName', $app, file_get_contents($cfgfile)));
 
 echo "  init-project: Fixing log mode\n";
