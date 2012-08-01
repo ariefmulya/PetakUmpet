@@ -68,3 +68,16 @@ echo "  init-project: Fixing log mode\n";
 chmod (TARGETDIR . DS . 'app' . DS . $app . DS . 'res' . DS . 'log' . DS . 'app.log', '0666');
 
 echo "\n  init-project: Finished.\n";
+
+echo "\n";
+echo "        Make sure to setup the project with following steps:\n";
+echo "------------------------------------------------------------------------\n";
+echo "  1. Update config\Config.php file, specially database info\n";
+echo "  2. Create the database\n";
+echo "  3. Update and execute SQL files in app\\". $app."\\res\\sql\\ folder\n";
+echo "     - Can use init-db.php to create database and execute the sql files\n";
+echo "       command: php lib\PetakUmpet\bin\init-db.php APPNAME --reset\n";
+echo "\n";
+echo "Have fun!\n";
+
+
