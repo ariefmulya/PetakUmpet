@@ -50,7 +50,7 @@ file_put_contents($cfgfile,str_replace('AppName', $app, file_get_contents($cfgfi
 
 // in form login file
 $frmfile = TARGETDIR . DS . 'app' . DS . $app . DS . 'Form' . DS . 'LoginForm.php';
-file_put_contents($cfgfile,str_replace('AppName', $app, file_get_contents($frmfile)));
+file_put_contents($frmfile,str_replace('AppName', $app, file_get_contents($frmfile)));
 
 
 // in application files
