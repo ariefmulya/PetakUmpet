@@ -17,14 +17,14 @@ abstract class Application {
     $this->config  = $config;
   }
 
-  public function renderView($view, $variables=array(), $layout=null)
+  protected function renderView($view, $variables=array(), $layout=null)
   {
     $T = new Template($this->request, $this->session, $this->config);
 
     return $T->render($view, $variables, $layout);
   }
 
-  public function render($variables=array(), $layout=null)
+  protected function render($variables=array(), $layout=null)
   {
     $view = $this->request->getModule() . '/' . $this->request->getAction();
 

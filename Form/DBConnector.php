@@ -146,6 +146,7 @@ class DBConnector {
     if (count($this->fields) > 0) {
       $form->addAction(new Field\Submit('Submit'));
       $form->addAction(new Field\Submit('Submit and Close', array('class' => 'btn')));
+      $form->addAction(new Field\Submit('Submit and Add', array('class' => 'btn')));
       $form->setValidator($this->validator);
     }
     return $form;
@@ -154,6 +155,11 @@ class DBConnector {
   public function isClose()
   {
     return ($this->form->getActionValue() == 'Submit and Close');
+  }
+
+  public function isAdd()
+  {
+    return ($this->form->getActionValue() == 'Submit and Add');
   }
 
   public function bindValidateSave(Request $request)
