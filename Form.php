@@ -214,7 +214,6 @@ class Form {
       }
 
       if (isset($this->validator)) {
-        var_dump($name);
         if (!$this->validator->check($name, $f->getValue())) {
           $f->setErrorText($this->validator->getErrorText($name));
           $status = false;
