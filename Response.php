@@ -9,7 +9,7 @@ class Response {
 	
 	private $baseViewDir;
 
-	public function __construct($responseText=null, $httpStatusCode='200')
+	public function __construct($responseText=null, $httpStatusCode=200)
 	{
 		// normal mode
 		if ($responseText === null) {
@@ -21,10 +21,15 @@ class Response {
 			return;
 		}
 
+		$httpStatus = array(
+			200 => 'OK',
+			404 => 'Not Found'
+			);
+
 		// direct response mode
 		// need to implement more status code until php 5.4 is everywhere
 		// by then we can just use http_response_code()
-		header('HTTP/1.1 ' . $httpStatusCode . ' OK');
+		header('HTTP/1.1 ' . $httpStatusCode . ' ' . $httpStatus[$httpStatusCode]);
 		echo $responseText;
 		exit();
 	}

@@ -1,7 +1,7 @@
 README
 
-Copyright (C) 2012 Arief M Utama <arief@life2play.net> Arief M Utama
-<arief.utama@gmail.com>
+Copyright (C) 2012 
+Arief M Utama <arief@life2play.net> <arief.utama@gmail.com>
 
 
 PetakUmpet (version-2) is a web-application development framework using php
@@ -16,8 +16,8 @@ Step-by-step how to:
 
 3. cd into lib and clone or extract the source to PetakUmpet folder
 
-4. from TEST/ root-folder, run: 
-   > php lib/PetakUmpet/bin/init-project APPNAME --reset    
+4. from TEST/ root-folder, run:     
+   > php lib/PetakUmpet/bin/init-project APPNAME --reset        
    should show initializing message and no errors.
 
 5. Continue by following instructions at the end to setup database
@@ -40,12 +40,13 @@ use Response to manage the contents.
 If needed Application can use Response object directly to render output.
 
 Template view files shall be ordinary php scripts. With application and
-response objects available for them. Special $T template object shall be
-available for access to Template helper functions.
+response objects available for them. Special $T variable in template is an
+object that shall be available for access to Template class functions.
 
 Standard view will be rendered inside a layout. There is a standard layout but
 applications can set their own layouts by calling Template's setLayout()
-function.
+function. If an ajax request is detected the response shall be given without
+layout.
 
 
 

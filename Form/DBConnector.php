@@ -12,6 +12,8 @@ use PetakUmpet\Database\Builder;
 class DBConnector {
 
   private $tableName;
+  private $action;
+
   private $builder;
   private $fields;
   private $validator;
@@ -33,9 +35,10 @@ class DBConnector {
     return 'text';
   }
 
-  public function __construct($tableName, $columns=array(), $skip=array())
+  public function __construct($tableName, $columns=array(), $skip=array(), $action=null)
   {
     $this->tableName = $tableName;
+    $this->action = $action;
 
     $this->builder = new Builder($tableName);
 
@@ -126,7 +129,7 @@ class DBConnector {
   {
     $form =& $this->form;
 
-    $form = new Form($this->tableName);
+    $form = new Form($this->tableName, $this->action);
 
     foreach ($this->fields as $name => $f) {
       $label = isset($f['label']) ? $f['label'] : null;

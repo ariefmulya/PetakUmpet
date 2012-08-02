@@ -73,12 +73,12 @@ class TablePager extends Pager {
     $deleteHref = $this->deleteAction . '&id=' . $id;
 
     $link  = '<td><div class="btn-group">' 
-            . '<a class="btn btn-mini btn-primary" href="'.$editHref.'">'
-            . '<i class="icon-pencil icon-white"></i> Edit</a>&nbsp;'
+            . "<a class=\"btn btn-mini btn-primary\" href=\"#\" onclick=\"$('#crud-ajax').load('$editHref');\" >"
+            . '<i class="icon-pencil icon-white"></i></a>&nbsp;'
             . '<a class="btn btn-mini btn-warning" href="#" ' 
             . "onclick=\"bootbox.confirm('Are you sure?', function(result) "
             . "   { if (result) return location.href = '$deleteHref'});\"> "
-            . '<i class="icon-remove icon-white"></i> Delete</a>&nbsp;'
+            . '<i class="icon-remove icon-white"></i></a>&nbsp;'
             . '</div></td>';
 
     return $link;

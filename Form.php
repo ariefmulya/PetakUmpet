@@ -12,15 +12,17 @@ class Form {
   protected $actions;
 
   protected $name;
+  protected $action;
   protected $method;
   protected $validator;
 
   protected $formClass;
   protected $gridFormat;
 
-  function __construct($name='Form', $class='form-horizontal', $method='POST')
+  function __construct($name='Form', $action=null, $class='form-horizontal', $method='POST')
   {
     $this->name = $name;
+    $this->action = $action;
     $this->method = $method;
     $this->gridFormat = self::GRID_BOOTSTRAP;
 
@@ -68,7 +70,10 @@ class Form {
 
   function __toString()
   {
-    $s = '<form method="' . $this->method . '" class="'.$this->formClass.'" >'; 
+    $s = '<form method="' . $this->method 
+        . '" class="'.$this->formClass.'" '
+        . 'name="'.$this->name.'" id="'.$this->name.'" '
+        . ($this->action !== null ? 'action="'. $this->action . '" >': ' >'); 
 
     if (count($this->childs) > 0) { 
       $s .= $this->formStart[$this->gridFormat];
@@ -209,6 +214,7 @@ class Form {
       }
 
       if (isset($this->validator)) {
+        var_dump($name);
         if (!$this->validator->check($name, $f->getValue())) {
           $f->setErrorText($this->validator->getErrorText($name));
           $status = false;

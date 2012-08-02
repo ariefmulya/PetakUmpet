@@ -61,6 +61,11 @@ class Template {
     return '<a class="'.$class.'" href="'.$href.'">' . $name . '</a>';
   }
 
+  public function url($page)
+  {
+    return $this->request->getAppUrl($page);
+  }
+
   public function getResourceUrl($value)
   {
 
