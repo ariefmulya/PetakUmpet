@@ -15,6 +15,7 @@ class Pager {
   private $minDistance;
 
   protected $url;
+  protected $targetDiv;
 
   protected $pagerRows;
   protected $pagerData;
@@ -114,6 +115,16 @@ class Pager {
       return $this->set(lcfirst(substr($name, 3)), $args[0]);
   }
 
+  public function setPagerAction($url)
+  {
+    $this->url = $url;
+  }
+
+  public function setTargetDiv($target)
+  {
+    $this->targetDiv = $target;
+  }
+
   public function get($name, $default=null)
   {
     if (isset($this->$name))
@@ -165,7 +176,7 @@ class Pager {
     else if ($id == '...') $class = 'class="disabled"';
     else $class = $mode == '' ? '' : 'class="'.$mode.'"';
 
-    return '<li ' . $class . '><a href="'.$this->url.'&page='.$page.'">'.$id.'</a></li>';
+    return '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->url.'&page='.$page.'\');" >'.$id.'</a></li>';
   }
 
   public function formatPager()

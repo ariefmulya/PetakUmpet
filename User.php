@@ -44,7 +44,7 @@ class User {
 
   public function validate()
   {
-    if ($this->data !== null) {
+    if ($this->data && $this->data !== null) {
       $this->name = $this->data['name'];
       $this->userid = $this->data['userid'];
       return true;
