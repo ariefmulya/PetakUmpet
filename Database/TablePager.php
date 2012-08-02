@@ -41,7 +41,7 @@ class TablePager extends Pager {
 
   }
 
-  public function setFilter($value=null)
+  public function setFilter($value=null, $columns = array())
   {
     if ($value===null) return;
 

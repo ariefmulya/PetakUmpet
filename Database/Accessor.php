@@ -103,35 +103,35 @@ class Accessor {
     return $this->db->QueryFetchAll($query);
   }
 
-  private function generatePagerFilter($filter, $filterCols, $colData)
+  private function generatePagerFilter($filter, $colData)
   {
-    foreach ($filterCols as $c) {
+    foreach ($filter as $c => $v) {
       if ($c == 'id') continue;
 
       if (!$colData[$c]['string']) {
         $c = "CAST ($c AS text) ";
       }
 
-      $marker[] = $c ." ILIKE :filter" ;
+      $marker[] = $c ." ILIKE :$c" ;
     }
     if (count($marker) > 0 ) return " WHERE " . implode (' OR ', $marker);
     return '';
   } 
 
-  function CountPagerData($filter=null, $filterCols=array(), $colData=array())
+  function CountPagerData($filter=null, $colData=array())
   {
     $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
 
     $params = array();
     if ($filter && count($filterCols) > 0) {
-      $query .= $this->generatePagerFilter($filter, $filterCols, $colData);
-      $params['filter'] = $filter;
+      $query .= $this->generatePagerFilter($filter, $colData);
+      $params = $filter;
     }
 
     return $this->db->QueryFetchOne($query, $params);
   }
 
-  function findPagerData($page, $nRows, $displayCols, $filter=null, $filterCols=array(), $colData = array())
+  function findPagerData($page, $nRows, $displayCols, $filter=null, $colData = array())
   {
     $offset = ($page-1) * $nRows;
     $limit  = $nRows;
@@ -141,8 +141,8 @@ class Accessor {
 
     $params = array();
     if ($filter && count($filterCols) > 0) {
-      $query .= $this->generatePagerFilter($filter, $filterCols, $colData);
-      $params['filter'] = $filter;
+      $query .= $this->generatePagerFilter($filter, $colData);
+      $params = $filter;
     }
 
     $query .= " ORDER BY id ";
