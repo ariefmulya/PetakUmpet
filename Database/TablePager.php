@@ -11,6 +11,8 @@ class TablePager extends Pager {
   private $tableName;
   private $builder;
   private $filter;
+  private $extraFilter;
+
   private $editAction;
   private $deleteAction;
 
@@ -18,7 +20,8 @@ class TablePager extends Pager {
   {
     parent::__construct($request, $pagerRows);
 
-    $this->filter=null;
+    $this->filter = null;
+    $this->extraFilter = null;
   }
 
   public function build($tableName, $displayCols=array())
@@ -27,7 +30,20 @@ class TablePager extends Pager {
 
     $this->builder = new Builder($tableName);
 
-    $count = $this->builder->getCountPagerData($this->filter);
+    $buildFilter = array();
+
+    if ($this->filter !== null && $this->filter != '') {
+      foreach ($this->builder->getColumnNames() as $c) {
+        if ($c == 'id') continue;
+        $buildFilter[$c] = $this->filter;
+      }
+    }
+
+    if (is_array($this->extraFilter)) {
+      foreach ($this->extraFilter as $k => $v) $buildFilter[$k] = $v;
+    }
+
+    $count = $this->builder->getCountPagerData($buildFilter);
 
     $this->totalRows = $count;
     $this->totalPage = ceil($count/$this->pagerRows);
@@ -35,7 +51,7 @@ class TablePager extends Pager {
 
     $this->setHeader(count($displayCols) > 0 ? $displayCols : $this->builder->getColumnNames());
 
-    $this->builder->importPagerData($this->page, $this->pagerRows, $displayCols, $this->filter);
+    $this->builder->importPagerData($this->page, $this->pagerRows, $displayCols, $buildFilter);
 
     $this->setPagerData($this->builder->getTableData());
 
@@ -48,6 +64,11 @@ class TablePager extends Pager {
     $this->filter = $value;
     $this->url = preg_replace('/&filter=.+[&]*/', '', $this->url);
     $this->url .= '&filter=' . $value;
+  }
+
+  public function setExtraFilter($filter)
+  {
+    $this->extraFilter = $filter;
   }
 
   public function setEditAction($target)

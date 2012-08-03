@@ -106,13 +106,11 @@ class Accessor {
   private function generatePagerFilter($filter, $colData)
   {
     foreach ($filter as $c => $v) {
-      if ($c == 'id') continue;
-
-      if (!$colData[$c]['string']) {
-        $c = "CAST ($c AS text) ";
+      $s = $c;
+      if (!$colData[$c]['string'] && $v !== null) {
+        $s = "CAST ($c AS text) ";
       }
-
-      $marker[] = $c ." ILIKE :$c" ;
+      $marker[] = $s ." ILIKE :$c" ;
     }
     if (count($marker) > 0 ) return " WHERE " . implode (' OR ', $marker);
     return '';
@@ -122,13 +120,11 @@ class Accessor {
   {
     $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
 
-    $params = array();
-    if ($filter && count($filterCols) > 0) {
+    if ($filter && count($filter) > 0) {
       $query .= $this->generatePagerFilter($filter, $colData);
-      $params = $filter;
     }
 
-    return $this->db->QueryFetchOne($query, $params);
+    return $this->db->QueryFetchOne($query, $filter);
   }
 
   function findPagerData($page, $nRows, $displayCols, $filter=null, $colData = array())
@@ -139,17 +135,15 @@ class Accessor {
 
     $query  =  "SELECT $cols FROM " . $this->tableName ;
 
-    $params = array();
-    if ($filter && count($filterCols) > 0) {
+    if ($filter && count($filter) > 0) {
       $query .= $this->generatePagerFilter($filter, $colData);
-      $params = $filter;
     }
 
     $query .= " ORDER BY id ";
 
     $query  = $this->db->getBaseDbo()->generateLimit($query, $limit, $offset);
 
-    return $this->db->QueryFetchAll($query, $params);
+    return $this->db->QueryFetchAll($query, $filter);
   }
 
   function insert($data)

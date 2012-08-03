@@ -151,7 +151,7 @@ class Builder {
 
   public function getCountPagerData($filter=null)
   {
-    return $this->dba->CountPagerData($filter, $this->columns, $this->coldata);
+    return $this->dba->CountPagerData($filter, $this->coldata);
   }
 
   public function importPagerData($page, $nRows, $displayCols=array(), $filter=null)
