@@ -11,10 +11,6 @@ class TablePager extends Pager {
   private $tableName;
   private $builder;
   private $filter;
-  private $extraFilter;
-
-  private $editAction;
-  private $deleteAction;
 
   public function __construct(Request $request, $pagerRows=8)
   {
@@ -66,21 +62,6 @@ class TablePager extends Pager {
     $this->url .= '&filter=' . $value;
   }
 
-  public function setExtraFilter($filter)
-  {
-    $this->extraFilter = $filter;
-  }
-
-  public function setEditAction($target)
-  {
-    $this->editAction = $target;
-  }
-
-  public function setDeleteAction($target)
-  {
-    $this->deleteAction = $target;
-  }
-
   public function headerCallback($headerData)
   {
     return '<th>ACTIONS</th>';
@@ -92,13 +73,15 @@ class TablePager extends Pager {
 
     $editHref = $this->editAction . '&id=' . $id;
     $deleteHref = $this->deleteAction . '&id=' . $id;
+    $pagerHref = $this->pagerAction;
 
     $link  = '<td><div class="btn-group">' 
             . "<a class=\"btn btn-mini btn-primary\" href=\"#\" onclick=\"$('#crud-form').load('$editHref');\" >"
             . '<i class="icon-pencil icon-white"></i></a>&nbsp;'
             . '<a class="btn btn-mini btn-warning" href="#" ' 
             . "onclick=\"bootbox.confirm('Are you sure?', function(result) "
-            . "   { if (result) return location.href = '$deleteHref'});\"> "
+            . "   { if (result) $.ajax({url: '$deleteHref', success: function() " 
+            . "       { $('#pager').load('$pagerHref'); } });  });\"> "
             . '<i class="icon-remove icon-white"></i></a>&nbsp;'
             . '</div></td>';
 

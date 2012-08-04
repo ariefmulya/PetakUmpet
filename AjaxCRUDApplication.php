@@ -14,6 +14,7 @@ use PetakUmpet\Form\Custom\SearchForm;
 class AjaxCRUDApplication extends Application {
 
   protected $appName;
+  protected $inlineForm;
 
   protected $tableName;
   protected $columns;
@@ -29,6 +30,7 @@ class AjaxCRUDApplication extends Application {
     $this->formOptions = array();
     $this->formTypes = array();
     $this->extraFormFields = array();
+    $this->inlineForm = false;
 
     $this->setup();
   }
@@ -38,7 +40,7 @@ class AjaxCRUDApplication extends Application {
     $pager = new \PetakUmpet\Database\TablePager($this->request);
     $pager->setFilter($this->request->getFilter());
 
-    $pager->setPagerAction($this->request->getAppUrl($this->appName . '/table'));
+    $pager->setPagerAction($this->request->getAppUrl($this->appName . '/pager'));
     $pager->setEditAction($this->request->getAppUrl($this->appName . '/edit'));
     $pager->setDeleteAction($this->request->getAppUrl($this->appName . '/delete'));
     $pager->setTargetDiv('pager');
@@ -64,6 +66,7 @@ class AjaxCRUDApplication extends Application {
     return $this->renderView('AjaxCRUD/index', array(
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
+                    'inlineForm' => $this->inlineForm,
                     'pager' => $this->pager,
                     'filterForm' => $filterForm,
                   ));
@@ -76,6 +79,7 @@ class AjaxCRUDApplication extends Application {
     return $this->renderView('AjaxCRUD/pager', array(
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
+                    'inlineForm' => $this->inlineForm,
                     'pager' => $this->pager,
                   ));
   }
@@ -106,14 +110,23 @@ class AjaxCRUDApplication extends Application {
 
     if ($this->request->isPost()) {
       if ($dbf->bindValidateSave($this->request)) {
-        if ($dbf->isClose()) return new Response('');
-        if ($dbf->isAdd()) return $this->redirect($this->appName . '/edit');
+        if ($dbf->isClose()) {
+          if ($this->inlineForm) {
+            return new Response('');
+          } else {
+            return $this->redirect($this->appName . '/index');
+          }
+        }
+        if ($dbf->isAdd()) {
+          return $this->redirect($this->appName . '/edit');
+        }
         $this->session->setFlash('Data is saved.');
       }
     }
 
     return $this->renderView('AjaxCRUD/edit', array(
                     'tableName' => $this->tableName,
+                    'inlineForm' => $this->inlineForm,
                     'appName' => $this->appName,
                     'pager' => $this->pager,
                     'form' => $dbf,

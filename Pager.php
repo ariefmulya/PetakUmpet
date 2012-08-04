@@ -43,9 +43,7 @@ class Pager {
 
     if (!strstr($url, '?')) $url .= '?paging=paging';
 
-    $url = preg_replace('/&page=[0-9]+/', '', $url);
-
-    $this->url = $url;
+    $this->pagerAction = preg_replace('/&page=[0-9]+/', '', $url);
   }
 
   public function __toString()
@@ -115,11 +113,6 @@ class Pager {
       return $this->set(lcfirst(substr($name, 3)), $args[0]);
   }
 
-  public function setPagerAction($url)
-  {
-    $this->url = $url;
-  }
-
   public function setTargetDiv($target)
   {
     $this->targetDiv = $target;
@@ -176,7 +169,7 @@ class Pager {
     else if ($id == '...') $class = 'class="disabled"';
     else $class = $mode == '' ? '' : 'class="'.$mode.'"';
 
-    return '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->url.'&page='.$page.'\');" >'.$id.'</a></li>';
+    return '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->pagerAction.'&page='.$page.'\');" >'.$id.'</a></li>';
   }
 
   public function formatPager()
