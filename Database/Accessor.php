@@ -129,7 +129,7 @@ class Accessor {
 
   function findPagerData($page, $nRows, $displayCols, $filter=null, $colData = array())
   {
-    $offset = ($page-1) * $nRows;
+    $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
     $cols = $this->db->escapeInput(count($displayCols) >  0 ? implode(', ', $displayCols) : '*');
 

@@ -102,8 +102,17 @@ class Pager {
     return $s;
   }
 
-  public function headerCallback($rowData) { throw new \Exception('Need to be implemented in child class'); }
-  public function rowCallback($rowData) { throw new \Exception('Need to be implemented in child class'); }
+  public function headerCallback($rowData)
+  { 
+    // If needed child class can implement this to add more columns
+    return;
+  }
+
+  public function rowCallback($rowData)
+  {
+    // If needed child class can implement this to add more columns
+    return;
+  }
 
   function __call($name, $args)
   {

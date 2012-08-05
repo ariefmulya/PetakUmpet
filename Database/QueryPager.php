@@ -6,60 +6,38 @@ use PetakUmpet\Request;
 use PetakUmpet\Pager;
 use PetakUmpet\Database\Builder;
 
-class TablePager extends Pager {
+class QueryPager extends Pager {
 
-  private $tableName;
-  private $builder;
-  private $filter;
+  private $id;
 
   public function __construct(Request $request, $pagerRows=8)
   {
     parent::__construct($request, $pagerRows);
-
-    $this->filter = null;
-    $this->extraFilter = null;
   }
 
-  public function build($tableName, $displayCols=array())
+  public function build($query, $params=array(), $columnNames, $id='id')
   {
-    $this->tableName = $tableName;
+    $db = \PetakUmpet\Singleton::acquire('\\PetakUmpet\\Database');
 
-    $this->builder = new Builder($tableName);
+    $this->id = $id;
 
-    $buildFilter = array();
+    $countQuery = "SELECT COUNT(*) AS cnt FROM ( $query ) src ";
 
-    if ($this->filter !== null && $this->filter != '') {
-      foreach ($this->builder->getColumnNames() as $c) {
-        if ($c == 'id') continue;
-        $buildFilter[$c] = $this->filter;
-      }
-    }
-
-    if (is_array($this->extraFilter)) {
-      foreach ($this->extraFilter as $k => $v) $buildFilter[$k] = $v;
-    }
-
-    $count = $this->builder->getCountPagerData($buildFilter);
+    $count = $db->QueryFetchOne($countQuery, $params);
 
     $this->totalRows = $count;
     $this->totalPage = ceil($count/$this->pagerRows);
+
     if ($this->page > $this->totalPage) $this->page = $this->totalPage;
 
-    $this->setHeader(count($displayCols) > 0 ? $displayCols : $this->builder->getColumnNames());
+    $limit = $this->pagerRows;
+    $offset = max(($this->page-1) * $limit, 0);
 
-    $this->builder->importPagerData($this->page, $this->pagerRows, $displayCols, $buildFilter);
+    $query = $db->getBaseDbo()->generateLimit($query, $limit, $offset);
 
-    $this->setPagerData($this->builder->getTableData());
+    $this->setHeader($columnNames);
+    $this->setPagerData($db->QueryFetchAll($query, $params));
 
-  }
-
-  public function setFilter($value=null, $columns = array())
-  {
-    if ($value===null) return;
-
-    $this->filter = $value;
-    $this->url = preg_replace('/&filter=.+[&]*/', '', $this->url);
-    $this->url .= '&filter=' . $value;
   }
 
   public function headerCallback($headerData)
@@ -69,7 +47,7 @@ class TablePager extends Pager {
 
   public function rowCallback($rowData)
   {
-    $id = $rowData['id'];
+    $id = $rowData[$this->id];
 
     $editHref = $this->editAction . '&id=' . $id;
     $deleteHref = $this->deleteAction . '&id=' . $id;

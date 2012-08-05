@@ -8,6 +8,7 @@ use PetakUmpet\Response;
 use PetakUmpet\Database\Accessor;
 
 use PetakUmpet\Form;
+use PetakUmpet\Form\Field;
 use PetakUmpet\Form\DBConnector;
 use PetakUmpet\Form\Custom\SearchForm;
 
@@ -32,6 +33,10 @@ class AjaxCRUDApplication extends Application {
     $this->extraFormFields = array();
     $this->inlineForm = false;
 
+    $this->columns = null;
+    $this->skips = null;
+
+    $this->appName = $this->request->getModule();
     $this->setup();
   }
 
@@ -40,6 +45,7 @@ class AjaxCRUDApplication extends Application {
     $pager = new \PetakUmpet\Database\TablePager($this->request);
     $pager->setFilter($this->request->getFilter());
 
+    $pager->setInlineForm($this->inlineForm);
     $pager->setPagerAction($this->request->getAppUrl($this->appName . '/pager'));
     $pager->setEditAction($this->request->getAppUrl($this->appName . '/edit'));
     $pager->setDeleteAction($this->request->getAppUrl($this->appName . '/delete'));
@@ -99,6 +105,13 @@ class AjaxCRUDApplication extends Application {
     foreach ($this->extraFormFields as $k => $v) {
       $dbf->add($k, $v);
     }
+
+    $dbf->addFormAction(new Field\Submit('Save & Close', array('class' => 'btn')));
+    $dbf->addFormAction(new Field\Submit('Save & Add', array('class' => 'btn')));
+
+    $cancelAction = 'location.href=\''.$this->request->getAppUrl($this->appName .'/index').'\'';
+
+    $dbf->addFormAction(new Field\Button('Cancel', array('class' => 'btn btn-warning', 'onclick' => $cancelAction)));
 
     if (!$this->request->isPost() && $this->request->getId()) {
       $dbf->importById($this->request->getId());
