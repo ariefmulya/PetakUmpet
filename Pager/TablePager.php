@@ -1,43 +1,65 @@
 <?php
 
-namespace PetakUmpet\Database;
+namespace PetakUmpet\Pager;
 
 use PetakUmpet\Request;
 use PetakUmpet\Pager;
 use PetakUmpet\Database\Builder;
 
-class QueryPager extends Pager {
+class TablePager extends Pager {
 
-  private $id;
+  private $tableName;
+  private $builder;
+  private $filter;
 
   public function __construct(Request $request, $pagerRows=8)
   {
     parent::__construct($request, $pagerRows);
+
+    $this->filter = null;
+    $this->extraFilter = null;
   }
 
-  public function build($query, $params=array(), $columnNames, $id='id')
+  public function build($tableName, $displayCols=array())
   {
-    $db = \PetakUmpet\Singleton::acquire('\\PetakUmpet\\Database');
+    $this->tableName = $tableName;
 
-    $this->id = $id;
+    $this->builder = new Builder($tableName);
 
-    $countQuery = "SELECT COUNT(*) AS cnt FROM ( $query ) src ";
+    $buildFilter = array();
 
-    $count = $db->QueryFetchOne($countQuery, $params);
+    if ($this->filter !== null && $this->filter != '') {
+      foreach ($this->builder->getColumnNames() as $c) {
+        if ($c == 'id') continue;
+        $buildFilter[$c] = $this->filter;
+      }
+    }
+
+    if (is_array($this->extraFilter)) {
+      foreach ($this->extraFilter as $k => $v) $buildFilter[$k] = $v;
+    }
+
+    $count = $this->builder->getCountPagerData($buildFilter);
 
     $this->totalRows = $count;
     $this->totalPage = ceil($count/$this->pagerRows);
-
     if ($this->page > $this->totalPage) $this->page = $this->totalPage;
 
-    $limit = $this->pagerRows;
-    $offset = max(($this->page-1) * $limit, 0);
+    $this->setHeader(count($displayCols) > 0 ? $displayCols : $this->builder->getColumnNames());
 
-    $query = $db->getBaseDbo()->generateLimit($query, $limit, $offset);
+    $this->builder->importPagerData($this->page, $this->pagerRows, $displayCols, $buildFilter);
 
-    $this->setHeader($columnNames);
-    $this->setPagerData($db->QueryFetchAll($query, $params));
+    $this->setPagerData($this->builder->getTableData());
 
+  }
+
+  public function setFilter($value=null, $columns = array())
+  {
+    if ($value===null) return;
+
+    $this->filter = $value;
+    $this->url = preg_replace('/&filter=.+[&]*/', '', $this->url);
+    $this->url .= '&filter=' . $value;
   }
 
   public function headerCallback($headerData)
@@ -47,7 +69,7 @@ class QueryPager extends Pager {
 
   public function rowCallback($rowData)
   {
-    $id = $rowData[$this->id];
+    $id = $rowData['id'];
 
     $editHref = $this->editAction . '&id=' . $id;
     $deleteHref = $this->deleteAction . '&id=' . $id;

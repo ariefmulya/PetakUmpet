@@ -35,6 +35,7 @@ class AjaxCRUDApplication extends Application {
 
     $this->columns = null;
     $this->skips = null;
+    $this->relationTabs = null;
 
     $this->appName = $this->request->getModule();
     $this->setup();
@@ -42,7 +43,7 @@ class AjaxCRUDApplication extends Application {
 
   protected function setup()
   {
-    $pager = new \PetakUmpet\Database\TablePager($this->request);
+    $pager = new \PetakUmpet\Pager\TablePager($this->request);
     $pager->setFilter($this->request->getFilter());
 
     $pager->setInlineForm($this->inlineForm);
@@ -139,7 +140,9 @@ class AjaxCRUDApplication extends Application {
 
     return $this->renderView('AjaxCRUD/edit', array(
                     'tableName' => $this->tableName,
+                    'id' => $this->request->getId(),
                     'inlineForm' => $this->inlineForm,
+                    'relations' => $this->relationTabs,  
                     'appName' => $this->appName,
                     'pager' => $this->pager,
                     'form' => $dbf,

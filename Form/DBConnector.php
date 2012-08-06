@@ -102,7 +102,7 @@ class DBConnector {
 
   public function setValue($name, $value)
   {
-    if ($this->form->setFieldValue($name, $value)) 
+    if ($this->form instanceof \PetakUmpet\Form && $this->form->setFieldValue($name, $value)) 
       return true;
 
     if (isset($this->fields[$name])) {
@@ -117,10 +117,15 @@ class DBConnector {
     if ($this->form->getFieldValue($name))
       return true;
 
-    if (isset($this->fields[$name])) {
+    if (isset($this->fields[$name]) && isset($this->fields[$name]['value'])) {
         return $this->fields[$name]['value'];
     }
     return false;
+  }
+
+  public function getFormName()
+  {
+    return $this->tableName;
   }
 
   public function getForm()

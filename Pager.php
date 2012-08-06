@@ -48,7 +48,7 @@ class Pager {
 
   public function __toString()
   {
-    if (count($this->pagerData[0]) <= 0)
+    if (count($this->pagerData) <= 0 || count($this->pagerData[0]) <= 0)
       return 'No data found';
 
     $s = '<table class="table table-condensed table-bordered table-striped">';
@@ -165,7 +165,7 @@ class Pager {
 
   public function needPager()
   {
-    return true;
+    return ($this->totalPage > 1);
   }
 
   private function pageLink($id, $mode='' /* active, disabled */)

@@ -123,6 +123,11 @@ class Form {
     }
   }
 
+  public function getFormName()
+  {
+    return $this->name;
+  }
+
   public function setMethod($method)
   {
     $this->method = $method;
