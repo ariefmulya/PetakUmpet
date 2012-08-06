@@ -82,7 +82,7 @@ class Builder {
     return $this->columns;
   }
 
-  public function getOptionsFromRelations($colName, $descriptionCol='name')
+  public function getOptionsFromRelations($colName, $descriptionCol='nama')
   {
     $opt = array();
     $db =& $this->db;
@@ -92,13 +92,23 @@ class Builder {
         $parent_id = $db->escapeInput($rel['parentcol']);
         $parent_text = $db->escapeInput($descriptionCol);
         $parent_table = $db->escapeInput($rel['parenttable']);
-        $query = sprintf("SELECT %s, %s FROM %s",
-                    $parent_id, $parent_text, $parent_table 
-                  );
+        $query = sprintf("SELECT * FROM %s", $parent_table);
 
         if (($res = $db->QueryFetchAll($query))) {
           foreach ($res as $r) {
-            $opt[$r[$parent_id]] = $r[$parent_text]; 
+            if (isset($r[$parent_text])) {
+              $opt[$r[$parent_id]] = $r[$parent_text]; 
+            } else {
+              // rather crude but simple hack
+              // to get the parent column names
+              // FIXME?
+              foreach ($r as $k => $v) {
+                if (is_string($v) && $k != $parent_id) {
+                  $opt[$r[$parent_id]] = $v;
+                  break;
+                }
+              }
+            }
           }
         }
       }
