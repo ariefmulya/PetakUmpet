@@ -52,13 +52,14 @@ class Template {
 		$this->layout =  $this->baseViewDir . ($layout === null ? 'layout' : $layout) . '.php' ;
 	}
 
-  public function link($name, $page, $class="")
+  public function link($name, $page, $class="", $icon=null)
   {
     $page = str_replace('/', '&a=', $page);
 
     $href = $this->request->getAppUrl($page);
 
-    return '<a class="'.$class.'" href="'.$href.'">' . $name . '</a>';
+    return '<a class="'.$class.'" href="'.$href.'">' . 
+           ($icon === null ? '' : '<i class="'.$icon.'"></i>&nbsp;') . $name . '</a>';
   }
 
   public function url($page)

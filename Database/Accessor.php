@@ -103,53 +103,47 @@ class Accessor {
     return $this->db->QueryFetchAll($query);
   }
 
-  private function generatePagerFilter($filter, $filterCols, $colData)
+  private function generatePagerFilter($filter, $colData)
   {
-    foreach ($filterCols as $c) {
-      if ($c == 'id') continue;
-
-      if (!$colData[$c]['string']) {
-        $c = "CAST ($c AS text) ";
+    foreach ($filter as $c => $v) {
+      $s = $c;
+      if (!$colData[$c]['string'] && $v !== null) {
+        $s = "CAST ($c AS text) ";
       }
-
-      $marker[] = $c ." ILIKE :filter" ;
+      $marker[] = $s ." ILIKE :$c" ;
     }
     if (count($marker) > 0 ) return " WHERE " . implode (' OR ', $marker);
     return '';
   } 
 
-  function CountPagerData($filter=null, $filterCols=array(), $colData=array())
+  function CountPagerData($filter=null, $colData=array())
   {
     $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
 
-    $params = array();
-    if ($filter && count($filterCols) > 0) {
-      $query .= $this->generatePagerFilter($filter, $filterCols, $colData);
-      $params['filter'] = $filter;
+    if ($filter && count($filter) > 0) {
+      $query .= $this->generatePagerFilter($filter, $colData);
     }
 
-    return $this->db->QueryFetchOne($query, $params);
+    return $this->db->QueryFetchOne($query, $filter);
   }
 
-  function findPagerData($page, $nRows, $displayCols, $filter=null, $filterCols=array(), $colData = array())
+  function findPagerData($page, $nRows, $displayCols, $filter=null, $colData = array())
   {
-    $offset = ($page-1) * $nRows;
+    $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
     $cols = $this->db->escapeInput(count($displayCols) >  0 ? implode(', ', $displayCols) : '*');
 
     $query  =  "SELECT $cols FROM " . $this->tableName ;
 
-    $params = array();
-    if ($filter && count($filterCols) > 0) {
-      $query .= $this->generatePagerFilter($filter, $filterCols, $colData);
-      $params['filter'] = $filter;
+    if ($filter && count($filter) > 0) {
+      $query .= $this->generatePagerFilter($filter, $colData);
     }
 
     $query .= " ORDER BY id ";
 
     $query  = $this->db->getBaseDbo()->generateLimit($query, $limit, $offset);
 
-    return $this->db->QueryFetchAll($query, $params);
+    return $this->db->QueryFetchAll($query, $filter);
   }
 
   function insert($data)

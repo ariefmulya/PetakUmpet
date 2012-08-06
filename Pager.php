@@ -43,9 +43,7 @@ class Pager {
 
     if (!strstr($url, '?')) $url .= '?paging=paging';
 
-    $url = preg_replace('/&page=[0-9]+/', '', $url);
-
-    $this->url = $url;
+    $this->pagerAction = preg_replace('/&page=[0-9]+/', '', $url);
   }
 
   public function __toString()
@@ -104,8 +102,17 @@ class Pager {
     return $s;
   }
 
-  public function headerCallback($rowData) { throw new \Exception('Need to be implemented in child class'); }
-  public function rowCallback($rowData) { throw new \Exception('Need to be implemented in child class'); }
+  public function headerCallback($rowData)
+  { 
+    // If needed child class can implement this to add more columns
+    return;
+  }
+
+  public function rowCallback($rowData)
+  {
+    // If needed child class can implement this to add more columns
+    return;
+  }
 
   function __call($name, $args)
   {
@@ -113,11 +120,6 @@ class Pager {
       return $this->get(lcfirst(substr($name, 3)));
     if (substr($name, 0,3) == 'set') 
       return $this->set(lcfirst(substr($name, 3)), $args[0]);
-  }
-
-  public function setPagerAction($url)
-  {
-    $this->url = $url;
   }
 
   public function setTargetDiv($target)
@@ -176,7 +178,7 @@ class Pager {
     else if ($id == '...') $class = 'class="disabled"';
     else $class = $mode == '' ? '' : 'class="'.$mode.'"';
 
-    return '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->url.'&page='.$page.'\');" >'.$id.'</a></li>';
+    return '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->pagerAction.'&page='.$page.'\');" >'.$id.'</a></li>';
   }
 
   public function formatPager()

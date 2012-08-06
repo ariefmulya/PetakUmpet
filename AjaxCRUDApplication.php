@@ -8,12 +8,14 @@ use PetakUmpet\Response;
 use PetakUmpet\Database\Accessor;
 
 use PetakUmpet\Form;
+use PetakUmpet\Form\Field;
 use PetakUmpet\Form\DBConnector;
 use PetakUmpet\Form\Custom\SearchForm;
 
 class AjaxCRUDApplication extends Application {
 
   protected $appName;
+  protected $inlineForm;
 
   protected $tableName;
   protected $columns;
@@ -29,7 +31,12 @@ class AjaxCRUDApplication extends Application {
     $this->formOptions = array();
     $this->formTypes = array();
     $this->extraFormFields = array();
+    $this->inlineForm = false;
 
+    $this->columns = null;
+    $this->skips = null;
+
+    $this->appName = $this->request->getModule();
     $this->setup();
   }
 
@@ -38,7 +45,8 @@ class AjaxCRUDApplication extends Application {
     $pager = new \PetakUmpet\Database\TablePager($this->request);
     $pager->setFilter($this->request->getFilter());
 
-    $pager->setPagerAction($this->request->getAppUrl($this->appName . '/table'));
+    $pager->setInlineForm($this->inlineForm);
+    $pager->setPagerAction($this->request->getAppUrl($this->appName . '/pager'));
     $pager->setEditAction($this->request->getAppUrl($this->appName . '/edit'));
     $pager->setDeleteAction($this->request->getAppUrl($this->appName . '/delete'));
     $pager->setTargetDiv('pager');
@@ -64,6 +72,7 @@ class AjaxCRUDApplication extends Application {
     return $this->renderView('AjaxCRUD/index', array(
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
+                    'inlineForm' => $this->inlineForm,
                     'pager' => $this->pager,
                     'filterForm' => $filterForm,
                   ));
@@ -76,6 +85,7 @@ class AjaxCRUDApplication extends Application {
     return $this->renderView('AjaxCRUD/pager', array(
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
+                    'inlineForm' => $this->inlineForm,
                     'pager' => $this->pager,
                   ));
   }
@@ -96,6 +106,13 @@ class AjaxCRUDApplication extends Application {
       $dbf->add($k, $v);
     }
 
+    $dbf->addFormAction(new Field\Submit('Save & Close', array('class' => 'btn')));
+    $dbf->addFormAction(new Field\Submit('Save & Add', array('class' => 'btn')));
+
+    $cancelAction = 'location.href=\''.$this->request->getAppUrl($this->appName .'/index').'\'';
+
+    $dbf->addFormAction(new Field\Button('Cancel', array('class' => 'btn btn-warning', 'onclick' => $cancelAction)));
+
     if (!$this->request->isPost() && $this->request->getId()) {
       $dbf->importById($this->request->getId());
     } else {
@@ -106,14 +123,23 @@ class AjaxCRUDApplication extends Application {
 
     if ($this->request->isPost()) {
       if ($dbf->bindValidateSave($this->request)) {
-        if ($dbf->isClose()) return new Response('');
-        if ($dbf->isAdd()) return $this->redirect($this->appName . '/edit');
+        if ($dbf->isClose()) {
+          if ($this->inlineForm) {
+            return new Response('');
+          } else {
+            return $this->redirect($this->appName . '/index');
+          }
+        }
+        if ($dbf->isAdd()) {
+          return $this->redirect($this->appName . '/edit');
+        }
         $this->session->setFlash('Data is saved.');
       }
     }
 
     return $this->renderView('AjaxCRUD/edit', array(
                     'tableName' => $this->tableName,
+                    'inlineForm' => $this->inlineForm,
                     'appName' => $this->appName,
                     'pager' => $this->pager,
                     'form' => $dbf,

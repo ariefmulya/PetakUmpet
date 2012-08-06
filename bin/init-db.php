@@ -61,9 +61,8 @@ foreach ($sql_files as $f) {
   if ($f == '..' || $f == '.') continue;
   if (is_file($sql_dir . DS . $f)) {
     echo "  init-db: Executing query in $f ";
-    if (petakumpet_exec($db, ($createSql=file_get_contents($sql_dir . DS . $f)))) {
-      echo "...done\n";
-    }
+    petakumpet_exec($db, ($createSql=file_get_contents($sql_dir . DS . $f))); 
+    echo "...done\n";
   }
 }
 echo "\n";

@@ -18,6 +18,7 @@ class DBConnector {
   private $fields;
   private $validator;
   private $form;
+  private $formActions;
 
   private function columnTypeMap($coltype)
   {
@@ -39,6 +40,8 @@ class DBConnector {
   {
     $this->tableName = $tableName;
     $this->action = $action;
+
+    $this->formActions = array();
 
     $this->builder = new Builder($tableName);
 
@@ -145,21 +148,27 @@ class DBConnector {
 
     if (count($this->fields) > 0) {
       $form->addAction(new Field\Submit('Submit'));
-      $form->addAction(new Field\Submit('Submit and Close', array('class' => 'btn')));
-      $form->addAction(new Field\Submit('Submit and Add', array('class' => 'btn')));
+      foreach ($this->formActions as $f) {
+        $form->addAction($f);
+      }
       $form->setValidator($this->validator);
     }
     return $form;
   }
 
+  public function addFormAction($field)
+  {
+    $this->formActions[] = $field;
+  }
+
   public function isClose()
   {
-    return ($this->form->getActionValue() == 'Submit and Close');
+    return ($this->form->getActionValue() == 'Save & Close');
   }
 
   public function isAdd()
   {
-    return ($this->form->getActionValue() == 'Submit and Add');
+    return ($this->form->getActionValue() == 'Save & Add');
   }
 
   public function bindValidateSave(Request $request)
