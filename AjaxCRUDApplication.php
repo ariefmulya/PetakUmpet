@@ -32,6 +32,7 @@ class AjaxCRUDApplication extends Application {
     $this->formTypes = array();
     $this->extraFormFields = array();
     $this->inlineForm = false;
+    $this->submenuFile = null;
 
     $this->columns = null;
     $this->skips = null;
@@ -76,6 +77,7 @@ class AjaxCRUDApplication extends Application {
                     'inlineForm' => $this->inlineForm,
                     'pager' => $this->pager,
                     'filterForm' => $filterForm,
+                    'submenuFile' => $this->submenuFile,
                   ));
   }
 
