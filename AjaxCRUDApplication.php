@@ -109,7 +109,6 @@ class AjaxCRUDApplication extends Application {
       $dbf->add($k, $v);
     }
 
-    $dbf->addFormAction(new Field\Submit('Save & Close', array('class' => 'btn')));
     $dbf->addFormAction(new Field\Submit('Save & Add', array('class' => 'btn')));
 
     $cancelAction = 'location.href=\''.$this->request->getAppUrl($this->appName .'/index').'\'';
