@@ -3,9 +3,14 @@ namespace PetakUmpet;
 
 class Session {
 
+  public function __construct()
+  {
+    $this->config = Singleton::acquire('\\PetakUmpet\\Config');
+  }
+
   function __call($name, $args)
   {
-    if (session_id() == "") session_start();
+    if (session_id() == "") $this->start();
     if (substr($name, 0,3) == 'get') 
       return $this->get(strtolower(substr($name, 3)));
     if (substr($name, 0,3) == 'set') { 
@@ -13,9 +18,14 @@ class Session {
     }
   }
 
+  public function start()
+  {
+    session_start(sha1($this->config->getProjectTitle())); 
+  }
+
   function destroy()
   {
-    if (session_id() == "") session_start();
+    if (session_id() == "") $this->start();
     session_destroy();
   }
 
