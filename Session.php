@@ -20,7 +20,8 @@ class Session {
 
   public function start()
   {
-    session_start(sha1($this->config->getProjectTitle())); 
+    session_id(sha1($this->config->getProjectTitle())); 
+    session_start();
   }
 
   function destroy()
