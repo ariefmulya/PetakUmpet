@@ -62,6 +62,21 @@ class Template {
            ($icon === null ? '' : '<i class="'.$icon.'"></i>&nbsp;') . $name . '</a>';
   }
 
+  public function dropdown($name, $li, $class="", $icon=null)
+  {
+    $r = '<li class="dropdown">';
+    $r .= '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.$name.' <b class="caret"></b></a>';
+    $r .= '<ul class="dropdown-menu">';
+
+    foreach($li as $k=>$v) {
+      $r .= '<li>'.$this->link($k, $v, '#navs').'<li>';
+    }
+
+    $r .= '</ul></li>';
+    
+    return $r;
+  }
+
   public function url($page)
   {
     return $this->request->getAppUrl($page);
@@ -75,17 +90,14 @@ class Template {
 
   public function navMenu($menu, $selected)
   {
-    $s = '';
-
+    $s = '<ul class="nav">';
     foreach ($menu as $k=>$v) {
       $li_class = '';
       
-      if ($selected == $v) $li_class=' class="active" ';
-
-      $s .= '<ul class="nav">';
-      $s .= '  <li' . $li_class . '>' . $this->link($k, $v) . '</li>';
-      $s .= '</ul>';
+      if ($selected == $v) $li_class=' class="active" ';      
+      $s .= '  <li' . $li_class . '>' . $this->link($k, $v) . '</li>';      
     }
+    $s .= '</ul>';
     return $s;
   }
 
