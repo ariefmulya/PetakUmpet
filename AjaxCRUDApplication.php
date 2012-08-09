@@ -101,7 +101,8 @@ class AjaxCRUDApplication extends Application {
 
   public function pagerAction()
   {
-    $this->pager->build($this->tableName, $this->columns);
+    if ($this->pager instanceof \PetakUmpet\Pager\TablePager)
+      $this->pager->build($this->tableName, $this->columns);
 
     return $this->renderView('AjaxCRUD/pager', array(
                     'tableName' => $this->tableName,
@@ -130,7 +131,7 @@ class AjaxCRUDApplication extends Application {
     foreach ($this->formRelationFilter as $k => $v) {
       $dbf->setRelationFilter($k, $v);
     }
-    
+
     // user_id field is always hidden
     $dbf->setType('user_id', 'hidden');
 
