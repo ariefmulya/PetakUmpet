@@ -64,7 +64,7 @@ class Template {
 
   public function dropdown($name, $li, $class="", $icon=null)
   {
-    $r = '<li class="dropdown">';
+    $r  = '<li class="dropdown">';
     $r .= '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.$name.' <b class="caret"></b></a>';
     $r .= '<ul class="dropdown-menu">';
 
@@ -88,16 +88,52 @@ class Template {
     return $this->request->getResourceBaseUrl() . $value;
   }
 
-  public function navMenu($menu, $selected)
+  public function navMenu($menu, $defaultPage='Home/index')
   {
+    $page = $this->request->getPage();
+
+    if (in_array($page, $menu)) {
+      $this->session->set('lastActivePage', $page); 
+    } else {
+      $page = $this->session->get('lastActivePage');
+      if ($page === null) $page = $defaultPage;
+    }    
     $s = '<ul class="nav">';
     foreach ($menu as $k=>$v) {
       $li_class = '';
       
-      if ($selected == $v) $li_class=' class="active" ';      
+      if ($page == $v) $li_class=' class="active" ';      
       $s .= '  <li' . $li_class . '>' . $this->link($k, $v) . '</li>';      
     }
     $s .= '</ul>';
+    return $s;
+  }
+
+  public function subNavMenu()
+  {
+    $subNavMenu = $this->request->getSubNavMenu(); 
+    if ($subNavMenu === false) return '';
+    
+    if (!is_array($subNavMenu) || count($subNavMenu) <= 0) {
+      $subNavMenu = $this->session->getSubNavMenu();
+    } else {
+      $this->session->setSubNavMenu($subNavMenu);
+    }
+
+    $s = '';
+    if (is_array($subNavMenu) && count($subNavMenu) > 0) {
+      $s = '<div class="subnav subnav-fixed">'
+          . '<ul class="nav nav-pills">'
+          ;
+      foreach ($subNavMenu as $name => $action) {
+        if (is_array($action)) {
+          $s .= $this->dropdown($name, $action);
+        } else {
+          $s .= '<li>' . $this->link($name, $action) . '</li>';
+        }
+      }
+      $s .= '</ul></div>';
+    }
     return $s;
   }
 
