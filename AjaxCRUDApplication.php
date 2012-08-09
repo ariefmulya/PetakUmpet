@@ -30,7 +30,9 @@ class AjaxCRUDApplication extends Application {
 
     $this->formOptions = array();
     $this->formTypes = array();
+    $this->formRelationFilter = array();
     $this->extraFormFields = array();
+    $this->extraFilter = array();
     $this->inlineForm = false;
     $this->submenuFile = null;
 
@@ -39,21 +41,32 @@ class AjaxCRUDApplication extends Application {
     $this->relationTabs = null;
 
     $this->appName = $this->request->getModule();
+
+    // run setup before the actions
     $this->setup();
+  }
+
+  protected function getPageQueryFilter()
+  {
+    $s = '&search=' . $this->request->get('search');
+    foreach ($this->extraFilter as $k => $v) {
+      $s .= "&$k=$v";
+    }
+    return $s;
   }
 
   protected function setup()
   {
-    $pager = new \PetakUmpet\Pager\TablePager($this->request);
-    $pager->setFilter($this->request->getFilter());
-
-    $pager->setInlineForm($this->inlineForm);
-    $pager->setPagerAction($this->request->getAppUrl($this->appName . '/pager'));
-    $pager->setEditAction($this->request->getAppUrl($this->appName . '/edit'));
-    $pager->setDeleteAction($this->request->getAppUrl($this->appName . '/delete'));
-    $pager->setTargetDiv('pager');
-
-    $this->pager = $pager;
+    if (!is_object($this->pager)) {
+      $this->pager = new \PetakUmpet\Pager\TablePager($this->request);
+    }
+    $this->pager->setFilter($this->request->getFilter());
+    $this->pager->setInlineForm($this->inlineForm);
+    $this->pager->setExtraFilter($this->extraFilter);
+    $this->pager->setPagerAction($this->request->getAppUrl($this->appName . '/pager'  . $this->getPageQueryFilter()));
+    $this->pager->setEditAction($this->request->getAppUrl($this->appName . '/edit' . $this->getPageQueryFilter()));
+    $this->pager->setDeleteAction($this->request->getAppUrl($this->appName . '/delete'  . $this->getPageQueryFilter()));
+    $this->pager->setTargetDiv('pager');
   }
 
   public function indexAction()
@@ -69,7 +82,12 @@ class AjaxCRUDApplication extends Application {
       $this->pager->setFilter($filterForm->getValue());
     }
 
-    $this->pager->build($this->tableName, $this->columns);
+    $this->pager->setExtraFilter($this->extraFilter);
+
+
+    if ($this->pager instanceof \PetakUmpet\Pager\TablePager) {
+      $this->pager->build($this->tableName, $this->columns);
+    }
 
     return $this->renderView('AjaxCRUD/index', array(
                     'tableName' => $this->tableName,
@@ -109,6 +127,13 @@ class AjaxCRUDApplication extends Application {
       $dbf->add($k, $v);
     }
 
+    foreach ($this->formRelationFilter as $k => $v) {
+      $dbf->setRelationFilter($k, $v);
+    }
+    
+    // user_id field is always hidden
+    $dbf->setType('user_id', 'hidden');
+
     $dbf->addFormAction(new Field\Submit('Save & Add', array('class' => 'btn')));
 
     $cancelAction = 'location.href=\''.$this->request->getAppUrl($this->appName .'/index').'\'';
@@ -121,6 +146,7 @@ class AjaxCRUDApplication extends Application {
       $dbf->build();
     }
 
+    // set value for user_id here
     $dbf->setValue('user_id', $this->session->getUserid());
 
     if ($this->request->isPost()) {

@@ -21,6 +21,7 @@ class Builder {
 
   private $mc;      // schema model cache
   private $columns; // column names
+  private $displayCols; // displayed Columns
   private $coldata; // column types indexed by names
   private $pkeys;   // primary keys
   private $fkeys;   // foreign keys
@@ -49,6 +50,11 @@ class Builder {
     return in_array($type, $str_types);
   }
 
+  public function getDbo()
+  {
+    return $this->db;
+  }
+  
   private function buildTableSchema()
   {
     $db =& $this->db;
@@ -80,6 +86,20 @@ class Builder {
   public function getColumnNames()
   {
     return $this->columns;
+  }
+
+  public function setDisplayColumns($displayCols)
+  {
+    $this->displayCols = $displayCols;
+  }
+
+  public function getColumnRelation($colName)
+  {
+    foreach ($this->fkeys as $rel) {
+      if ($rel['childcol'] == $colName) 
+        return $rel;
+    }
+    return false;
   }
 
   public function getOptionsFromRelations($colName, $descriptionCol='nama')
@@ -131,10 +151,12 @@ class Builder {
     }
     $tableData = array();
 
+    $columns = count($this->displayCols) > 0 ? $this->displayCols : $this->columns;
+
     foreach ($data as $d) {
       $filterData = array();
 
-      foreach ($this->columns as $c) {
+      foreach ($columns as $c) {
         if (isset($d[$c]) && $d[$c] !== null && ($d[$c] != '' || $d[$c] === false)) $filterData[$c] = $d[$c];
       }       
 
@@ -164,9 +186,9 @@ class Builder {
     return $this->dba->CountPagerData($filter, $this->coldata);
   }
 
-  public function importPagerData($page, $nRows, $displayCols=array(), $filter=null)
+  public function importPagerData($page, $nRows, $filter=null)
   {
-    return $this->import($this->dba->findPagerData($page, $nRows, $displayCols, $filter, $this->coldata));
+    return $this->import($this->dba->findPagerData($page, $nRows, $filter, $this->coldata));
   }
 
   public function save()

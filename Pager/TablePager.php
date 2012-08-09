@@ -18,6 +18,7 @@ class TablePager extends Pager {
 
     $this->filter = null;
     $this->extraFilter = null;
+
   }
 
   public function build($tableName, $displayCols=array())
@@ -25,6 +26,8 @@ class TablePager extends Pager {
     $this->tableName = $tableName;
 
     $this->builder = new Builder($tableName);
+
+    $this->builder->setDisplayColumns($displayCols);
 
     $buildFilter = array();
 
@@ -47,7 +50,7 @@ class TablePager extends Pager {
 
     $this->setHeader(count($displayCols) > 0 ? $displayCols : $this->builder->getColumnNames());
 
-    $this->builder->importPagerData($this->page, $this->pagerRows, $displayCols, $buildFilter);
+    $this->builder->importPagerData($this->page, $this->pagerRows, $buildFilter);
 
     $this->setPagerData($this->builder->getTableData());
 

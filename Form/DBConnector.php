@@ -66,14 +66,14 @@ class DBConnector {
 
       if ($s[Builder::SC_NOTNULL]) {
         $vld->set($name, new Validator\Required);
+        $this->fields[$name]['extra'] = array('required' => true);
       }
 
-      $options = $this->builder->getOptionsFromRelations($name);
-
-      if (count($options) > 0) {
-        $type = 'select';
-        $this->fields[$name]['options'] = $options;
+      if (($rel = $this->builder->getColumnRelation($name))) {
+        $this->fields[$name]['relation'] = $rel;
+        $this->fields[$name]['relname'] = 'nama';
       }
+
       $this->fields[$name]['type'] = $type;
       $this->fields[$name]['label'] = ucwords(str_replace('_', ' ', str_replace('_id', '', $name)));
 
@@ -97,6 +97,20 @@ class DBConnector {
   {
     if (isset($this->fields[$name])) {
       $this->fields[$name]['type'] = $type;
+    }
+  }
+
+  public function setRelationName($name, $value)
+  {
+    if (isset($this->fields[$name])) {
+      $this->fields[$name]['relname'] = $value;
+    }
+  }
+
+  public function setRelationFilter($name, $value)
+  {
+    if (isset($this->fields[$name])) {
+      $this->fields[$name]['relfilter'] = $value;
     }
   }
 
@@ -141,11 +155,26 @@ class DBConnector {
 
     foreach ($this->fields as $name => $f) {
       $label = isset($f['label']) ? $f['label'] : null;
-      
-      $child = $form->createField($f['type'], $name, null, $label);
 
-      if (isset($f['options']) && $child->useOptions()) {
-        $child->setOptions($f['options']);
+      $extra = null;
+      if (isset($f['extra'])) $extra = $f['extra'];
+      
+      if (isset($f['relation']) && $f['type'] != 'hidden') {
+        $child = $form->createField('selectFKey', $name, $extra, $label);
+        $child->setDbo($this->builder->getDbo());
+        $child->setRelationData($f['relation'], $f['relname']);
+
+        if (isset($f['relfilter'])) {
+          $child->setFilter($f['relfilter']);
+        }
+        $child->getOptionsFromRelation();
+
+      } else {
+        $child = $form->createField($f['type'], $name, $extra, $label);
+
+        if (isset($f['options']) && $child->useOptions()) {
+          $child->setOptions($f['options']);
+        }
       }
 
       $form->add($child);

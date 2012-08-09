@@ -127,13 +127,12 @@ class Accessor {
     return $this->db->QueryFetchOne($query, $filter);
   }
 
-  function findPagerData($page, $nRows, $displayCols, $filter=null, $colData = array())
+  function findPagerData($page, $nRows, $filter=null, $colData = array())
   {
     $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
-    $cols = $this->db->escapeInput(count($displayCols) >  0 ? implode(', ', $displayCols) : '*');
 
-    $query  =  "SELECT $cols FROM " . $this->tableName ;
+    $query  =  "SELECT * FROM " . $this->tableName ;
 
     if ($filter && count($filter) > 0) {
       $query .= $this->generatePagerFilter($filter, $colData);
