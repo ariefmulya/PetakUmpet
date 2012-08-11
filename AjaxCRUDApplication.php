@@ -31,10 +31,12 @@ class AjaxCRUDApplication extends Application {
     $this->formOptions = array();
     $this->formTypes = array();
     $this->formRelationFilter = array();
+    $this->formAccessFilter = array();
+
     $this->extraFormFields = array();
     $this->extraFilter = array();
+
     $this->inlineForm = false;
-    $this->submenuFile = null;
 
     $this->columns = null;
     $this->skips = null;
@@ -60,12 +62,21 @@ class AjaxCRUDApplication extends Application {
     if (!is_object($this->pager)) {
       $this->pager = new \PetakUmpet\Pager\TablePager($this->request);
     }
+
+    $pageQry = $this->getPageQueryFilter();
+
+    $this->pagerAction = $this->request->getAppUrl($this->appName . '/pager') . $pageQry;
+    $this->editAction = $this->request->getAppUrl($this->appName . '/edit') . $pageQry;
+    $this->deleteAction = $this->request->getAppUrl($this->appName . '/delete') . $pageQry;
+
     $this->pager->setFilter($this->request->getFilter());
     $this->pager->setInlineForm($this->inlineForm);
     $this->pager->setExtraFilter($this->extraFilter);
-    $this->pager->setPagerAction($this->request->getAppUrl($this->appName . '/pager'  . $this->getPageQueryFilter()));
-    $this->pager->setEditAction($this->request->getAppUrl($this->appName . '/edit' . $this->getPageQueryFilter()));
-    $this->pager->setDeleteAction($this->request->getAppUrl($this->appName . '/delete'  . $this->getPageQueryFilter()));
+
+    $this->pager->setPagerAction($this->pagerAction);
+    $this->pager->setEditAction($this->editAction);
+    $this->pager->setDeleteAction($this->deleteAction);
+
     $this->pager->setTargetDiv('pager');
   }
 
@@ -95,7 +106,7 @@ class AjaxCRUDApplication extends Application {
                     'inlineForm' => $this->inlineForm,
                     'pager' => $this->pager,
                     'filterForm' => $filterForm,
-                    'submenuFile' => $this->submenuFile,
+                    'editAction' => $this->editAction,
                   ));
   }
 
@@ -132,6 +143,10 @@ class AjaxCRUDApplication extends Application {
       $dbf->setRelationFilter($k, $v);
     }
 
+    foreach ($this->formAccessFilter as $k => $v) {
+      $dbf->setAccessFilter($k, $v);
+    }
+
     // user_id field is always hidden
     $dbf->setType('user_id', 'hidden');
 
@@ -149,9 +164,10 @@ class AjaxCRUDApplication extends Application {
 
     // set value for user_id here
     $dbf->setValue('user_id', $this->session->getUserid());
+    $retId = false;
 
     if ($this->request->isPost()) {
-      if ($dbf->bindValidateSave($this->request)) {
+      if (($retId = $dbf->bindValidateSave($this->request))) {
         if ($dbf->isClose()) {
           if ($this->inlineForm) {
             return new Response('');
@@ -166,9 +182,11 @@ class AjaxCRUDApplication extends Application {
       }
     }
 
+    $id = $this->request->get('id', $retId);
+
     return $this->renderView('AjaxCRUD/edit', array(
                     'tableName' => $this->tableName,
-                    'id' => $this->request->getId(),
+                    'id' => $id,
                     'inlineForm' => $this->inlineForm,
                     'relations' => $this->relationTabs,  
                     'appName' => $this->appName,
