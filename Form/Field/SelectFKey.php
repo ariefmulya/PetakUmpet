@@ -42,7 +42,7 @@ class SelectFKey extends Select {
   {
     $filterOpt = array();
      
-    if (isset($this->accessFilter) && is_array($this->accessFilter)) {
+    if (isset($this->accessFilter) && is_array($this->accessFilter) && count($this->accessFilter) > 0) {
       foreach ($this->accessFilter as $filter) {
         if ($filter['type'] == 'table') {
           $column = $this->db->escapeInput($filter['column']);
@@ -64,13 +64,12 @@ class SelectFKey extends Select {
           }
         }
       }
+      if (count($filterOpt) == 0) {
+        return array();
+      }
+      return array_intersect_key($options, $filterOpt);
     }
-
-    if (count($filterOpt) == 0) {
-      return $options;
-    }
-
-    return array_intersect_key($options, $filterOpt);
+    return $options;
   }
 
   public function getOptionsFromRelation()
