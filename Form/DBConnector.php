@@ -114,6 +114,13 @@ class DBConnector {
     }
   }
 
+  public function setAccessFilter($name, $value)
+  {
+    if (isset($this->fields[$name])) {
+      $this->fields[$name]['accessfilter'] = $value;
+    }
+  }
+
   public function setValue($name, $value)
   {
     if ($this->form instanceof \PetakUmpet\Form && $this->form->setFieldValue($name, $value)) 
@@ -167,15 +174,23 @@ class DBConnector {
         if (isset($f['relfilter'])) {
           $child->setFilter($f['relfilter']);
         }
+        if (isset($f['accessfilter'])) {
+          $child->setAccessFilter($f['accessfilter']);
+        }
         $child->getOptionsFromRelation();
 
       } else {
         $child = $form->createField($f['type'], $name, $extra, $label);
 
+        if (isset($f['accessfilter'])) {
+          $child->setAccessFilter($f['accessfilter']);
+        }
+        
         if (isset($f['options']) && $child->useOptions()) {
           $child->setOptions($f['options']);
         }
       }
+
 
       $form->add($child);
     }

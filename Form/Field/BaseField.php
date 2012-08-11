@@ -10,6 +10,7 @@ class BaseField {
   protected $attributes;
   protected $useInnerValue;
   protected $errorText;
+  protected $accessFilter;
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
@@ -115,6 +116,11 @@ class BaseField {
   public function setErrorText($error)
   {
     $this->errorText = $error;
+  }
+
+  public function setAccessFilter($value)
+  {
+    $this->accessFilter = $value;
   }
 
 }

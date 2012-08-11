@@ -38,6 +38,41 @@ class SelectFKey extends Select {
     }
   }
 
+  private function filterOptions($options)
+  {
+    $filterOpt = array();
+     
+    if (isset($this->accessFilter) && is_array($this->accessFilter)) {
+      foreach ($this->accessFilter as $filter) {
+        if ($filter['type'] == 'table') {
+          $column = $this->db->escapeInput($filter['column']);
+          $table  = $this->db->escapeInput($filter['tablename']);
+          $filterCol = $this->db->escapeInput($filter['filterCol']);
+          $filterVal = $this->db->escapeInput($filter['filterVal']);
+
+          $query = "SELECT $column FROM $table WHERE $filterCol = :$filterCol ";
+          $params = array($filterCol => $filterVal);
+
+        } else if ($filter['type'] == 'query') {
+          $query = $filter['query'] ;
+          $params = $filter['params'];
+        }
+
+        if (($res = $this->db->QueryFetchAll($query, $params))) {
+          foreach ($res as $r) {
+            $filterOpt[$r[$filter['column']]] = true;
+          }
+        }
+      }
+    }
+
+    if (count($filterOpt) == 0) {
+      return $options;
+    }
+
+    return array_intersect_key($options, $filterOpt);
+  }
+
   public function getOptionsFromRelation()
   {
     $opt = array();
@@ -66,7 +101,7 @@ class SelectFKey extends Select {
         }
       }
     }
-    parent::setOptions($opt);
+    parent::setOptions($this->filterOptions($opt));
   }
 
 }
