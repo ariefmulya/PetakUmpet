@@ -67,7 +67,7 @@ class Request {
 
   public function get($name, $default=null)
   {
-    if (isset($this->request_data[$name])) {
+    if (isset($this->request_data[$name]) && $this->request_data[$name] !== false && $this->request_data[$name] != '') {
       return $this->request_data[$name];
     }
     return $default;
