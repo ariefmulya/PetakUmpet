@@ -111,6 +111,7 @@ class Database {
 
     if (! ($res = $this->db->query($query, \PDO::FETCH_ASSOC)) ) {
       $this->errorInfo = $this->db->errorInfo();
+      Logger::log('Database: Query ERROR: ' . implode(' ', $this->errorInfo));
       return false;
     }
     return $res;
