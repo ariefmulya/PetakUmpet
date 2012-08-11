@@ -108,6 +108,10 @@ class Form {
       $s .= $this->formEnd[$this->gridFormat];
     }
     $s .= '</form>';
+    // add this for date formatting
+    // FIXME: maybe wanna add check if there is a date column first?
+    $s .= '<script type="text/javascript">$(\'input[datepicker|=datepicker]\').datepicker({format: \'yyyy-mm-dd\'});</script>';
+
 
     return $s;
   }
