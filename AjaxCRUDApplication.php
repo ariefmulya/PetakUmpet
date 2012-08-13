@@ -125,7 +125,12 @@ class AjaxCRUDApplication extends Application {
 
   public function editAction()
   {
-    $dbf = new DBConnector($this->tableName, array(), array(), $this->request->getAppUrl($this->appName . '/edit'));
+    $formAction = $this->request->getAppUrl($this->appName . '/edit');
+    if (isset($this->formAction)) {
+      $formAction = $this->formAction;
+    }
+
+    $dbf = new DBConnector($this->tableName, array(), array(), $formAction); 
 
     foreach ($this->formOptions as $k => $v) {
       $dbf->setOptions($k, $v);
