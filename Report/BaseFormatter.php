@@ -13,13 +13,17 @@ class BaseFormatter {
 
   public function __toString()
   {
+    if (count($this->report->getData())==0) {
+      return 'No data found.' ;
+    }
+
     $report = $this->report;
     $s  = '<div><h2>' . $report->getTitle() . '</h2></div>';
 
     if (count($report->getHeader() > 0)) {
-      $s .= '<div>';
+      $s .= '<div class="row">';
       foreach ($report->getHeader() as $k => $v) {
-        $s .= '<p class="span3"><strong>'.$k.'</strong>: '.$v.'</p>';
+        $s .= '<p><strong>'.ucwords($k).'</strong>: '.$v.'</p>';
       }
       $s .= '</div>';
     }
