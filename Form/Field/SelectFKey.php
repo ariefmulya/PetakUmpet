@@ -2,6 +2,8 @@
 
 namespace PetakUmpet\Form\Field;
 
+use PetakUmpet\Singleton;
+
 class SelectFKey extends Select {
 
   private $fkData;
@@ -57,7 +59,6 @@ class SelectFKey extends Select {
           $query = $filter['query'] ;
           $params = $filter['params'];
         }
-
         if (($res = $this->db->QueryFetchAll($query, $params))) {
           foreach ($res as $r) {
             $filterOpt[$r[$filter['column']]] = true;
@@ -75,6 +76,9 @@ class SelectFKey extends Select {
   public function getOptionsFromRelation()
   {
     $opt = array();
+    if (!isset($this->db)) {
+      $this->db = Singleton::acquire('\\PetakUmpet\\Database');
+    }
     $db =& $this->db;
 
     $parent_id = $db->escapeInput($this->fkData['parentcol']);
@@ -82,7 +86,6 @@ class SelectFKey extends Select {
     $parent_table = $db->escapeInput($this->fkData['parenttable']);
     $query = sprintf("SELECT * FROM %s", $parent_table);
     $query .= $this->getFilterForQuery();
-
     if (($res = $db->QueryFetchAll($query, $this->filter))) {
       foreach ($res as $r) {
         if (isset($r[$parent_text])) {
