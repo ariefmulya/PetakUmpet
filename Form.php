@@ -178,6 +178,21 @@ class Form {
     $this->validator = $validator;
   }
 
+  public function getField($name)
+  {
+    return $this->childs[$name];
+  }
+
+  public function getFields()
+  {
+    return $this->childs;
+  }
+
+  public function getActions()
+  {
+    return $this->actions;
+  }
+  
   public function setFieldValue($name, $value)
   {
     if (isset($this->childs[$name]) && $this->childs[$name] instanceof BaseField) {
