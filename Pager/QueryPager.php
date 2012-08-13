@@ -41,11 +41,15 @@ class QueryPager extends Pager {
 
   public function headerCallback($headerData)
   {
+    if ($this->getReadOnly()) return '';
+
     return '<th>ACTIONS</th>';
   }
 
   public function rowCallback($rowData)
   {
+    if ($this->getReadOnly()) return '';
+    
     $id = $rowData[$this->id];
 
     $editHref = $this->editAction . '&id=' . $id;
