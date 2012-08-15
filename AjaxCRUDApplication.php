@@ -35,6 +35,7 @@ class AjaxCRUDApplication extends Application {
 
     $this->extraFormFields = array();
     $this->extraFilter = array();
+    $this->extraPageFilter = array();
 
     $this->inlineForm = false;
 
@@ -54,7 +55,35 @@ class AjaxCRUDApplication extends Application {
     foreach ($this->extraFilter as $k => $v) {
       $s .= "&$k=$v";
     }
+    foreach ($this->extraPageFilter as $k => $v) {
+      $s .= "&$k=$v";
+    }
     return $s;
+  }
+
+  public function setTable($table)
+  {
+    $this->tableName = $table;
+  }
+
+  public function setColumns($columns)
+  {
+    $this->columns = $columns;
+  }
+
+  public function setInlineForm($isInline)
+  {
+    $this->inlineForm = $isInline;
+  }
+
+  public function setExtraPageFilter($filter)
+  {
+    $this->extraPageFilter = $filter;
+  }
+
+  public function setFormAction($action)
+  {
+    $this->formAction = $action;
   }
 
   protected function setup()
@@ -82,6 +111,15 @@ class AjaxCRUDApplication extends Application {
 
   public function indexAction()
   {
+    $pageQry = $this->getPageQueryFilter();
+    $this->pagerAction = $this->request->getAppUrl($this->appName . '/pager') . $pageQry;
+    $this->editAction = $this->request->getAppUrl($this->appName . '/edit') . $pageQry;
+    $this->deleteAction = $this->request->getAppUrl($this->appName . '/delete') . $pageQry;
+
+    $this->pager->setPagerAction($this->pagerAction);
+    $this->pager->setEditAction($this->editAction);
+    $this->pager->setDeleteAction($this->deleteAction);
+    $this->pager->setInlineForm($this->inlineForm);
 
     $filterForm = new SearchForm;
 
@@ -94,7 +132,6 @@ class AjaxCRUDApplication extends Application {
     }
 
     $this->pager->setExtraFilter($this->extraFilter);
-
 
     if ($this->pager instanceof \PetakUmpet\Pager\TablePager) {
       $this->pager->build($this->tableName, $this->columns);
@@ -112,6 +149,16 @@ class AjaxCRUDApplication extends Application {
 
   public function pagerAction()
   {
+    $pageQry = $this->getPageQueryFilter();
+    $this->pagerAction = $this->request->getAppUrl($this->appName . '/pager') . $pageQry;
+    $this->editAction = $this->request->getAppUrl($this->appName . '/edit') . $pageQry;
+    $this->deleteAction = $this->request->getAppUrl($this->appName . '/delete') . $pageQry;
+
+    $this->pager->setPagerAction($this->pagerAction);
+    $this->pager->setEditAction($this->editAction);
+    $this->pager->setDeleteAction($this->deleteAction);
+    $this->pager->setInlineForm($this->inlineForm);
+
     if ($this->pager instanceof \PetakUmpet\Pager\TablePager)
       $this->pager->build($this->tableName, $this->columns);
 
@@ -125,6 +172,16 @@ class AjaxCRUDApplication extends Application {
 
   public function editAction()
   {
+    $pageQry = $this->getPageQueryFilter();
+    $this->pagerAction = $this->request->getAppUrl($this->appName . '/pager') . $pageQry;
+    $this->editAction = $this->request->getAppUrl($this->appName . '/edit') . $pageQry;
+    $this->deleteAction = $this->request->getAppUrl($this->appName . '/delete') . $pageQry;
+
+    $this->pager->setPagerAction($this->pagerAction);
+    $this->pager->setEditAction($this->editAction);
+    $this->pager->setDeleteAction($this->deleteAction);
+    $this->pager->setInlineForm($this->inlineForm);
+
     $formAction = $this->request->getAppUrl($this->appName . '/edit');
     if (isset($this->formAction)) {
       $formAction = $this->formAction;
@@ -177,11 +234,11 @@ class AjaxCRUDApplication extends Application {
           if ($this->inlineForm) {
             return new Response('');
           } else {
-            return $this->redirect($this->appName . '/index');
+            return $this->redirect($this->appName . '/index' . $pageQry);
           }
         }
         if ($dbf->isAdd()) {
-          return $this->redirect($this->appName . '/edit');
+          return $this->redirect($this->appName . '/edit' . $pageQry);
         }
         $this->session->setFlash('Data is saved.');
       }
@@ -195,6 +252,7 @@ class AjaxCRUDApplication extends Application {
                     'inlineForm' => $this->inlineForm,
                     'relations' => $this->relationTabs,  
                     'appName' => $this->appName,
+                    'pagerAction' => $this->pagerAction,
                     'pager' => $this->pager,
                     'form' => $dbf,
                   ));
