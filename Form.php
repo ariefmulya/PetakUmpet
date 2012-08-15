@@ -6,125 +6,32 @@ use PetakUmpet\Form\Field\BaseField;
 
 class Form {
 
-  const GRID_BOOTSTRAP = 1;
-
-  protected $childs;
-  protected $actions;
+  protected $fields;
+  protected $actionFields;
 
   protected $name;
   protected $action;
   protected $method;
   protected $validator;
 
-  protected $formClass;
-  protected $gridFormat;
+  protected $formatter;
 
-  function __construct($name='Form', $action=null, $class='form-horizontal', $method='POST')
+  public function __construct($name='Form', $action=null, $id=null, $method='POST', $formatter='BootstrapHorizontal')
   {
     $this->name = $name;
+    $this->id = $id === null ? $name : $id;
     $this->action = $action;
     $this->method = $method;
-    $this->gridFormat = self::GRID_BOOTSTRAP;
 
-    $this->formClass = $class;
-
-    // FIXME: these maybe better delegated to a formatter class
-    $this->formStart = array(
-        self::GRID_BOOTSTRAP => '<fieldset>'
-      );
-    $this->formEnd = array(
-        self::GRID_BOOTSTRAP => '</fieldset>'
-      );
-
-    $this->fieldRowStart['normal'] = array(
-        self::GRID_BOOTSTRAP => '<div class="control-group">'
-      );
-    $this->fieldRowStart['error'] = array(
-        self::GRID_BOOTSTRAP => '<div class="control-group error">'
-      );
-    $this->fieldRowEnd['normal'] = array(
-        self::GRID_BOOTSTRAP => '</div>'
-      );
-    $this->fieldRowEnd['error'] = array(
-        self::GRID_BOOTSTRAP => '</div>'
-      );
-    $this->fieldLabelClass = array(
-        self::GRID_BOOTSTRAP => 'control-label'
-      );
-    $this->fieldStart = array(
-        self::GRID_BOOTSTRAP => '<div class="controls">'
-      );
-    $this->fieldEnd = array(
-        self::GRID_BOOTSTRAP => '</div>'
-      );
-    $this->fieldHelpTagFormat = array(
-        self::GRID_BOOTSTRAP => '<span class="help-inline">%s</span>'
-      );
-    $this->actionStart = array(
-        self::GRID_BOOTSTRAP => '<div class="form-actions">'
-      );
-    $this->actionEnd = array(
-        self::GRID_BOOTSTRAP => '</div>'
-      );
+    $this->formatter = $formatter;
   }
 
-  function __toString()
+  public function __toString()
   {
-    $s = '<form method="' . $this->method 
-        . '" class="'.$this->formClass.'" '
-        . 'name="'.$this->name.'" id="'.$this->name.'" '
-        . ($this->action !== null ? 'action="'. $this->action . '" >': ' >'); 
+    $cname = '\\PetakUmpet\\Form\\Formatter\\' . $this->formatter;
+    $formatter = new $cname($this);
 
-    if (count($this->childs) > 0) { 
-      $s .= $this->formStart[$this->gridFormat];
-      foreach ($this->childs as $k => $f) {
-        if ($f instanceof \PetakUmpet\Form\Field\Hidden) {
-          $s .= $f;
-          continue;
-        }
-
-        $errorText = $f->getErrorText();
-        $fieldStatus = $errorText == '' ? 'normal' : 'error';
-
-        $s .= $this->fieldRowStart[$fieldStatus][$this->gridFormat];
-        $s .= $f->getLabelTag($this->fieldLabelClass[$this->gridFormat]);
-        $s .= $this->fieldStart[$this->gridFormat];
-        $s .= (string) $f; 
-        if ($errorText != '') {
-          $s .= sprintf($this->fieldHelpTagFormat[$this->gridFormat], $errorText);
-        }
-        $s .= $this->fieldEnd[$this->gridFormat];
-        $s .= $this->fieldRowEnd[$fieldStatus][$this->gridFormat];
-
-      }
-
-      if (count($this->actions) > 0 ) {
-        $s .= $this->actionStart[$this->gridFormat];
-        foreach ($this->actions as $f) 
-          $s .= (string) $f;
-        $s .= $this->actionEnd[$this->gridFormat];
-      }
-
-      $s .= $this->formEnd[$this->gridFormat];
-    }
-    $s .= '</form>';
-    // add this for date formatting
-    // FIXME: maybe wanna add check if there is a date column first?
-    $s .= '<script type="text/javascript">$(\'input[datepicker|=datepicker]\').datepicker({format: \'yyyy-mm-dd\'});</script>';
-
-
-    return $s;
-  }
-
-  function __call($name, $args)
-  {
-    if (substr($name, 0, 3) == 'get') {
-      $index = strtolower(substr($name, 3));
-
-      if (!isset($this->childs[$index])) return null;
-
-      return $this->childs[$index]->getValue();
-    }
+    return (string) $formatter;
   }
 
   public function getFormName()
@@ -132,45 +39,60 @@ class Form {
     return $this->name;
   }
 
-  public function setMethod($method)
+  public function getFormId()
+  {
+    return $this->id;
+  }
+
+  public function setFormMethod($method)
   {
     $this->method = $method;
   }
+
+  public function getFormMethod()
+  {
+    return $this->method;
+  }
+
+  public function getFormAction()
+  {
+    return $this->action;
+  }
   
-  public function createField($child, $name=null, $extra=null, $label=null, $id=null)
+  public function createField($field, $name=null, $extra=null, $label=null, $id=null)
   {
     // some hard-coded aliases
-    if ($child == 'checkbox') $child = 'checkboxGroup';
-    if ($child == 'radio') $child = 'radioGroup';
+    if ($field == 'checkbox') $field = 'checkboxGroup';
+    if ($field == 'radio') $field = 'radioGroup';
     // funnily the above hardcode is actually good to keep our 
     // class names reasonable while still providing fallback for user-error
 
-    $class_name = '\\PetakUmpet\\Form\\Field\\' . ucfirst($child);
+    $class_name = '\\PetakUmpet\\Form\\Field\\' . ucfirst($field);
     if (class_exists($class_name)) {
-      $child = new $class_name($name, $extra, $label, $id);
+      $f = new $class_name($name, $extra, $label, $id);
     } else {
-      $type = $child;
-      $child = new BaseField($name, $extra, $label, $id);
-      $child->setType($type);
+      $type = $field;
+      $f = new BaseField($name, $extra, $label, $id);
+      $f->setType($type);
     }
-    assert($child instanceof BaseField);
-    return $child;
+    assert($f instanceof BaseField);
+    return $f;
   }
 
-  public function add($child, $name=null, $extra=null, $label=null, $id=null)
+  public function add($field, $name=null, $extra=null, $label=null, $id=null)
   {
-    if (!($child instanceof BaseField)) {
-      $f = $this->createField($child, $name, $extra, $label, $id);
-      if ($f) $this->childs[strtolower($f->getName())] = $f;
+    if (!($field instanceof BaseField)) {
+      $f = $this->createField($field, $name, $extra, $label, $id);
+      if ($f) $this->fields[strtolower($f->getName())] = $f;
 
     } else {
-      $this->childs[$child->getName()] = $child;
+      $this->fields[$field->getName()] = $field;
     }
   }
 
   public function addAction(BaseField $field)
   {
-    $this->actions[] = $field;
+    $this->actionFields[] = $field;
   }
 
   public function setValidator(\PetakUmpet\Validator $validator)
@@ -180,23 +102,18 @@ class Form {
 
   public function getField($name)
   {
-    return $this->childs[$name];
+    return $this->fields[$name];
   }
 
   public function getFields()
   {
-    return $this->childs;
+    return $this->fields;
   }
 
-  public function getActions()
-  {
-    return $this->actions;
-  }
-  
   public function setFieldValue($name, $value)
   {
-    if (isset($this->childs[$name]) && $this->childs[$name] instanceof BaseField) {
-      $this->childs[$name]->setValue($value);
+    if (isset($this->fields[$name]) && $this->fields[$name] instanceof BaseField) {
+      $this->fields[$name]->setValue($value);
       return true;
     }
     return false;
@@ -204,32 +121,31 @@ class Form {
 
   public function getFieldValue($name)
   {
-    if (isset($this->childs[$name]) && $this->childs[$name] instanceof BaseField) {
-      return $this->childs[$name]->getValue();
+    if (isset($this->fields[$name]) && $this->fields[$name] instanceof BaseField) {
+      return $this->fields[$name]->getValue();
     }
     return false;
   }
 
-  public function getActionValue($name='submit')
+  public function getActions()
   {
-    $request = Singleton::acquire('\\PetakUmpet\\Request');
-    return $request->get($name);
+    return $this->actionFields;
   }
 
-  function getValues()
+  public function getValues()
   {
     $v = array();
-    foreach ($this->childs as $name => $f) {
+    foreach ($this->fields as $name => $f) {
       $v[$name] = $f->getValue();
     }
     return $v;
   }
 
-  function bindValidate(Request $request)
+  public function bindValidate(Request $request)
   {
     $status = true;
 
-    foreach ($this->childs as $k => $f) {
+    foreach ($this->fields as $k => $f) {
       $name = $f->getName();
       $value = $request->get($name);
 
@@ -249,7 +165,7 @@ class Form {
 
   public function bind($data)
   {
-    foreach ($this->childs as $k => $f) {
+    foreach ($this->fields as $k => $f) {
       $name = $f->getName();
       if (isset($data[$name])) {
         $f->setValue($data[$name]);

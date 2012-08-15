@@ -16,6 +16,14 @@ class Date extends Text {
     parent::__construct($name, $extra, $label, $id);
   }
 
+  public function __toString()
+  {
+    $s = parent::__toString();
+       // extra script for datepicker field
+    $s .= '<script type="text/javascript">$(\'#'.$this->getAttribute('id').'\').datepicker({format: \'yyyy-mm-dd\'});</script>';
+    return $s;
+  }
+
   public function setValue($value)
   {
     if ($value) {
