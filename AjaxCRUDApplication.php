@@ -100,7 +100,7 @@ class AjaxCRUDApplication extends Application {
       $this->pager->build($this->tableName, $this->columns);
     }
 
-    return $this->renderView('AjaxCRUD/index', array(
+    return $this->renderView(Response::PetakUmpetView . 'AjaxCRUD/index', array(
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
                     'inlineForm' => $this->inlineForm,
@@ -115,7 +115,7 @@ class AjaxCRUDApplication extends Application {
     if ($this->pager instanceof \PetakUmpet\Pager\TablePager)
       $this->pager->build($this->tableName, $this->columns);
 
-    return $this->renderView('AjaxCRUD/pager', array(
+    return $this->renderView(Response::PetakUmpetView . 'AjaxCRUD/pager', array(
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
                     'inlineForm' => $this->inlineForm,
@@ -189,7 +189,7 @@ class AjaxCRUDApplication extends Application {
 
     $id = $this->request->get('id', $retId);
 
-    return $this->renderView('AjaxCRUD/edit', array(
+    return $this->renderView(Response::PetakUmpetView . 'AjaxCRUD/edit', array(
                     'tableName' => $this->tableName,
                     'id' => $id,
                     'inlineForm' => $this->inlineForm,
