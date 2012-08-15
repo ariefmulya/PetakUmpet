@@ -32,6 +32,11 @@ class Config {
         '/' => 'AppName',
       ); 
 
+    /* set the applications mode, need login or not */
+    $this->appsOpenState = array(
+        'AppName' => false,
+      );
+
     /* database configuration 
        for multiple connection just add more index */
     $this->dbConfig[0] = array(
@@ -62,12 +67,32 @@ class Config {
     return $this->pathApps[$path];
   }
 
+  public function isOpenApp($app)
+  {
+    return $this->appsOpenState[$app];
+  }
+
   public function getDbConfig($index)
   {
     if ($index === null) $index=0;
     if (!isset($this->dbConfig[$index])) return null;
 
     return $this->dbConfig[$index];
+  }
+
+  public function getLogLevel()
+  {
+    return \PetakUmpet\Logger::DEBUG;
+  }
+
+  public function getEventLogging()
+  {
+    return true; // false to turn off app/mod/act logging to database
+  }
+
+  public function isDevelopment()
+  {
+    return true; // false to deactivate development functionalities
   }
 
   public function isAnonymousPage($page)
