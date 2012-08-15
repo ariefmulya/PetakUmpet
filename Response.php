@@ -3,11 +3,15 @@ namespace PetakUmpet;
 
 class Response {
 
+	const PetakUmpetView = 'PetakUmpet:';
+	const PetakUmpetViewLen = 11;
+
 	private $request;
 	private $session;
 	private $config;
 	
 	private $baseViewDir;
+	private $petakUmpetViewDir;
 
 	public function __construct($responseText=null, $httpStatusCode=200)
 	{
@@ -18,6 +22,7 @@ class Response {
 			$this->config  = Singleton::acquire('\\PetakUmpet\\Config');
 
 	    $this->baseViewDir = PU_DIR . DS . 'app' . DS . $this->request->getApplication() . DS . 'View' . DS ;
+	    $this->petakUmpetViewDir = PU_DIR . DS . 'lib' . DS . 'PetakUmpet' . DS . 'View' . DS;
 			return;
 		}
 
@@ -36,14 +41,18 @@ class Response {
 
 	public function render($view, $variables=array(), Template $T)
 	{
-		$template = $this->baseViewDir . str_replace('/', DS, $view) . '.php';
+		if (substr($view, 0, self::PetakUmpetViewLen) == self::PetakUmpetView) {
+			$template = $this->petakUmpetViewDir . str_replace('/', DS, substr($view, self::PetakUmpetViewLen)) . '.php';
+		} else {
+			$template = $this->baseViewDir . str_replace('/', DS, $view) . '.php';
+		}
 
 		if (!is_file($template)) {
 			throw new \Exception("Template file $template does not exist\n");
 			return;
 		}
 
-		Logger::log('Response: using template '. $template);
+		Logger::log('Response: using template '. $template, Logger::DEBUG);
 
 		/* XXX at this point existing member vars of 
 		this class will be available to template XXX */	

@@ -8,7 +8,7 @@ class Session {
     $this->config = Singleton::acquire('\\PetakUmpet\\Config');
   }
 
-  function __call($name, $args)
+  public function __call($name, $args)
   {
     if (session_id() == "") $this->start();
     if (substr($name, 0,3) == 'get') 
@@ -20,24 +20,25 @@ class Session {
 
   public function start()
   {
+    // FIXME: need a better session_id source, possibly using premade secrets
     session_id(sha1($this->config->getProjectTitle())); 
     session_start();
   }
 
-  function destroy()
+  public function destroy()
   {
     if (session_id() == "") $this->start();
     session_destroy();
   }
 
-  function prepareAjaxToken()
+  public function prepareAjaxToken()
   {
     // Set Token for ajax security effort
     // TODO: need more random token
     $this->setToken(sha1(time()));
   }
 
-  function get($name) 
+  public function get($name) 
   {
     if (!isset($_SESSION)) return null;
 
@@ -48,12 +49,12 @@ class Session {
     return null;
   }
 
-  function set($name, $value)
+  public function set($name, $value)
   {
     $_SESSION[$name] = $value;
   }
 
-  function getOrSet($name, $value=null)
+  public function getOrSet($name, $value=null)
   {
     if (isset($_SESSION[$name])) {
       return $_SESSION[$name];

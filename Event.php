@@ -8,6 +8,10 @@ class Event {
 
   public static function log($message='')
   {
+    $config = Singleton::acquire('\\PetakUmpet\\Config');
+    if ($config->getEventLogging() === false) 
+      return;
+    
     $request = Singleton::acquire('\\PetakUmpet\\Request');
     $session = Singleton::acquire('\\PetakUmpet\\Session');
 

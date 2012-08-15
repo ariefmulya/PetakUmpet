@@ -3,87 +3,101 @@ namespace PetakUmpet;
 
 class Process {
 
-	protected $request;
-	protected $session;
-	protected $config;
+	private $request;
+	private $session;
+	private $config;
 
-	function __construct(Request $request, Session $session, Config $config)
+	public function __construct(Request $request, Session $session, Config $config)
 	{	
 		$this->request  = $request;
 		$this->session  = $session;
 		$this->config   = $config;
 	}
 
-	function run()
+	public function sanitize()
 	{
+		// contain secure/sanity checks
+		// and everything else we can do to harden our env
+
+		// if register globals is on and session-injection is tried, get out
+		if (isset($_REQUEST['_SESSION'])) { die ("Sanity check failed" . PHP_EOL); }
+	}
+
+	public function run()
+	{
+		$this->sanitize();
+
 		$this->load($this->request->getPage());
 	}
 
-	function load($page)
+	public function load($page)
 	{
 		$app = $this->request->getApplication();
 
 		if ($page == '/') $page = $this->config->getStartPage();
 
-		// TODO: Add abilities to make all pages accessible in a simple config
-		// useful for no-login type websites
-		$user = $this->session->getUser();
-		if (!$this->config->isAnonymousPage($page)) {
-			if (!$user) {
-				return $this->redirect($this->config->getLoginPage());
-			}
-			if (!$user->hasAccess($page)) {
-				return $this->redirect($this->config->getNoAccessPage());
-			}
-		}
-
 		list($mod, $act) = explode('/', $page);
-
 		$appfile = 'app' . DS . $app . DS . $mod . 'Application.php';
 		$target  = PU_DIR . DS . $appfile;
 
-		if (is_file($target)) {
-			Logger::log("Process: getting application $appfile");
-			include($target);
+		if (!is_file($target))
+			return $this->load404();
 
-			$class_name = '\\' . $app . '\\' . $mod .'Application';
-			$app = new $class_name($this, $this->request, $this->session, $this->config);
-
-			$function_full_name = $act.'Action';
-
-			if ($app instanceof \PetakUmpet\Application && is_callable(array($app, $function_full_name))) {
-
-				Logger::log("Process: loading $class_name->$function_full_name");
-
-				Event::log("loading");
-
-				return call_user_func(array($app, $function_full_name));
+		if (!$this->config->isOpenApp($app)) {
+			$user = $this->session->getUser();
+			if (!$this->config->isAnonymousPage($page)) {
+				if (!$user) {
+					return $this->redirect($this->config->getLoginPage());
+				}
+				if (!$user->hasAccess($page)) {
+					return $this->redirect($this->config->getNoAccessPage());
+				}
 			}
 		}
-		return $this->load404();
+
+		Logger::log("Process: getting application $appfile", Logger::DEBUG);
+		include($target);
+
+		$class_name = '\\' . $app . '\\' . $mod .'Application';
+		$app = new $class_name($this, $this->request, $this->session, $this->config);
+
+		$function_full_name = $act.'Action';
+
+		if ($app instanceof \PetakUmpet\Application && is_callable(array($app, $function_full_name))) {
+
+			Logger::log("Process: loading $class_name->$function_full_name", Logger::DEBUG);
+
+			Event::log("loading");
+
+
+			if (!method_exists($app, $function_full_name)) 
+				return $this->load404();
+
+			return call_user_func(array($app, $function_full_name));
+		}
 	}
 
-	function redirect($page)
+	public function redirect($page)
 	{
     $href = $this->request->getAppUrl($page);
     Header("Location: $href");
     exit();
 	}
 
-	function redirectToStartPage()
+	public function redirectToStartPage()
 	{
 		return $this->redirect($this->config->getStartPage());
 	}
 
-	function redirectToLoginPage()
+	public function redirectToLoginPage()
 	{
 		return $this->redirect($this->config->getLoginPage());
 	}
 
-	function load404()
+	public function load404()
 	{
-		// TODO
-		die('404');
+		$r = new Template($this->request, $this->session, $this->config);
+		return $r->render(Response::PetakUmpetView . 'Error/404');
 	}
 }
 

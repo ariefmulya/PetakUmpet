@@ -5,13 +5,14 @@ class Request {
   const MOD_ACCESSOR = 'm';
   const ACT_ACCESSOR = 'a';
 
-  protected $request_data;
-  protected $request_base_url;
-  protected $resource_base_url;
-  protected $query_string;
-  protected $request_full_url;
-  protected $request_method;
-  protected $is_post;
+  private $data;
+  private $base_url;
+  private $root_url;
+  private $resource_base_url;
+  private $query_string;
+  private $full_url;
+  private $method;
+  private $is_post;
 
   public function __construct()
   {
@@ -22,20 +23,20 @@ class Request {
         $protocol = 'https';
       }
 
-    $this->request_data = $_REQUEST;
-    $this->request_root_url = $protocol . '://' . $_SERVER['SERVER_NAME'] . 
+    $this->data =& $_REQUEST;
+    $this->root_url = $protocol . '://' . $_SERVER['SERVER_NAME'] . 
                   ($port == '80' ? '' : ":$port" ) ;  
 
-    $this->request_base_url = $this->request_root_url . $_SERVER['SCRIPT_NAME'];
+    $this->base_url = $this->root_url . $_SERVER['SCRIPT_NAME'];
 
     $this->query_string = $_SERVER['QUERY_STRING'];
 
-    $this->request_full_url = $this->request_base_url . '?' . $this->query_string;
+    $this->full_url = $this->base_url . '?' . $this->query_string;
 
-    $this->resource_base_url = $this->request_root_url . dirname ($_SERVER['SCRIPT_NAME']) . '/';
+    $this->resource_base_url = $this->root_url . dirname ($_SERVER['SCRIPT_NAME']) . '/';
 
-    $this->request_method = $_SERVER['REQUEST_METHOD'];
-    $this->is_post = $this->request_method == 'POST' ;
+    $this->method = $_SERVER['REQUEST_METHOD'];
+    $this->is_post = $this->method == 'POST' ;
   }
 
   public function __call($name, $args)
@@ -67,15 +68,15 @@ class Request {
 
   public function get($name, $default=null)
   {
-    if (isset($this->request_data[$name]) && $this->request_data[$name] !== false && $this->request_data[$name] != '') {
-      return $this->request_data[$name];
+    if (isset($this->data[$name]) && $this->data[$name] !== false && $this->data[$name] != '') {
+      return $this->data[$name];
     }
     return $default;
   }
 
   public function set($name, $value)
   {
-    $this->request_data[$name] = $value;
+    $this->data[$name] = $value;
   }
 
   public function getPathInfo()
@@ -93,12 +94,12 @@ class Request {
 
   public function getFullUrl()
   {
-    return $this->request_full_url;
+    return $this->full_url;
   }
 
   public function getData()
   {
-    return $this->request_data;
+    return $this->data;
   }
   
   public function getPage()
@@ -123,7 +124,7 @@ class Request {
       $page .= "&$k=$v";
     }
 
-    return $this->request_base_url . $this->getPathInfo() . '?'.self::MOD_ACCESSOR.'=' . $page;
+    return $this->base_url . $this->getPathInfo() . '?'.self::MOD_ACCESSOR.'=' . $page;
   }
 
   public function getModule()
