@@ -10,7 +10,7 @@ class Template {
   private $session;
   private $config;
 	
-	function __construct(Request $request, Session $session, Config $config)
+	public function __construct(Request $request, Session $session, Config $config)
 	{
 		$this->request = $request;
 		$this->session = $session;
@@ -19,7 +19,7 @@ class Template {
     $this->baseViewDir = PU_DIR . DS . 'app' . DS . $this->request->getApplication() . DS . 'View' . DS ;
 	}
 
-	function render($view, $variables=array(), $layout=null)
+	public function render($view, $variables=array(), $renderLayout=null)
 	{
     $app = $this->request->getApplication();
 
@@ -33,21 +33,21 @@ class Template {
 		$response = new Response;
 		$__mainContents = $response->render($view, $variables, $this);
 
-		// no layout on Ajax Call
-		if ($this->request->isSecureAjax()) {
+		// no layout on Ajax Call or when it set to false
+		if ($this->request->isSecureAjax() || $renderLayout===false) {
 			echo $__mainContents;
 			exit();
 		}
 
 		// setting layout
-		$this->setLayout($layout);
-		Logger::log('Layout: rendering  using ' . $this->layout);
+		$this->setLayout($renderLayout);
+		Logger::log('Layout: rendering  using ' . $this->layout, Logger::DEBUG);
 
 		// render them
-		include_once($this->layout);
+		require($this->layout);
 	}
 
-	function setLayout($layout=null)
+	public function setLayout($layout=null)
 	{
 		$this->layout =  $this->baseViewDir . ($layout === null ? 'layout' : $layout) . '.php' ;
 	}

@@ -26,7 +26,7 @@ abstract class Application {
 
   protected function render($variables=array(), $layout=null)
   {
-    $view = $this->request->getModule() . '/' . $this->request->getAction();
+    $view = $this->request->getPage();
 
     if ($view == '/') $view = $this->config->getStartPage();
     
