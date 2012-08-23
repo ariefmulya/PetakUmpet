@@ -41,7 +41,7 @@
         $('#<?php echo $tableName; ?>').ajaxForm({
           target: '#crud-form',
           success: function() {
-            $('#pager').load('<?php echo $T->url($appName . "/pager"); ?>');
+            $('#pager').load('<?php echo $pagerAction; ?>');
           }
         }); 
     }); 

@@ -46,6 +46,7 @@ class Pager {
     $this->nLinksBeforeAfter = 3;
     $this->minDistance = 5;
 
+    $this->readOnly = false;
     $this->targetDiv = 'pager';
     $this->inlineForm = false;
 
@@ -66,7 +67,7 @@ class Pager {
     if (is_array($this->header)) {
       $s .= '<thead><tr>';
       $s .= $this->formatTableRow($this->header, 'th', self::FORMAT_UCASE);
-      $s .= $this->headerCallback($this->header);
+      if ($this->readOnly === false)  $s .= $this->headerCallback($this->header);
       $s .= '</tr></thead>';
     }
 
@@ -84,7 +85,7 @@ class Pager {
           }
           $s .= '<td>'.$val.'</td>';
         }
-        $s .= $this->rowCallback($d);
+        if ($this->readOnly === false) $s .= $this->rowCallback($d);
         $s .= '</tr>';
 
       } else {

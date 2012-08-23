@@ -38,6 +38,8 @@ class xCrudApplication extends Application {
   protected $form;
   protected $filter;
 
+  private $readOnly;
+
   private $pagerAction;
   private $editAction;
   private $deleteAction;
@@ -51,14 +53,41 @@ class xCrudApplication extends Application {
     $this->tableName = null;    /* main table to CRUD */
     $this->columns = null;      /* columns to display in pager */
     $this->relationTabs = null; /* tabs for related tables or actions */
-    $this->inlineForm = false;  /* set true for inline form, useful for simple master tables */
+    $this->inlineForm = true;  /* set true for inline form, useful for simple master tables */
+
+    $this->readOnly = false;
 
     /* filters */
     $this->filter = new Filter;
     $this->filter->addUrl('search', $this->request->get('search'));
   }
 
-  protected function configurePager($query=null, $params=array())
+  public function getFilter()
+  {
+    return $this->filter;
+  }
+
+  public function getForm()
+  {
+    return $this->form;
+  }
+
+  public function setTableName($tableName)
+  {
+    $this->tableName = $tableName;
+  }
+
+  public function setColumns($columns)
+  {
+    $this->columns = $columns;
+  }
+
+  public function setReadOnly($state=true)
+  {
+    $this->readOnly = $state;
+  }
+
+  public function configurePager($query=null, $params=array())
   {
     if ($query === null) {
       $this->pager = new TablePager($this->request);
@@ -87,6 +116,8 @@ class xCrudApplication extends Application {
     $this->pager->setEditAction($this->editAction);
     $this->pager->setDeleteAction($this->deleteAction);
 
+    $this->pager->setReadOnly($this->readOnly);
+
     if ($query === null) {
       $this->pager->build($this->tableName, $this->columns);
     } else {
@@ -94,25 +125,35 @@ class xCrudApplication extends Application {
     }
   }
 
-  protected function configureForm($action=null, $cancelAction=null)
+  public function configureForm($action=null, $cancelAction=null)
   {
-    $formAction = $action !== null ? $action 
-                    : $this->request->getAppUrl($this->appName . '/edit');
+    static $isConfigured = false;
 
-    $cancelAction = $cancelAction !== null ? $cancelAction 
-                      : $this->request->getAppUrl($this->appName .'/index');
+    if ($isConfigured === false) {
+      $formAction = $action !== null ? $action 
+                      : $this->request->getAppUrl($this->appName . '/edit');
+      $formAction .= $this->filter->getUrlFilter();
 
-    $formAction .= $this->filter->getUrlFilter();
-    $cancelAction .= $this->filter->getUrlFilter();
+      $cancelAction = $cancelAction !== null ? $cancelAction 
+                        : $this->request->getAppUrl($this->appName .'/index');
+      $cancelAction .= $this->filter->getUrlFilter();
 
-    $this->form = new TableAdapterForm($this->tableName, array(), array(), $formAction); 
+      if (! $this->form  instanceof TableAdapterForm) {
+        $this->form = new TableAdapterForm($this->tableName, array(), array(), $formAction); 
+      } else {
+        $this->form->setFormAction($formAction);
+      }
+      $this->form->setReadOnly($this->readOnly);
 
-    /* user_id field is always hidden */
-    $this->form->getFormObject()->setFieldType('user_id', 'hidden');
-    /* and set value for user_id from session */
-    $this->form->getFormObject()->setFieldValue('user_id', $this->session->getUser()->getId());
+      /* user_id field is always hidden */
+      $this->form->getFormObject()->setFieldType('user_id', 'hidden');
+      /* and set value for user_id from session */
+      $this->form->getFormObject()->setFieldValue('user_id', $this->session->getUser()->getId());
 
-    $this->form->setCancelAction($cancelAction);
+      $this->form->setCancelAction($cancelAction);
+
+      $isConfigured = true;
+    }
   }
 
   public function indexAction()
@@ -135,23 +176,28 @@ class xCrudApplication extends Application {
                     'pager' => $this->pager,
                     'filterForm' => $filterForm,
                     'editAction' => $this->editAction,
+                    'readOnly' => $this->readOnly,
                   ));
   }
 
   public function pagerAction()
   {
     $this->configurePager();
-    
+
     return $this->renderView(Response::PetakUmpetView . 'xCrud/pager', array(
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
                     'inlineForm' => $this->inlineForm,
                     'pager' => $this->pager,
+                    'pagerAction' => $this->pagerAction,
                   ));
   }
 
   public function editAction()
   {
+    if ($this->readOnly === true) return;
+    
+    if ($this->inlineForm) $this->configurePager();
     $this->configureForm();
     
     if (!$this->request->isPost() && $this->request->get('id')) {
@@ -162,7 +208,7 @@ class xCrudApplication extends Application {
     if ($this->request->isPost()) {
       if (($retId = $this->form->bindValidateSave($this->request))) {
         if ($this->form->isSaveAndAdd($this->request)) {
-          return $this->redirect($this->appName . '/edit' . $this->pageUrl);
+          return $this->redirect($this->appName . '/edit' . $this->filter->getUrlFilter());
         }
         $this->session->setFlash('Data is saved.');
       }
@@ -179,11 +225,14 @@ class xCrudApplication extends Application {
                     'pagerAction' => $this->pagerAction,
                     'pager' => $this->pager,
                     'form' => $this->form,
+                    'readOnly' => $this->readOnly,
                   ));
   }
 
   public function deleteAction()
   {
+    if ($this->readOnly === true) return;
+
     $dba = new Accessor($this->tableName);
     if ($dba->delete(array('id' => $this->request->get('id')))) {
       return new Response('success');

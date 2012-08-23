@@ -5,6 +5,7 @@ namespace PetakUmpet\Pager;
 use PetakUmpet\Request;
 use PetakUmpet\Pager;
 use PetakUmpet\Database\Accessor;
+use PetakUmpet\Database\Schema;
 
 class TablePager extends Pager {
 
@@ -41,15 +42,6 @@ class TablePager extends Pager {
     $data = $dba->findPagerData($this->page, $this->pagerRows, $filter, $schema->get());
 
     $this->setPagerData($data);
-  }
-
-  public function setFilter($value=null, $columns = array())
-  {
-    if ($value===null) return;
-
-    $this->filter = $value;
-    $this->url = preg_replace('/&filter=.+[&]*/', '', $this->url);
-    $this->url .= '&filter=' . $value;
   }
 
   public function headerCallback($headerData)

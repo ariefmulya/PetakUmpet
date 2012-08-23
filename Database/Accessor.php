@@ -107,6 +107,7 @@ class Accessor {
   private function generatePagerFilter($filter, $colData)
   {
     $data = $filter->getQueryData();
+    $marker = array();
     foreach ($data as $c => $v) {
       $s = $c;
       if (!$colData[$c][Schema::COL_IS_STRING] && $v !== null) {
@@ -142,7 +143,7 @@ class Accessor {
 
     $query .= " ORDER BY id ";
 
-    $query  = $this->db->getBaseDbo()->generateLimit($query, $limit, $offset);
+    $query  = $this->db->getDriver()->generateLimit($query, $limit, $offset);
 
     return $this->db->queryFetchAll($query, $filter);
   }

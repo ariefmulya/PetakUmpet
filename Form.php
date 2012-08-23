@@ -12,12 +12,16 @@ class Form {
   protected $validator;
   protected $formatter;
 
+  private $readOnly;
+
   public function __construct($name='Form', $action=null, $id=null, $method='POST', $formatter='BootstrapHorizontal')
   {
     $this->name   = $name;
     $this->id     = ($id === null ? $name : $id);
     $this->action = $action;
     $this->method = $method;
+
+    $this->readOnly = false;
 
     $this->formatter = $formatter;
   }
@@ -27,10 +31,19 @@ class Form {
   public function getAction() { return $this->action; }
   public function getMethod() { return $this->method; }
 
+  public function setFormAction($action) { $this->action = $action; }
+  public function setReadOnly($state=true) { $this->readOnly = $state; }
+
   public function __toString()
   {
     $cname = '\\PetakUmpet\\Form\\Formatter\\' . $this->formatter;
     $formatter = new $cname($this);
+
+    if ($this->readOnly === true) {
+      foreach ($this->fields as $f) {
+        $f->setAttribute('readonly', 'readonly');
+      }
+    }
 
     return (string) $formatter;
   }

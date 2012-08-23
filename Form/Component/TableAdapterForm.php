@@ -19,6 +19,8 @@ class TableAdapterForm {
   private $form;
   private $filter;
 
+  private $readOnly;
+
   public function __construct($tableName, $columns=array(), $skip=array(), $action=null)
   {
     $this->db = Singleton::acquire('\\PetakUmpet\\Database');
@@ -28,6 +30,8 @@ class TableAdapterForm {
     $this->schema = new Schema($tableName);
 
     $this->form = new Form($tableName, $action);
+
+    $this->readOnly = false;
 
     $this->cancelAction = 'history.go(-1)'; // default form cancel action
 
@@ -72,10 +76,12 @@ class TableAdapterForm {
 
   public function __toString()
   {
-    $this->form->addAction(new Field\Submit('Save'));
-    $this->form->addAction(new Field\Submit('Save & Add', array('class' => 'btn')));
-    $this->form->addAction(new Field\Button('Cancel', 
-                  array('class' => 'btn btn-warning', 'onclick' => 'location.href=\'' . $this->cancelAction . '\'')));
+    if ($this->readOnly === false) {
+      $this->form->addAction(new Field\Submit('Save'));
+      $this->form->addAction(new Field\Submit('Save & Add', array('class' => 'btn')));
+      $this->form->addAction(new Field\Button('Cancel', 
+                    array('class' => 'btn btn-warning', 'onclick' => 'location.href=\'' . $this->cancelAction . '\'')));
+    }
     return (string) $this->form;
   }
 
@@ -98,6 +104,12 @@ class TableAdapterForm {
   public function setCancelAction($value)
   {
     $this->cancelAction = $value;
+  }
+
+  public function setReadOnly($state)
+  {
+    $this->readOnly = $state;
+    $this->form->setReadOnly($state);
   }
 
   public function getFormObject()

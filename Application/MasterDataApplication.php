@@ -2,68 +2,104 @@
 
 namespace PetakUmpet\Application;
 
+use PetakUmpet\Application;
 use PetakUmpet\Filter;
+
 
 abstract class MasterDataApplication extends Application {
   
   private $ajaxCrudApps;
 
-  public function __construct(Process $process, Request $request, Session $session, Config $config)
+  private $formTypes;
+  private $formOptions;
+
+  public function __construct(\PetakUmpet\Process $process, \PetakUmpet\Request $request, \PetakUmpet\Session $session, \PetakUmpet\Config $config)
   {
     parent::__construct($process, $request, $session, $config); 
     $this->ajaxCrudApps = array();
 
+    $this->formTypes = array();
+    $this->formOptions = array();
+
     $this->configure();
   }
 
-  /* to be called in child-class setup() function */
-  protected function setAjaxCrudApps($tables)
+  /* to be called in child-class configure() function */
+  protected function setCrudTables($tables)
   {
     foreach ($tables as $t => $columns) {
       $app = new xCrudApplication($this->process, $this->request, $this->session, $this->config);
-      $app->setTable($t);
+      $app->setTableName($t);
       $app->setColumns($columns);
 
       $filter = new Filter;
       $app->getFilter()->addUrl('table', $t);
-      $app->setFormAction($this->request->getAppUrl($this->request->getModule() . '/edit&table=' . $t));
       $this->ajaxCrudApps[$t] = $app;
     }
   }
 
-  abstract protected function setup() ;
+  public function setCrudFormTypes($tableName, $types)
+  {
+    $this->formTypes[$tableName] = $types;
+  }
+
+  public function setCrudFormOptions($tableName, $options)
+  {
+    $this->formOptions[$tableName] = $options;
+  }
+
+  abstract protected function configure() ;
 
   public function indexAction()
   {
-    if (($t = $this->request->get('table', false)) !== false) {
-      $this->ajaxCrudApps[$t]->setInlineForm(true);
+    if (($t = $this->request->get('table', false)) !== false && isset($this->ajaxCrudApps[$t])) {
       return $this->ajaxCrudApps[$t]->indexAction();
     } else {
-      $this->renderView('AjaxCRUD/masterIndex');
+      $this->process->load404();
     }
   }
 
   public function editAction()
   {
-    if (($t = $this->request->get('table', false)) !== false) {
-      $this->ajaxCrudApps[$t]->setInlineForm(true);
+    if (($t = $this->request->get('table', false)) !== false && isset($this->ajaxCrudApps[$t])) {
+
+      if (isset($this->formTypes[$t]) || isset($this->formOptions[$t])) {
+        $this->ajaxCrudApps[$t]->configureForm();
+
+        if (isset($this->formTypes[$t])) $this->ajaxCrudApps[$t]->getForm()->setFormTypes($this->formTypes[$t]);
+        if (isset($this->formOptions[$t])) $this->ajaxCrudApps[$t]->getForm()->setFormOptions($this->formOptions[$t]);
+      }
       return $this->ajaxCrudApps[$t]->editAction();
+    } else  {
+      $this->process->load404();
+    }
+
+  }
+
+  public function setReadOnly(array $tables)
+  {
+    foreach ($tables as $t) {
+      if (isset($this->ajaxCrudApps[$t])) {
+        $this->ajaxCrudApps[$t]->setReadOnly(true);
+      }
     }
   }
 
   public function pagerAction()
   {
-    if (($t = $this->request->get('table', false)) !== false) {
-      $this->ajaxCrudApps[$t]->setInlineForm(true);
+    if (($t = $this->request->get('table', false)) !== false && isset($this->ajaxCrudApps[$t])) {
       return $this->ajaxCrudApps[$t]->pagerAction();
+    } else {
+      $this->process->load404();
     }
   }
 
   public function deleteAction()
   {
-    if (($t = $this->request->get('table', false)) !== false) {
-      $this->ajaxCrudApps[$t]->setInlineForm(true);
+    if (($t = $this->request->get('table', false)) !== false && isset($this->ajaxCrudApps[$t])) {
       return $this->ajaxCrudApps[$t]->deleteAction();
+    } else {
+      return new \PetakUmpet\Response('fail', 404);
     }
   }
 
