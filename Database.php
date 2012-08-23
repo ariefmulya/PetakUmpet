@@ -14,7 +14,7 @@ class Database {
   private $baseDriverObject;
   private $errorInfo;
 
-  function __construct($configIndex=0, $initialize=true)
+  public function __construct($configIndex=0, $initialize=true)
   {
     $config  = Singleton::acquire('\\PetakUmpet\\Config');
     $dbConfig = $config->getDbConfig($configIndex);
@@ -36,45 +36,17 @@ class Database {
     $this->baseDriverObject->setDbo($this);
   }
 
-  function __call($name, $args)
-  {
-    if (substr($name, 0, 10) == 'QueryFetch') {
-      $fetchName = strtolower(substr($name, 10));
-
-      switch ($fetchName) {
-        case 'row':
-          $fetchType = self::FETCH_TYPE_ROW;
-          break;
-        case 'one':
-          $fetchType = self::FETCH_TYPE_ONE;
-          break;
-        case 'all':
-          $fetchType = self::FETCH_TYPE_ALL;
-          break;
-        default:
-          throw new \Exception('Fetch type unknown');
-      }
-
-      return $this->QueryFetch(
-          $args[0], 
-          (isset($args[1]) ? $args[1] : null), 
-          $fetchType, 
-          (isset($args[2]) ? $args[2] : false)
-        );
-    }
-  }
-
-  function getDbo()
+  public function getDbo()
   {
     return $this->db;
   }
 
-  function getBaseDbo()
+  public function getDriver()
   {
     return $this->baseDriverObject;
   }
 
-  function Connect($host, $dbname, $user, $cred, $extra=null)
+  public function Connect($host, $dbname, $user, $cred, $extra=null)
   {
     try {
       $this->db = new \PDO($this->baseDriverObject->generateDSN($host, $dbname, $extra), $user, $cred);
@@ -86,12 +58,12 @@ class Database {
     }
   }
 
-  function Close()
+  public function Close()
   {
     $this->db = null;
   }
   
-  function Query($query, $trans=false)
+  public function query($query, $trans=false)
   {
     Logger::log('Database: Query-> ' . $query);
 
@@ -117,31 +89,43 @@ class Database {
     return $res;
   }
 
-  function preparedQuery($query, $params=array(), $trans=false)
+  public function multiPreparedQuery($value='')
+  {
+    # code...
+  }
+
+  public function preparedQuery($query, $params=array(), $trans=false)
   {
     $st = $this->db->prepare($query);
     $st->setFetchMode(\PDO::FETCH_ASSOC);
 
     Logger::log('Database: preparedQuery QUERY  = ' . $st->queryString);
-    Logger::log('Database: preparedQuery PARAMS = (' . implode(',', $params) . ')');
 
-    if (!$st->execute($params)) {
+    if ($trans === false) $params = array(0 => $params);
+
+    if ($trans) $this->db->beginTransaction();
+
+    foreach ($params as $p) {
+      $ret = $st->execute($p);
+      Logger::log('Database: preparedQuery PARAMS = (' . implode(',', $p) . ')');
+    }
+    
+    if ($trans) $ret = $this->db->commit();
+
+    if (!$ret) {
       $this->errorInfo = $st->errorInfo();
-
       Logger::log('Database: preparedQuery ERROR: ' . implode(' ', $st->errorInfo()));
-
       return false;
     }
-
     return $st;
   }
 
-  private function QueryFetch($query, $params=array(), $fetch_type=self::FETCH_TYPE_ALL, $trans=false)
+  private function queryFetch($query, $params=array(), $trans=false, $fetch_type=self::FETCH_TYPE_ALL)
   {
     if (is_array($params) && count($params) > 0) {
       $st = $this->preparedQuery($query, $params, $trans);
     } else {
-      $st = $this->Query($query, $trans);
+      $st = $this->query($query, $trans);
     }
 
     if ($st) {
@@ -152,13 +136,28 @@ class Database {
     return false;
   }
 
-  function getErrorText()
+  public function queryFetchAll($query, $params=array(), $trans=false)
+  {
+    return $this->queryFetch($query, $params, $trans);
+  }
+
+  public function queryFetchOne($query, $params=array(), $trans=false)
+  {
+    return $this->queryFetch($query, $params, $trans, self::FETCH_TYPE_ONE);
+  }
+
+  public function queryFetchRow($query, $params=array(), $trans=false)
+  {
+    return $this->queryFetch($query, $params, $trans, self::FETCH_TYPE_ROW);
+  }
+
+  public function getErrorText()
   {
     return $this->errorInfo[2];
   }
 
   /* taken from http://stackoverflow.com/questions/574805/how-to-escape-strings-in-mssql-using-php */
-  function escapeInput($data) {
+  public function escapeInput($data) {
     if ( !isset($data) or empty($data) ) return '';
     if ( is_numeric($data) ) return $data;
 

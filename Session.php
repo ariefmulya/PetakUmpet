@@ -6,16 +6,7 @@ class Session {
   public function __construct()
   {
     $this->config = Singleton::acquire('\\PetakUmpet\\Config');
-  }
-
-  public function __call($name, $args)
-  {
-    if (session_id() == "") $this->start();
-    if (substr($name, 0,3) == 'get') 
-      return $this->get(strtolower(substr($name, 3)));
-    if (substr($name, 0,3) == 'set') { 
-      return $this->set(strtolower(substr($name, 3)), $args[0]);
-    }
+    if (session_id() == '') $this->start();
   }
 
   public function start()
@@ -42,7 +33,6 @@ class Session {
   {
     if (!isset($_SESSION)) return null;
 
-
     if (isset($_SESSION[$name])) {
       return $_SESSION[$name];
     }
@@ -66,6 +56,28 @@ class Session {
     return $value;
   }
 
+  public function setUser($value)
+  {
+    $_SESSION['user'] = $value;
+  }
+
+  public function getUser()
+  {
+    if (!isset($_SESSION['user'])) return null;
+    return $_SESSION['user'];
+  }
+  
+  public function setAuthenticated($value=true)
+  {
+    $_SESSION['authenticated'] = $value;
+  }
+  
+  public function getAuthenticated()
+  {
+    if (!isset($_SESSION['authenticated'])) return null;
+    return $_SESSION['authenticated'];
+  }
+  
   public function setFlash($value=null, $name='default')
   {
     $_SESSION['flash'][$name] = $value;
@@ -81,4 +93,18 @@ class Session {
 
     return $value;
   }
+
+  public function setSubNavMenu($value)
+  {
+    $this->requestData['subNavMenu'] = $value;
+  }
+
+  public function getSubNavMenu()
+  {
+    if (isset($this->requestData['subNavMenu']))
+      return $this->requestData['subNavMenu'];
+    return null;
+  }
+
+
 }

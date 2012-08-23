@@ -2,6 +2,10 @@
 
 namespace PetakUmpet;
 
+/* UNFINISHED idea is for authentication backend 
+ * so authentication can work using multiple method not just through database
+ */
+
 class Auth {
 
   private $backend;
@@ -12,12 +16,4 @@ class Auth {
 
   }
 
-  public function __call($name, $args)
-  {
-    if (substr($name, 0, 5) == 'proxy') {
-      $func_name = lcfirst(substr, $name, 5);
-      return $this->backend->$func_name($args);
-    }
-  }
-  
 }

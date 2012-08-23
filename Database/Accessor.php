@@ -8,7 +8,7 @@ class Accessor {
   private $db;
   private $tableName;
 
-  function __construct($tableName, $db=null)
+  public function __construct($tableName, $db=null)
   {
     if ($db === null) 
       $db = Singleton::acquire('\\PetakUmpet\\Database');
@@ -17,7 +17,7 @@ class Accessor {
     $this->tableName = $db->escapeInput($tableName);
   }
 
-  function CountByPK($pkeys, $pkvals)
+  public function countByPK($pkeys, $pkvals)
   {
     $marker = array();
 
@@ -34,16 +34,16 @@ class Accessor {
     $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName 
             . " WHERE (" . implode(', ', $pkeys) . ") = (" . implode(', ', $marker). ") ; ";
 
-    return $this->db->QueryFetchOne($query, (array) $pkvals);
+    return $this->db->queryFetchOne($query, (array) $pkvals);
   }
 
-  function CountAll()
+  public function countAll()
   {
     $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
-    return $this->db->QueryFetchOne($query);
+    return $this->db->queryFetchOne($query);
   }
 
-  function findByPK($pkeys, $pkvals)
+  public function findByPK($pkeys, $pkvals)
   {
     $marker = array();
 
@@ -60,10 +60,10 @@ class Accessor {
     $query =  "SELECT * FROM " . $this->tableName 
             . " WHERE (" . implode(', ', $pkeys) . ") = (" . implode(', ', $marker). ") ; ";
 
-    return $this->db->QueryFetchRow($query, (array) $pkvals);
+    return $this->db->queryFetchRow($query, (array) $pkvals);
   }
 
-  function findBy(array $keyval) 
+  public function findBy(array $keyval) 
   {
     $marker = array();
     foreach ($keyval as $k => $v) {
@@ -76,10 +76,10 @@ class Accessor {
 
     $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) . ";" ;
 
-    return $this->db->QueryFetchAll($query, $keyval);
+    return $this->db->queryFetchAll($query, $keyval);
   }
 
-  function findOneBy(array $keyval) 
+  public function findOneBy(array $keyval) 
   {
     $marker = array();
 
@@ -88,26 +88,28 @@ class Accessor {
       $marker[] = "$k = :$k";
     }
 
+
     if (count($marker) == 0) 
       throw new \Exception ('findBy on table '.$this->tableName.' with no params');
 
     $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) ;
-    $query = $this->db->getBaseDbo()->generateLimit($query, 1);
+    $query = $this->db->getDriver()->generateLimit($query, 1);
 
-    return $this->db->QueryFetchRow($query, $keyval);
+    return $this->db->queryFetchRow($query, $keyval);
   }
 
-  function findAll()
+  public function findAll()
   {
     $query =  "SELECT * FROM " . $this->tableName;
-    return $this->db->QueryFetchAll($query);
+    return $this->db->queryFetchAll($query);
   }
 
   private function generatePagerFilter($filter, $colData)
   {
-    foreach ($filter as $c => $v) {
+    $data = $filter->getQueryData();
+    foreach ($data as $c => $v) {
       $s = $c;
-      if (!$colData[$c]['string'] && $v !== null) {
+      if (!$colData[$c][Schema::COL_IS_STRING] && $v !== null) {
         $s = "CAST ($c AS text) ";
       }
       $marker[] = $s ." ILIKE :$c" ;
@@ -116,7 +118,7 @@ class Accessor {
     return '';
   } 
 
-  function CountPagerData($filter=null, $colData=array())
+  public function countPagerData($filter=null, $colData=array())
   {
     $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
 
@@ -124,10 +126,10 @@ class Accessor {
       $query .= $this->generatePagerFilter($filter, $colData);
     }
 
-    return $this->db->QueryFetchOne($query, $filter);
+    return $this->db->queryFetchOne($query, $filter);
   }
 
-  function findPagerData($page, $nRows, $filter=null, $colData = array())
+  public function findPagerData($page, $nRows, $filter=null, $colData = array())
   {
     $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
@@ -142,13 +144,11 @@ class Accessor {
 
     $query  = $this->db->getBaseDbo()->generateLimit($query, $limit, $offset);
 
-    return $this->db->QueryFetchAll($query, $filter);
+    return $this->db->queryFetchAll($query, $filter);
   }
 
-  function insert($data)
+  private function prepareInsertQuery($data)
   {
-    if (count($data) == 0) return false;
-    
     $marker = array();
     foreach ($data as $k => $v) {
       $marker[] = ":$k";
@@ -157,17 +157,31 @@ class Accessor {
     $query =  "INSERT INTO " . $this->tableName 
             . " (" . implode(',', array_keys($data)) . ") "
             . "VALUES ( " . implode(',', $marker) . ") " 
-            . $this->db->getBaseDbo()->getLastIdQuery() 
+            . $this->db->getDriver()->getLastIdQuery() 
              ;
 
-    $res = $this->db->preparedQuery($query, $data);
+    return $query;
+  }
+
+  public function insert($data)
+  {
+    if (count($data) == 0) return false;
+
+    $isMultiple = is_array(current($data));
+
+    $firstRow = $isMultiple ? current($data) : $data;
+
+    $query = $this->prepareInsertQuery($firstRow);
+
+    $res = $this->db->preparedQuery($query, $data, $isMultiple);
+
     if ($res) {
       return $res->fetchColumn();
     }
     return false;
   }
 
-  function update($data, $keyval)
+  public function update($data, $keyval)
   {
     $marker_data = array();
     $marker_keys = array();
@@ -188,7 +202,7 @@ class Accessor {
     $query =  " UPDATE " . $this->tableName 
             . " SET " . implode(', ', $marker_data)
             . " WHERE " . implode(' AND ', $marker_keys) 
-            . $this->db->getBaseDbo()->getLastIdQuery() ;
+            . $this->db->getDriver()->getLastIdQuery() ;
 
     $params = array_merge($data, $keyval);
 
@@ -199,7 +213,26 @@ class Accessor {
     return false;
   }
 
-  function delete($params = array())
+  public function save($data, $pkeys)
+  {
+    $pkvals = array();
+    $insertMode = false;
+
+    foreach ($pkeys as $pk) {
+      if (!isset($data[$pk]) || empty($data[$pk]) || $data[$pk] === null) {
+        if (isset($data[$pk]) || $data[$pk] === null) unset($data[$pk]);
+        $insertMode=true;
+        break;
+      }
+      $pkvals[$pk] = $data[$pk];
+    }
+
+    if ($insertMode) {
+      return $this->insert($data);
+    }
+    return $this->update($data, $pkvals);
+  }
+  public function delete($params = array())
   {
     foreach ($params as $k=>$v) {
       $marker[] = "$k = :$k";

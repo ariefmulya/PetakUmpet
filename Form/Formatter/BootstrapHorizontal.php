@@ -33,10 +33,11 @@ class BootstrapHorizontal {
 
   public function __toString()
   {
-    $method = $this->form->getFormMethod();
-    $name = $this->form->getFormName();
-    $id = $this->form->getFormId();
-    $action = $this->form->getFormAction();
+    $method = $this->form->getMethod();
+    $name = $this->form->getName();
+    $id = $this->form->getId();
+    $action = $this->form->getAction();
+
 
     $s = '<form method="' . $method 
         . '" class="form-horizontal" '

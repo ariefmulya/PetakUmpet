@@ -4,6 +4,13 @@ namespace PetakUmpet\Pager;
 
 class ModalPager extends QueryPager {
 
+  private $targetId;
+
+  public function setTargetId($target)
+  {
+    $this->targetId = $target;
+  }
+  
   public function rowCallback($rowData)
   {
     $id = $rowData[$this->id];

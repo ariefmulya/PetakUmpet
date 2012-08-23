@@ -2,7 +2,7 @@
 
 namespace PetakUmpet;
 
-use PetakUmpet\Database\Builder;
+use PetakUmpet\Database\Accessor;
 
 class Event {
 
@@ -24,12 +24,18 @@ class Event {
       return;
     }
 
-    $builder = new Builder('event', $db);
+    $dba = new Accessor('event', $db);
 
     $time = new \DateTime();
     
+    $id = null;
+    $user = $session->getUser();
+
+    if ($user) 
+      $id = $user->getId();
+
     $data = array(
-        'user_id' => $session->getUserid(),
+        'user_id' => $id,
         'application' => $request->getApplication(),
         'module' => $request->getModule(),
         'action' => $request->getAction(),
@@ -37,8 +43,7 @@ class Event {
         'created_at' => $time->format('Y-m-d H:i:s'),
       );
 
-    $builder->import($data);
-    $builder->save();
+    $dba->insert($data);
   }
 
   

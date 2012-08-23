@@ -3,11 +3,6 @@
 namespace AppName;
 
 use PetakUmpet\Application;
-use PetakUmpet\Response;
-use PetakUmpet\Singleton;
-use PetakUmpet\Database;
-use PetakUmpet\Database\Builder;
-use PetakUmpet\Database\Accessor;
 use PetakUmpet\User;
 
 class LoginApplication extends Application {

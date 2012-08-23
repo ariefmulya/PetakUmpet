@@ -4,7 +4,6 @@ namespace PetakUmpet\Pager;
 
 use PetakUmpet\Request;
 use PetakUmpet\Pager;
-use PetakUmpet\Database\Builder;
 
 class QueryPager extends Pager {
 
@@ -23,7 +22,7 @@ class QueryPager extends Pager {
 
     $countQuery = "SELECT COUNT(*) AS cnt FROM ( $query ) src ";
 
-    $count = $db->QueryFetchOne($countQuery, $params);
+    $count = $db->queryFetchOne($countQuery, $params);
 
     $this->totalRows = $count;
     $this->totalPage = ceil($count/$this->pagerRows);
@@ -33,10 +32,10 @@ class QueryPager extends Pager {
     $limit = $this->pagerRows;
     $offset = max(($this->page-1) * $limit, 0);
 
-    $query = $db->getBaseDbo()->generateLimit($query, $limit, $offset);
+    $query = $db->getDriver()->generateLimit($query, $limit, $offset);
 
     $this->setHeader($columnNames);
-    $this->setPagerData($db->QueryFetchAll($query, $params));
+    $this->setPagerData($db->queryFetchAll($query, $params));
   }
 
   public function headerCallback($headerData)

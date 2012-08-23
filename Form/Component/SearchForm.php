@@ -1,6 +1,6 @@
 <?php
 
-namespace PetakUmpet\Form\Custom;
+namespace PetakUmpet\Form\Component;
 
 use PetakUmpet\Form\Field\Text;
 
@@ -35,7 +35,7 @@ class SearchForm {
 
   function bind(\PetakUmpet\Request $request)
   {
-    if (($v = $request->getSearch())) {
+    if (($v = $request->get('search'))) {
       $this->input->setValue($v);
     }
   }

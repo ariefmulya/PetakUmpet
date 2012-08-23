@@ -11,8 +11,6 @@ class GroupField extends BaseField {
   private $label;
   private $id;
 
-  private $type;
-
   protected $multiple;
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
@@ -23,6 +21,7 @@ class GroupField extends BaseField {
     $this->id = $id;
     $this->multiple = false;
     $this->useOptions = true;
+    $this->childs = array();
   }
 
   public function setType($type)
@@ -83,7 +82,7 @@ class GroupField extends BaseField {
           $c->setChecked('checked');
         }
       } else {
-        if ($inputVal !== null && $inputVal == $c->getValue()) $c->setChecked('checked');
+        if ($inputVal !== null && $inputVal == $c->getValue()) $c->setAttribute('checked', 'checked');
       }
       $s .= $c;
       $s .= $c->getDescription();

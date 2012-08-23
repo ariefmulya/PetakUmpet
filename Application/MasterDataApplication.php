@@ -1,8 +1,10 @@
 <?php
 
-namespace PetakUmpet;
+namespace PetakUmpet\Application;
 
-class MasterDataApplication extends Application {
+use PetakUmpet\Filter;
+
+abstract class MasterDataApplication extends Application {
   
   private $ajaxCrudApps;
 
@@ -11,26 +13,25 @@ class MasterDataApplication extends Application {
     parent::__construct($process, $request, $session, $config); 
     $this->ajaxCrudApps = array();
 
-    $this->setup();
+    $this->configure();
   }
 
+  /* to be called in child-class setup() function */
   protected function setAjaxCrudApps($tables)
   {
     foreach ($tables as $t => $columns) {
-      $app = new AjaxCRUDApplication($this->process, $this->request, $this->session, $this->config);
+      $app = new xCrudApplication($this->process, $this->request, $this->session, $this->config);
       $app->setTable($t);
       $app->setColumns($columns);
-      $app->setExtraPageFilter(array('table'=>$t));
+
+      $filter = new Filter;
+      $app->getFilter()->addUrl('table', $t);
       $app->setFormAction($this->request->getAppUrl($this->request->getModule() . '/edit&table=' . $t));
       $this->ajaxCrudApps[$t] = $app;
     }
   }
 
-  protected function setup()
-  {
-    // child shall need to implement this and call 
-    // setAjaxCrudApps inside
-  }
+  abstract protected function setup() ;
 
   public function indexAction()
   {

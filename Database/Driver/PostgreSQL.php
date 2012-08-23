@@ -22,8 +22,8 @@ class PostgreSQL {
 
   function getForeignKeyQuery()
   {
-    return  "SELECT a.conname, b.relname as childtable, c.attname as childcol, "
-          . "d.relname as parenttable, e.attname as parentcol "
+    return  "SELECT a.conname, b.relname AS srctable, c.attname as srcid, "
+          . "d.relname AS dsttable, e.attname AS dstid "
           . "FROM "
           . "( "
           . "  SELECT conname, confrelid, conrelid, "

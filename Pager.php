@@ -10,12 +10,12 @@ class Pager {
   const FORMAT_UCFIRST = 4;
   const FORMAT_UCWORDS = 8;
 
-
   private $nLinksBeforeAfter;
   private $minDistance;
 
   protected $url;
   protected $targetDiv;
+  protected $inlineForm;
 
   protected $pagerRows;
   protected $pagerData;
@@ -26,6 +26,13 @@ class Pager {
   protected $page;
   protected $totalRows;
   protected $totalPage;
+
+  protected $filter;
+
+  protected $editAction;
+  protected $cancelAction;
+  protected $deleteAction;
+  protected $readOnly;
 
   public function __construct(Request $request, $pagerRows=10)
   {
@@ -38,6 +45,9 @@ class Pager {
 
     $this->nLinksBeforeAfter = 3;
     $this->minDistance = 5;
+
+    $this->targetDiv = 'pager';
+    $this->inlineForm = false;
 
     $url = $request->getFullUrl();
 
@@ -102,6 +112,11 @@ class Pager {
     return $s;
   }
 
+  public function isBuilt()
+  {
+    return (count($this->pagerData) > 0);
+  }
+
   public function headerCallback($rowData)
   { 
     // If needed child class can implement this to add more columns
@@ -112,31 +127,6 @@ class Pager {
   {
     // If needed child class can implement this to add more columns
     return;
-  }
-
-  function __call($name, $args)
-  {
-    if (substr($name, 0,3) == 'get') 
-      return $this->get(lcfirst(substr($name, 3)));
-    if (substr($name, 0,3) == 'set') 
-      return $this->set(lcfirst(substr($name, 3)), $args[0]);
-  }
-
-  public function setTargetDiv($target)
-  {
-    $this->targetDiv = $target;
-  }
-
-  public function get($name, $default=null)
-  {
-    if (isset($this->$name))
-      return $this->$name;
-    return $default;
-  }
-
-  public function set($name, $value)
-  {
-    $this->$name = $value;
   }
 
   public function formatValue($value)
@@ -258,4 +248,61 @@ class Pager {
     return $s;
   }
 
+  /* some helper setter and getter for child classes */
+
+  public function setReadOnly($state=true)
+  {
+    $this->readOnly = $state;
+  }
+
+  public function getReadOnly()
+  {
+    return $this->readOnly;
+  }
+
+  public function setFilter($filter)
+  {
+    $this->filter = $filter;
+  }
+
+  public function setHeader($data)
+  {
+    $this->header = $data;
+  }
+
+  public function setPagerData($data)
+  {
+    $this->pagerData = $data;
+  }
+  
+  public function setTargetDiv($target)
+  {
+    $this->targetDiv = $target;
+  }
+
+  public function getInlineForm()
+  {
+    return $this->inlineForm;
+  }
+
+  public function setInlineForm($state=true)
+  {
+    $this->inlineForm = $state;
+  }
+
+  public function setEditAction($action)
+  {
+    $this->editAction = $action;
+  }
+
+  public function setDeleteAction($action)
+  {
+    $this->deleteAction = $action;
+  }
+  
+  public function setPagerAction($action)
+  {
+    $this->pagerAction = $action;
+  }
+  
 }

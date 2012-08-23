@@ -11,7 +11,7 @@ class Validator {
     $this->list = array();
   }
 
-  public function set($name=null, \PetakUmpet\Validator\Base $validator)
+  public function add($name=null, \PetakUmpet\Validator\Base $validator)
   {
     if ($name === null || $name == '') throw new \Exception('Validator::set need a target name');
 

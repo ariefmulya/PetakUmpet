@@ -9,22 +9,23 @@ class Form {
   protected $fields;
   protected $actionFields;
 
-  protected $name;
-  protected $action;
-  protected $method;
   protected $validator;
-
   protected $formatter;
 
   public function __construct($name='Form', $action=null, $id=null, $method='POST', $formatter='BootstrapHorizontal')
   {
-    $this->name = $name;
-    $this->id = $id === null ? $name : $id;
+    $this->name   = $name;
+    $this->id     = ($id === null ? $name : $id);
     $this->action = $action;
     $this->method = $method;
 
     $this->formatter = $formatter;
   }
+
+  public function getName()   { return $this->name;   }
+  public function getId()     { return $this->id;     }
+  public function getAction() { return $this->action; }
+  public function getMethod() { return $this->method; }
 
   public function __toString()
   {
@@ -34,32 +35,7 @@ class Form {
     return (string) $formatter;
   }
 
-  public function getFormName()
-  {
-    return $this->name;
-  }
-
-  public function getFormId()
-  {
-    return $this->id;
-  }
-
-  public function setFormMethod($method)
-  {
-    $this->method = $method;
-  }
-
-  public function getFormMethod()
-  {
-    return $this->method;
-  }
-
-  public function getFormAction()
-  {
-    return $this->action;
-  }
-  
-  public function createField($field, $name=null, $extra=null, $label=null, $id=null)
+  private function create($field, $name=null, $extra=null, $label=null, $id=null)
   {
     // some hard-coded aliases
     if ($field == 'checkbox') $field = 'checkboxGroup';
@@ -82,11 +58,46 @@ class Form {
   public function add($field, $name=null, $extra=null, $label=null, $id=null)
   {
     if (!($field instanceof BaseField)) {
-      $f = $this->createField($field, $name, $extra, $label, $id);
+      $f = $this->create($field, $name, $extra, $label, $id);
       if ($f) $this->fields[strtolower($f->getName())] = $f;
 
     } else {
       $this->fields[$field->getName()] = $field;
+    }
+  }
+
+  public function remove($name)
+  {
+    if (isset($this->fields[$name])) {
+      unset($this->fields[$name]);
+    }
+  }
+
+  public function replace($name, BaseField $field)
+  {
+    $this->remove($name);
+    $this->add($field);
+  }
+
+  public function setFieldValue($name, $value)
+  {
+    if (isset($this->fields[$name])) {
+      return $this->fields[$name]->setValue($value);
+    }
+  }
+
+  public function setFieldType($name, $type)
+  {
+    if (isset($this->fields[$name])) {
+      $f = $this->create($type, $name);
+      $this->replace($name, $f);
+    }
+  }
+
+  public function setFieldOptions($name, $options)
+  {
+    if (isset($this->fields[$name])) {
+      return $this->fields[$name]->setOptions($options);
     }
   }
 
@@ -102,34 +113,21 @@ class Form {
 
   public function getField($name)
   {
-    return $this->fields[$name];
-  }
-
-  public function getFields()
-  {
-    return $this->fields;
-  }
-
-  public function setFieldValue($name, $value)
-  {
-    if (isset($this->fields[$name]) && $this->fields[$name] instanceof BaseField) {
-      $this->fields[$name]->setValue($value);
-      return true;
+    if (isset($this->fields[$name])) {
+      return $this->fields[$name];
     }
-    return false;
+    return null;
   }
+
+  public function getFields()  { return $this->fields;       }
+  public function getActions() { return $this->actionFields; }
 
   public function getFieldValue($name)
   {
-    if (isset($this->fields[$name]) && $this->fields[$name] instanceof BaseField) {
+    if (isset($this->fields[$name])) {
       return $this->fields[$name]->getValue();
     }
-    return false;
-  }
-
-  public function getActions()
-  {
-    return $this->actionFields;
+    return null;
   }
 
   public function getValues()

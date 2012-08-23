@@ -12,6 +12,11 @@ class Config {
   const DBUSER = 8;
   const DBCRED = 16;
 
+  private $projectTitle;
+  private $loginPage;
+  private $startPage;
+  private $noAccessPage;
+  
   public function __construct()
   {
     /* project environment setup */
@@ -48,16 +53,10 @@ class Config {
       );
   }
 
-  public function __call($name, $args)
-  {
-    if (substr($name, 0,3) == 'get') {
-      $var = lcfirst(substr($name, 3));
-      if (isset($this->$var)) {
-        return $this->$var;
-      }
-      return null;
-    }
-  }
+  public function getProjectTitle() { return $this->projectTitle; }
+  public function getLoginPage()    { return $this->loginPage;    }
+  public function getStartPage()    { return $this->startPage;    }
+  public function getNoAccessPage() { return $this->noAccessPage; }
 
   public function getApplication($path)
   {

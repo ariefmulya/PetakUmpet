@@ -4,56 +4,43 @@ namespace PetakUmpet\Pager;
 
 use PetakUmpet\Request;
 use PetakUmpet\Pager;
-use PetakUmpet\Database\Builder;
+use PetakUmpet\Database\Accessor;
 
 class TablePager extends Pager {
 
   private $tableName;
-  private $builder;
-  private $filter;
 
   public function __construct(Request $request, $pagerRows=8)
   {
     parent::__construct($request, $pagerRows);
-
-    $this->filter = null;
-    $this->extraFilter = null;
-
   }
 
-  public function build($tableName, $displayCols=array())
+  public function build($tableName, $columns=array())
   {
     $this->tableName = $tableName;
 
-    $this->builder = new Builder($tableName);
+    $dba = new Accessor($tableName);
 
-    $this->builder->setDisplayColumns($displayCols);
+    $schema = new Schema($tableName);
 
-    $buildFilter = array();
+    $filter = array();
 
-    if ($this->filter !== null && $this->filter != '') {
-      foreach ($this->builder->getColumnNames() as $c) {
-        if ($c == 'id') continue;
-        $buildFilter[$c] = $this->filter;
-      }
+    if (count($columns) == 0) {
+      $columns = $schema->getColumnNames();
     }
 
-    if (is_array($this->extraFilter)) {
-      foreach ($this->extraFilter as $k => $v) $buildFilter[$k] = $v;
-    }
-
-    $count = $this->builder->getCountPagerData($buildFilter);
+    $count = $dba->countPagerData($this->filter);
 
     $this->totalRows = $count;
     $this->totalPage = ceil($count/$this->pagerRows);
+
     if ($this->page > $this->totalPage) $this->page = $this->totalPage;
 
-    $this->setHeader(count($displayCols) > 0 ? $displayCols : $this->builder->getColumnNames());
+    $this->setHeader($columns);
 
-    $this->builder->importPagerData($this->page, $this->pagerRows, $buildFilter);
+    $data = $dba->findPagerData($this->page, $this->pagerRows, $filter, $schema->get());
 
-    $this->setPagerData($this->builder->getTableData());
-
+    $this->setPagerData($data);
   }
 
   public function setFilter($value=null, $columns = array())

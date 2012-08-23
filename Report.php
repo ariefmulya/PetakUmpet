@@ -7,7 +7,7 @@ class Report {
   private $title;
   private $header;
   private $columns;
-  private $data;
+  private $reportData;
   private $footer;
 
   private $formatter;
@@ -17,35 +17,21 @@ class Report {
     $this->title = $title;
     $this->header = array();
     $this->columns = array();
-    $this->data = array();
+    $this->reportData = array();
     $this->footer = array();
     $this->formatter = $formatter;
   }
+
+  public function getTitle()      { return $this->title; }
+  public function getHeader()     { return $this->header; }
+  public function getColumns()    { return $this->columns; }
+  public function getReportData() { return $this->reportData; }
+  public function getFooter()     { return $this->footer; }
 
   public function __toString()
   {
     $cname = '\\PetakUmpet\\Report\\' . $this->formatter;
     $formatter = new $cname($this);
     return (string) $formatter;
-  }
-
-  function __call($name, $args)
-  {
-    if (substr($name, 0,3) == 'get') 
-      return $this->get(lcfirst(substr($name, 3)));
-    if (substr($name, 0,3) == 'set') 
-      return $this->set(lcfirst(substr($name, 3)), $args[0]);
-  }
-
-  public function get($name, $default=null)
-  {
-    if (isset($this->$name))
-      return $this->$name;
-    return $default;
-  }
-
-  public function set($name, $value)
-  {
-    $this->$name = $value;
   }
 }

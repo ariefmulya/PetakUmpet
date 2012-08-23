@@ -5,7 +5,7 @@ class Request {
   const MOD_ACCESSOR = 'm';
   const ACT_ACCESSOR = 'a';
 
-  private $data;
+  private $requestData;
   private $base_url;
   private $root_url;
   private $resource_base_url;
@@ -23,7 +23,7 @@ class Request {
         $protocol = 'https';
       }
 
-    $this->data =& $_REQUEST;
+    $this->requestData =& $_REQUEST;
     $this->root_url = $protocol . '://' . $_SERVER['SERVER_NAME'] . 
                   ($port == '80' ? '' : ":$port" ) ;  
 
@@ -37,14 +37,6 @@ class Request {
 
     $this->method = $_SERVER['REQUEST_METHOD'];
     $this->is_post = $this->method == 'POST' ;
-  }
-
-  public function __call($name, $args)
-  {
-    if (substr($name, 0,3) == 'get') 
-      return $this->get(strtolower(substr($name, 3)));
-    if (substr($name, 0,3) == 'set') 
-      return $this->set(strtolower(substr($name, 3)), $args[0]);
   }
 
   public function isSecureAjax()
@@ -68,15 +60,25 @@ class Request {
 
   public function get($name, $default=null)
   {
-    if (isset($this->data[$name]) && $this->data[$name] !== false && $this->data[$name] != '') {
-      return $this->data[$name];
+    if (isset($this->requestData[$name]) && $this->requestData[$name] !== false && $this->requestData[$name] != '') {
+      return $this->requestData[$name];
     }
     return $default;
   }
 
   public function set($name, $value)
   {
-    $this->data[$name] = $value;
+    $this->requestData[$name] = $value;
+  }
+
+  public function setApplication($value)
+  {
+    return $this->set('application', $value);
+  }
+
+  public function getApplication()
+  {
+    return $this->get('application');
   }
 
   public function getPathInfo()
@@ -99,7 +101,7 @@ class Request {
 
   public function getData()
   {
-    return $this->data;
+    return $this->requestData;
   }
   
   public function getPage()
@@ -135,6 +137,18 @@ class Request {
   public function getAction()
   {
     return $this->get(self::ACT_ACCESSOR);
+  }
+
+  public function setSubNavMenu($value)
+  {
+    $this->requestData['subNavMenu'] = $value;
+  }
+
+  public function getSubNavMenu()
+  {
+    if (isset($this->requestData['subNavMenu']))
+      return $this->requestData['subNavMenu'];
+    return null;
   }
 
 }

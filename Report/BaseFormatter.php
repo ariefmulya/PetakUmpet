@@ -13,11 +13,9 @@ class BaseFormatter {
 
   public function __toString()
   {
-    if (count($this->report->getData())==0) {
-      return 'No data found.' ;
-    }
-
     $report = $this->report;
+    $reportData = $report->getReportData();
+
     $s  = '<div><h2>' . $report->getTitle() . '</h2></div>';
 
     if (count($report->getHeader() > 0)) {
@@ -37,9 +35,9 @@ class BaseFormatter {
       $s .= '</tr></thead>';
     }
 
-    if (count($report->getData() > 0)) {
+    if (count($reportData) > 0) {
       $s .= '<tbody>';
-      foreach ($report->getData() as $d) {
+      foreach ($reportData as $d) {
         $s .= '<tr>';
         foreach ($report->getColumns() as $c) {
           $s .= '<td>'.(isset($d[$c]) ? $d[$c] : '').'</td>';;

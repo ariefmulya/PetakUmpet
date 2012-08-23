@@ -15,6 +15,7 @@ class User {
   private $isAdmin;
 
   // shortcuts values
+  private $id;
   private $name;
   private $userid;
 
@@ -25,6 +26,7 @@ class User {
 
     $this->data = $userdata;
     $this->name = null;
+    $this->id = null;
     $this->userid = null;
     $this->roles = array();
     $this->access = array();
@@ -32,36 +34,22 @@ class User {
     $this->isAdmin = false;
   }
 
-  public function __call($name, $args)
-  {
-    if (substr($name, 0,3) == 'get') {
-      if (isset($this->data[strtolower(substr($name, 3))])) {
-        return $this->data[strtolower(substr($name, 3))];
-      }
-    }
-    return null;
-  }
+  public function getName()   { return $this->name;   }
+  public function getUserid() { return $this->userid; }
+  public function getId() { return $this->id; }
+  public function getData()   { return $this->data;   }
 
   public function validate()
   {
     if ($this->data && $this->data !== null) {
       $this->name = $this->data['name'];
       $this->userid = $this->data['userid'];
+      $this->id = $this->data['id'];
       return true;
     }
     return false;
   }
-
-  public function getName()
-  {
-    return $this->name;
-  }
-
-  public function getUserid()
-  {
-    return $this->userid;
-  }
-
+  
   public function hasAccess($page, $refresh=false)
   {
     if (count($this->access) > 0 && !$refresh) {
@@ -82,7 +70,7 @@ class User {
 
     $db = Singleton::acquire('\\PetakUmpet\\Database');
 
-    $rows = $db->QueryFetchAll($query, array($this->userid));
+    $rows = $db->queryFetchAll($query, array($this->userid));
 
     if ($rows) {
       foreach ($rows as $r) {
