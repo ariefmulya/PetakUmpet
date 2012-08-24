@@ -13,6 +13,8 @@ abstract class MasterDataApplication extends Application {
   private $formTypes;
   private $formOptions;
 
+  protected $user;
+
   public function __construct(\PetakUmpet\Process $process, \PetakUmpet\Request $request, \PetakUmpet\Session $session, \PetakUmpet\Config $config)
   {
     parent::__construct($process, $request, $session, $config); 
@@ -20,6 +22,8 @@ abstract class MasterDataApplication extends Application {
 
     $this->formTypes = array();
     $this->formOptions = array();
+    
+    $this->user = $this->session->getUser();
 
     $this->configure();
   }

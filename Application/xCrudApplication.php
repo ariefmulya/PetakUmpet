@@ -37,6 +37,7 @@ class xCrudApplication extends Application {
   protected $pager;
   protected $form;
   protected $filter;
+  protected $user;
 
   private $readOnly;
 
@@ -60,6 +61,8 @@ class xCrudApplication extends Application {
     /* filters */
     $this->filter = new Filter;
     $this->filter->addUrl('search', $this->request->get('search'));
+    
+    $this->user = $this->session->getUser();
   }
 
   public function getFilter()
