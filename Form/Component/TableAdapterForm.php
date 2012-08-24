@@ -162,25 +162,27 @@ class TableAdapterForm {
 
   public function bindValidate(Request $request)
   {
-    return $this->bindValidateSave($request, false);
+    return $this->form->bindValidate($request);
   }
 
-  public function bindValidateSave(Request $request, $save=true)
+  public function save()
   {
-    $status = $this->form->bindValidate($request);
+    $dba = new Accessor($this->tableName);
+    $id = $dba->save($this->form->getValues(), $this->schema->getPK());
 
-    if (!$status) return false;
-
-    if ($save) {
-      $dba = new Accessor($this->tableName);
-      $id = $dba->save($this->form->getValues(), $this->schema->getPK());
-
-      if ($id) {
-        $this->form->setFieldValue('id', $id);
-        return $id;
-      }
-      return false;
+    if ($id) {
+      $this->form->setFieldValue('id', $id);
+      return $id;
     }
+    return false; 
+  }
+
+  public function bindValidateSave(Request $request)
+  {
+    if ($this->bindValidate($request)) 
+      return $this->save();
+
+    return false;
   }
 
   public function setFormValues($params)
@@ -207,9 +209,15 @@ class TableAdapterForm {
   public function setValuesById($id)
   {
     $dba = new Accessor($this->tableName);
-
     $data = $dba->findOneBy(array('id' => $id));
-
     $this->form->bind($data);
   }
+
+  public function setValuesBy($params)
+  {
+    $dba = new Accessor($this->tableName);
+    $data = $dba->findOneBy($params);
+    $this->form->bind($data);
+  }
+
 }
