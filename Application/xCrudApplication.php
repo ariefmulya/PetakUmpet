@@ -153,7 +153,7 @@ class xCrudApplication extends Application {
       /* and set value for user_id from session */
       $this->form->getFormObject()->setFieldValue('user_id', $this->session->getUser()->getId());
 
-      $this->form->setCancelAction($cancelAction);
+      $this->form->setCancelAction('location.href = \'' . $cancelAction . '\'');
 
       $isConfigured = true;
     }

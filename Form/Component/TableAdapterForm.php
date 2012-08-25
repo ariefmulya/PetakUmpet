@@ -80,7 +80,7 @@ class TableAdapterForm {
       $this->form->addAction(new Field\Submit('Save'));
       $this->form->addAction(new Field\Submit('Save & Add', array('class' => 'btn')));
       $this->form->addAction(new Field\Button('Cancel', 
-                    array('class' => 'btn btn-warning', 'onclick' => 'location.href=\'' . $this->cancelAction . '\'')));
+                    array('class' => 'btn btn-warning', 'onclick' => $this->cancelAction )));
     }
     return (string) $this->form;
   }
