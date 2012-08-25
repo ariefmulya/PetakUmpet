@@ -96,13 +96,13 @@ class Session {
 
   public function setSubNavMenu($value)
   {
-    $this->requestData['subNavMenu'] = $value;
+    $_SESSION['subNavMenu'] = $value;
   }
 
   public function getSubNavMenu()
   {
-    if (isset($this->requestData['subNavMenu']))
-      return $this->requestData['subNavMenu'];
+    if (isset($_SESSION['subNavMenu']))
+      return $_SESSION['subNavMenu'];
     return null;
   }
 
