@@ -217,6 +217,11 @@ class TableAdapterForm {
     }
   }
 
+  public function getValues()
+  {
+    return $this->form->getValues();
+  }
+  
   public function setValuesById($id)
   {
     $dba = new Accessor($this->tableName);
