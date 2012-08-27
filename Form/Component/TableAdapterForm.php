@@ -35,6 +35,10 @@ class TableAdapterForm {
 
     $this->cancelAction = 'history.go(-1)'; // default form cancel action
 
+    $this->useSaveButton = true;
+    $this->useSaveAddButton = true;
+    $this->useCancelButton = true;
+
     $schema = $this->schema->get();
     $vld = new Validator;
 
@@ -77,9 +81,9 @@ class TableAdapterForm {
   public function __toString()
   {
     if ($this->readOnly === false) {
-      $this->form->addAction(new Field\Submit('Save'));
-      $this->form->addAction(new Field\Submit('Save & Add', array('class' => 'btn')));
-      $this->form->addAction(new Field\Button('Cancel', 
+      if ($this->useSaveButton) $this->form->addAction(new Field\Submit('Save'));
+      if ($this->useSaveAddButton) $this->form->addAction(new Field\Submit('Save & Add', array('class' => 'btn')));
+      if ($this->useCancelButton) $this->form->addAction(new Field\Button('Cancel', 
                     array('class' => 'btn btn-warning', 'onclick' => $this->cancelAction )));
     }
     return (string) $this->form;
@@ -177,6 +181,13 @@ class TableAdapterForm {
     return false; 
   }
 
+  public function setActionButtons($save=true, $saveadd=true, $cancel=true)
+  {
+    $this->useSaveButton = $save;
+    $this->useSaveAddButton = $saveadd;
+    $this->useCancelButton = $cancel;
+  }
+
   public function bindValidateSave(Request $request)
   {
     if ($this->bindValidate($request)) 
@@ -206,6 +217,11 @@ class TableAdapterForm {
     }
   }
 
+  public function getValues()
+  {
+    return $this->form->getValues();
+  }
+  
   public function setValuesById($id)
   {
     $dba = new Accessor($this->tableName);
