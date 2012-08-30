@@ -13,6 +13,7 @@ class Form {
   protected $formatter;
 
   private $readOnly;
+  private $useMultipart;
 
   public function __construct($name='Form', $action=null, $id=null, $method='POST', $formatter='BootstrapHorizontal')
   {
@@ -22,6 +23,7 @@ class Form {
     $this->method = $method;
 
     $this->readOnly = false;
+    $this->useMultipart = false;
 
     $this->formatter = $formatter;
   }
@@ -30,9 +32,11 @@ class Form {
   public function getId()     { return $this->id;     }
   public function getAction() { return $this->action; }
   public function getMethod() { return $this->method; }
+  public function isMultipart() { return $this->useMultipart; }
 
   public function setFormAction($action) { $this->action = $action; }
   public function setReadOnly($state=true) { $this->readOnly = $state; }
+  public function setMultipart($state=true) { $this->useMultipart = $state; }
 
   public function __toString()
   {

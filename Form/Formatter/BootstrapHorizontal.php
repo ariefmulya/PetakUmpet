@@ -42,6 +42,7 @@ class BootstrapHorizontal {
     $s = '<form method="' . $method 
         . '" class="form-horizontal" '
         . 'name="'.$name.'" id="'.$id.'" '
+        . ($this->form->isMultipart() ? ' enctype="multipart/form-data" ' : '' )
         . ($action !== null ? 'action="'. $action . '" >': ' >'); 
 
     if (($fields = $this->form->getFields()) && count($fields) > 0) { 
