@@ -203,6 +203,13 @@ class TableAdapterForm {
     }
   }
 
+  public function setFormAttributes($params)
+  {
+    foreach ($params as $k => $v) {
+      $this->form->setFieldAttribute($k, key($v), value($v));
+    }
+  }
+
   public function setFormTypes($params)
   {
     foreach ($params as $k => $v) {

@@ -92,6 +92,13 @@ class Form {
     $this->add($field);
   }
 
+  public function setFieldAttribute($name, $key, $value)
+  {
+    if (isset($this->fields[$name])) {
+      return $this->fields[$name]->setAttribute($key, $value);
+    }
+  }
+
   public function setFieldValue($name, $value)
   {
     if (isset($this->fields[$name])) {
