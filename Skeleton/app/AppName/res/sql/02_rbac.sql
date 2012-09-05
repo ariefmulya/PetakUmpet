@@ -3,6 +3,7 @@ INSERT INTO userdata (userid, name, password, is_admin) VALUES ('user', 'Test Us
 
 INSERT INTO roledata (name) VALUES ('Default');
 INSERT INTO roledata (name) VALUES ('Administrator');
+INSERT INTO roledata (name) VALUES ('CRUD');
 
 -- default access
 INSERT INTO accessdata (name) VALUES ('Home/index');
@@ -62,4 +63,15 @@ INSERT INTO role_access (role_id, access_id)
 -- Other accessdata not included in above roles are considered Administrator only roles
 INSERT INTO role_access (role_id, access_id)
   SELECT r.id, a.id FROM roledata r, accessdata a WHERE r.name = 'Administrator'
-    WHERE r.id NOT IN (SELECT role_id FROM role_Access);
+    AND a.id NOT IN (SELECT access_id FROM role_access);
+
+-- Give Administrators access to everything 
+INSERT INTO user_role (user_id, role_id) 
+  SELECT u.id, r.id FROM userdata u, roledata r 
+    WHERE u.is_admin IS TRUE;
+
+-- Give Regular users access to default menu
+INSERT INTO user_role (user_id, role_id) 
+  SELECT u.id, r.id FROM userdata u, roledata r 
+    WHERE u.is_admin IS FALSE AND r.name = 'Default';
+
