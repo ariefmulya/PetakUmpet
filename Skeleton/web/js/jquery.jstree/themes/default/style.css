@@ -1,0 +1,18 @@
+/*
+ * arief: 
+ * - changed default theme to use glyphicons
+ * - disable unused features
+ */
+
+.jstree-default li, 
+.jstree-default ins { background-image:url("../../../../img/glyphicons-halflings.png"); background-repeat:no-repeat; background-color:transparent; }
+.jstree-default li { background: none }
+.jstree-default li.jstree-last { background:transparent; }
+.jstree-default .jstree-open > ins { background-position: -433px -96px; }
+.jstree-default .jstree-closed > ins { background-position: -408px -96px; }
+.jstree-default .jstree-leaf > ins { background-position:-24px -24px; }
+
+.jstree-default .jstree-hovered { background:#e7f4f9; border:1px solid #d8f0fa; padding:0 2px 0 1px; }
+.jstree-default a .jstree-icon { display: none; }
+.jstree-default a.jstree-loading .jstree-icon { background:url("throbber.gif") center center no-repeat !important; }
+
