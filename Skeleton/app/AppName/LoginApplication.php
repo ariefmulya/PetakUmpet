@@ -4,7 +4,7 @@ namespace AppName;
 
 use PetakUmpet\Application;
 use PetakUmpet\Response;
-use AppName\AppUser
+use AppName\AppUser;
 
 class LoginApplication extends Application {
 
