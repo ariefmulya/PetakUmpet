@@ -45,7 +45,7 @@ rename(TARGETDIR . DS . 'app' . DS . 'AppName', TARGETDIR . DS . 'app' . DS . $a
 
 
 // in config file
-$cfgfile = TARGETDIR . DS . 'config' . DS . 'Config.php';
+$cfgfile = TARGETDIR . DS . 'config' . DS . 'Config.php.dist';
 file_put_contents($cfgfile,str_replace('AppName', $app, file_get_contents($cfgfile)));
 
 // in form login file
@@ -72,7 +72,7 @@ echo "\n  init-project: Finished.\n";
 echo "\n";
 echo "        Make sure to setup the project with following steps:\n";
 echo "------------------------------------------------------------------------\n";
-echo "  1. Update config\Config.php file, specially database info\n";
+echo "  1. Move config\Config.php.dist to config\Config.php file, updates it accordingly\n";
 echo "  2. Create the database\n";
 echo "  3. Update and execute SQL files in app\\". $app."\\res\\sql\\ folder\n";
 echo "     - Can use init-db.php to create database and execute the sql files\n";
