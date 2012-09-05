@@ -25,7 +25,6 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#"><?php echo $config->getProjectTitle() ?></a>
           <div class="nav-collapse collapse">
             <?php if ($session->getUser()) : ?>
             <ul class="nav">
@@ -54,6 +53,7 @@
             </ul>
             <?php endif ?>
           </div><!--/.nav-collapse -->
+          <a class="brand" href="#"><?php echo $config->getProjectTitle() ?></a>
           
         </div>
       </div>
