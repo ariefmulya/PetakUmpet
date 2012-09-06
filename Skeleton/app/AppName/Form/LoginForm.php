@@ -18,8 +18,8 @@ class LoginForm extends Form {
     $this->addAction(new Form\Field\Submit('Login'));
 
     $vld = new Validator;
-    $vld->set('name', new Required);
-    $vld->set('password', new Required);
+    $vld->add('name', new Required);
+    $vld->add('password', new Required);
 
     $this->setValidator($vld);
 

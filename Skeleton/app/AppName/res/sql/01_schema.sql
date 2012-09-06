@@ -71,19 +71,3 @@ CREATE TABLE event (
   FOREIGN KEY (user_id) REFERENCES userdata (id)
 );
 
-INSERT INTO userdata (userid, name, password) VALUES ('admin', 'Administrator', '1');
-INSERT INTO userdata (userid, name, password) VALUES ('arief', 'Arief M Utama', '1');
-
-INSERT INTO roledata (name) VALUES ('Default');
-
-INSERT INTO accessdata (name) VALUES ('Home/index');
-INSERT INTO accessdata (name) VALUES ('Logout/index');
-INSERT INTO accessdata (name) VALUES ('User/profile');
-
-INSERT INTO user_role (user_id, role_id) 
-  SELECT u.id, r.id FROM userdata u, roledata r;
-
-INSERT INTO role_access (role_id, access_id) 
-  SELECT r.id, a.id FROM roledata r, accessdata a WHERE r.name = 'Default' 
-    AND a.name IN ('Home/index', 'Logout/index', 'User/profile') ;
-

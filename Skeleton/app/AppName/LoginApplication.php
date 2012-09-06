@@ -3,7 +3,8 @@
 namespace AppName;
 
 use PetakUmpet\Application;
-use PetakUmpet\User;
+use PetakUmpet\Response;
+use AppName\AppUser;
 
 class LoginApplication extends Application {
 
@@ -15,12 +16,12 @@ class LoginApplication extends Application {
 
       if ($form->bindValidate($this->request)) {
 
-        $user = new User($form->getName(), $form->getPassword());
+        $user = new AppUser($form->getFieldValue('name'), $form->getFieldValue('password'));
 
         if ($user->validate()) {
           $this->session->setUser($user);
-          $this->session->setUsername($user->getName());
-          $this->session->setUserid($user->getId());
+          $this->session->set('username', $user->getName());
+          $this->session->set('userid', $user->getUserid());
           $this->session->setAuthenticated(true);
           // authenticated, go to index
           $this->redirectToStartPage();
@@ -32,5 +33,4 @@ class LoginApplication extends Application {
 
     return $this->render(array('form' => $form));
   }
-
 }

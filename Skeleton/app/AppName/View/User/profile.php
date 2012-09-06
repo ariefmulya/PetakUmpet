@@ -1,7 +1,6 @@
-<?php $T->snippet('flash-message'); ?>
-
-<div class="row-fluid">
-  <div class="span6">
-    <?php echo $form; ?>
-  </div>
+<div class="span6">
+  <h3>Update your profile</h3>
+  <?php $T->snippet('flash-message'); ?>
+  <?php echo $form; ?>
 </div>
+

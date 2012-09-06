@@ -12,11 +12,6 @@ class Config {
   const DBUSER = 8;
   const DBCRED = 16;
 
-  private $projectTitle;
-  private $loginPage;
-  private $startPage;
-  private $noAccessPage;
-  
   public function __construct()
   {
     /* project environment setup */
@@ -37,11 +32,6 @@ class Config {
         '/' => 'AppName',
       ); 
 
-    /* set the applications mode, need login or not */
-    $this->appsOpenState = array(
-        'AppName' => false,
-      );
-
     /* database configuration 
        for multiple connection just add more index */
     $this->dbConfig[0] = array(
@@ -53,10 +43,16 @@ class Config {
       );
   }
 
-  public function getProjectTitle() { return $this->projectTitle; }
-  public function getLoginPage()    { return $this->loginPage;    }
-  public function getStartPage()    { return $this->startPage;    }
-  public function getNoAccessPage() { return $this->noAccessPage; }
+  public function __call($name, $args)
+  {
+    if (substr($name, 0,3) == 'get') {
+      $var = lcfirst(substr($name, 3));
+      if (isset($this->$var)) {
+        return $this->$var;
+      }
+      return null;
+    }
+  }
 
   public function getApplication($path)
   {
@@ -66,11 +62,6 @@ class Config {
     return $this->pathApps[$path];
   }
 
-  public function isOpenApp($app)
-  {
-    return $this->appsOpenState[$app];
-  }
-
   public function getDbConfig($index)
   {
     if ($index === null) $index=0;
@@ -78,7 +69,7 @@ class Config {
 
     return $this->dbConfig[$index];
   }
-
+  
   public function getLogLevel()
   {
     return \PetakUmpet\Logger::DEBUG;
