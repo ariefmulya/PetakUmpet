@@ -104,6 +104,23 @@ class Accessor {
     return $this->db->queryFetchAll($query);
   }
 
+  public function findAllForOptions($keyCol, $valCol)
+  {
+    $key = $this->db->escapeInput($keyCol);
+    $val = $this->db->escapeInput($valCol);
+
+    $query =  "SELECT $key, $val FROM " . $this->tableName;
+    $res = $this->db->queryFetchAll($query);
+
+    $options = array(null => '');
+    if ($res) {
+      foreach ($res as $r) {
+        $options[$r[$key]] = $r[$val];
+      }
+    }
+    return $options;
+  }
+
   private function generatePagerFilter($filter, $colData)
   {
     $data = $filter->getQueryData();
