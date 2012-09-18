@@ -28,14 +28,14 @@ class Form {
     $this->formatter = $formatter;
   }
 
-  public function getName()   { return $this->name;   }
-  public function getId()     { return $this->id;     }
-  public function getAction() { return $this->action; }
-  public function getMethod() { return $this->method; }
+  public function getName()     { return $this->name;   }
+  public function getId()       { return $this->id;     }
+  public function getAction()   { return $this->action; }
+  public function getMethod()   { return $this->method; }
   public function isMultipart() { return $this->useMultipart; }
 
-  public function setFormAction($action) { $this->action = $action; }
-  public function setReadOnly($state=true) { $this->readOnly = $state; }
+  public function setFormAction($action)    { $this->action = $action; }
+  public function setReadOnly($state=true)  { $this->readOnly = $state; }
   public function setMultipart($state=true) { $this->useMultipart = $state; }
 
   public function __toString()

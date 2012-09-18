@@ -16,6 +16,7 @@ class Price extends BaseField {
     $this->currency = 'IDR';
     $this->setAttribute('style', 'text-align: right;');
     $this->setAttribute('class', 'input-medium');
+    $this->setAttribute('data-price', 'true');
   }
 
   public function setCurrencyTag($value)
@@ -36,7 +37,7 @@ class Price extends BaseField {
     $s .= '</div>';
 
     // extra script for datepicker field
-    $s .= '<script type="text/javascript">$(\'#'.$this->getAttribute('id').'\').priceFormat({prefix: ""});</script>';
+    $s .= '<script type="text/javascript">$(\'#'.$this->getAttribute('id').'\').priceFormat({prefix: "", centsSeparator: "", centsLimit: 0 });</script>';
     return $s;
   }
 
