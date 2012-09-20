@@ -44,8 +44,8 @@ class Process {
 			return $this->load404();
 
 		if (!$this->config->isOpenApp($app)) {
-			$user = $this->session->getUser();
 			if (!$this->config->isAnonymousPage($page)) {
+        $user = $this->session->getUser();
 				if (!$user) {
 					return $this->redirect($this->config->getLoginPage());
 				}
