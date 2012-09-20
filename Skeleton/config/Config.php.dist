@@ -24,12 +24,13 @@ class Config {
         'Home/about',
         'Home/contact',
         'Login/index',
+        'Logout/index',
         'User/noAccess',
       );
 
     /* available applications, indexed by path */
     $this->pathApps = array(
-        '/' => 'AppName',
+        '/' => 'bmt',
       ); 
 
     /* database configuration 
