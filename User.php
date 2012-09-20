@@ -23,6 +23,7 @@ class User {
   {
     $dba = new Accessor('userdata');
     $userdata = $dba->findOneBy(array('userid' => $username, 'password' => $password));
+    unset($userdata['password']);
 
     $this->data = $userdata;
     $this->name = null;
