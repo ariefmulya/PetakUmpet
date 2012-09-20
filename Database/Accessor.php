@@ -125,26 +125,40 @@ class Accessor {
   {
     $data = $filter->getQueryData();
     $marker = array();
+    $params = array();
+
     foreach ($data as $c => $v) {
       $s = $c;
-      if (!$colData[$c][Schema::COL_IS_STRING] && $v !== null) {
+      if (!isset($colData[$c]) || $v === null || $v == '') continue;
+
+      if (!$colData[$c][Schema::COL_IS_STRING]) {
         $s = "CAST ($c AS text) ";
       }
       $marker[] = $s ." ILIKE :$c" ;
+      $params[$c] = $v;
     }
-    if (count($marker) > 0 ) return " WHERE " . implode (' OR ', $marker);
-    return '';
+
+    $ret = array('', array());
+
+    if (count($marker) > 0 ) {
+      $where = " WHERE " . implode (' OR ', $marker);
+      $ret = array($where, $params);
+    }
+
+    return $ret;
   } 
 
   public function countPagerData($filter=null, $colData=array())
   {
     $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
 
-    if ($filter && count($filter) > 0) {
-      $query .= $this->generatePagerFilter($filter, $colData);
+    $params = array();
+    if ($filter && count($filter->getQueryData()) > 0) {
+      list($where, $params) = $this->generatePagerFilter($filter, $colData);
+      $query .= $where;
     }
 
-    return $this->db->queryFetchOne($query, $filter);
+    return $this->db->queryFetchOne($query, $params);
   }
 
   public function findPagerData($page, $nRows, $filter=null, $colData = array())
@@ -154,15 +168,17 @@ class Accessor {
 
     $query  =  "SELECT * FROM " . $this->tableName ;
 
-    if ($filter && count($filter) > 0) {
-      $query .= $this->generatePagerFilter($filter, $colData);
+    $params = array();
+    if ($filter && count($filter->getQueryData()) > 0) {
+      list($where, $params) = $this->generatePagerFilter($filter, $colData);
+      $query .= $where;
     }
 
     $query .= " ORDER BY id ";
 
     $query  = $this->db->getDriver()->generateLimit($query, $limit, $offset);
 
-    return $this->db->queryFetchAll($query, $filter);
+    return $this->db->queryFetchAll($query, $params);
   }
 
   private function prepareInsertQuery($data)

@@ -24,13 +24,11 @@ class TablePager extends Pager {
 
     $schema = new Schema($tableName);
 
-    $filter = array();
-
     if (count($columns) == 0) {
       $columns = $schema->getColumnNames();
     }
 
-    $count = $dba->countPagerData($this->filter);
+    $count = $dba->countPagerData($this->filter, $schema->get());
 
     $this->totalRows = $count;
     $this->totalPage = ceil($count/$this->pagerRows);
@@ -39,7 +37,7 @@ class TablePager extends Pager {
 
     $this->setHeader($columns);
 
-    $data = $dba->findPagerData($this->page, $this->pagerRows, $filter, $schema->get());
+    $data = $dba->findPagerData($this->page, $this->pagerRows, $this->filter, $schema->get());
 
     $this->setPagerData($data);
   }

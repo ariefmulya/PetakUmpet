@@ -54,6 +54,7 @@ class Filter {
     if (isset($data[$key])) {
       return $data[$key];
     }
+    return null;
   }
 
   public function getUrlFilter($withBase=false)
@@ -76,9 +77,9 @@ class Filter {
   {
     $data = array();
 
-    if ($base) array_merge($data, $this->base);
-    if ($url) array_merge($data, $this->url);
-    if ($query) array_merge($data, $this->query);
+    if ($base) $data += $this->base;
+    if ($url) $data += $this->url;
+    if ($query) $data += $this->query;
 
     return $data;
   }
@@ -93,14 +94,26 @@ class Filter {
     return $this->getFilterData(false, true, false);
   }
 
-  public function getQueryValue($key=null)
+  public function getQueryValue($key=null, $default=null)
   {
-    if ($key !== null) return $this->getValue($key, self::QUERY);
+    if ($key !== null) {
+      $ret = $this->getValue($key, self::QUERY);
+      if ($ret === null) {
+        $ret = $default;
+      }
+    }
+    return $ret;
   }
 
-  public function getUrlValue($key=null)
+  public function getUrlValue($key=null, $default=null)
   {
-    if ($key !== null) return $this->getValue($key, self::URL);
+    if ($key !== null) {
+      $ret = $this->getValue($key, self::URL);
+      if ($ret === null) {
+        $ret = $default;
+      }
+    }
+    return $ret;
   }
 
 }

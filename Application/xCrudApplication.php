@@ -60,7 +60,9 @@ class xCrudApplication extends Application {
 
     /* filters */
     $this->filter = new Filter;
+    $this->filter->addQuery('search', $this->request->get('search'));
     $this->filter->addUrl('search', $this->request->get('search'));
+    $this->filter->add('search', $this->request->get('search'));
     
     $this->user = $this->session->getUser();
   }
@@ -103,7 +105,7 @@ class xCrudApplication extends Application {
     $columns = $schema->getColumnNames();
     foreach ($columns as $c) {
       if ($c == 'id') continue;
-      $this->filter->addQuery($c, $this->filter->getUrlData('search'));
+      $this->filter->addQuery($c, $this->request->get('search'));
     }
 
     /* action links */
