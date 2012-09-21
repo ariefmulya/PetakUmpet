@@ -213,6 +213,7 @@ class xCrudApplication extends Application {
     if ($this->request->isPost()) {
       if (($retId = $this->form->bindValidateSave($this->request))) {
         if ($this->form->isSaveAndAdd($this->request)) {
+          $this->session->setFlash('Data is saved, please enter another one.');
           return $this->redirect($this->appName . '/edit' . $this->filter->getUrlFilter());
         }
         $this->session->setFlash('Data is saved.');
