@@ -43,6 +43,22 @@ class Accessor {
     return $this->db->queryFetchOne($query);
   }
 
+  public function countBy(array $keyval)
+  {
+    $marker = array();
+    foreach ($keyval as $k => $v) {
+      $k = $this->db->escapeInput($k);
+      $marker[] = "$k = :$k";
+    }
+
+    if (count($marker) == 0) 
+      throw new \Exception ('countBy on table '.$this->tableName.' with no params');
+
+    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) . ";" ;
+    return $this->db->queryFetchOne($query, $keyval);
+  }
+
+
   public function findByPK($pkeys, $pkvals)
   {
     $marker = array();
