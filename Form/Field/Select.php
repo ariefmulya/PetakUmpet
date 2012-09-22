@@ -19,12 +19,14 @@ class Select extends BaseField {
 
   public function setOptions(array $options)
   {
-    $this->options = array_merge(array(null=>''), $options);
+    $this->options = $options;
   }
 
   public function getInnerValue()
   {
     $s = '';
+    $s .= '<option value=""></option>';
+
     foreach ($this->options as $k => $v) {
       $t = $k == $this->getValue() ? 'selected' : '';
       $s .= '<option value="'.$k.'" '.$t.'>'.$v.'</option>';
