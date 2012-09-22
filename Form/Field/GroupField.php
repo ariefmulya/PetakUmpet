@@ -41,7 +41,10 @@ class GroupField extends BaseField {
 
   public function getLabel()
   {
-    return ucwords(str_replace('_', ' ', $this->name));
+    if ($this->getAttribute('label') == null) {
+      return ucwords(str_replace('_', ' ', $this->name));
+    }
+    return parent::getLabel();
   }
 
   public function setOptions(array $options)
