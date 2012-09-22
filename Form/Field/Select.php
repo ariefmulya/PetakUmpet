@@ -19,7 +19,7 @@ class Select extends BaseField {
 
   public function setOptions(array $options)
   {
-    $this->options = $options;
+    $this->options = array_merge(array(null=>''), $options);
   }
 
   public function getInnerValue()
