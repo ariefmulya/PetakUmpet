@@ -210,6 +210,13 @@ class TableAdapterForm {
     }
   }
 
+  public function setFormLabels($params)
+  {
+    foreach ($params as $k => $v) {
+      $this->form->setFieldLabel($k, $v);
+    }
+  }
+
   public function setFormTypes($params)
   {
     foreach ($params as $k => $v) {

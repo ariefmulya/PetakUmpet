@@ -54,6 +54,10 @@ class Form {
 
   private function create($field, $name=null, $extra=null, $label=null, $id=null)
   {
+    if ($field instanceof BaseField) {
+      return $field;
+    }
+
     // some hard-coded aliases
     if ($field == 'checkbox') $field = 'checkboxGroup';
     if ($field == 'radio') $field = 'radioGroup';
@@ -92,8 +96,7 @@ class Form {
 
   public function replace($name, BaseField $field)
   {
-    $this->remove($name);
-    $this->add($field);
+    $this->fields[$name] = $this->create($field, $name);
   }
 
   public function setFieldAttribute($name, $key, $value)
@@ -107,6 +110,13 @@ class Form {
   {
     if (isset($this->fields[$name])) {
       return $this->fields[$name]->setValue($value);
+    }
+  }
+
+  public function setFieldLabel($name, $value)
+  {
+    if (isset($this->fields[$name])) {
+      return $this->fields[$name]->setLabel($value);
     }
   }
 
