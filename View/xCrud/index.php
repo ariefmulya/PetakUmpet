@@ -23,3 +23,9 @@
     </div>
   <?php endif ?>
 </div>
+
+<?php if($hasScript) : ?>
+<script language="javascript">
+<?php echo $hasScript ?>
+</script>
+<?php endif ?>

@@ -30,6 +30,7 @@ class xCrudApplication extends Application {
   private $appName;
   protected $tableName;
   protected $columns;
+  protected $hasScript;
 
   protected $relationTabs;
   protected $inlineForm;
@@ -39,7 +40,7 @@ class xCrudApplication extends Application {
   protected $filter;
   protected $user;
 
-  private $readOnly;
+  private $readOnly;  
 
   private $pagerAction;
   private $editAction;
@@ -55,6 +56,7 @@ class xCrudApplication extends Application {
     $this->columns = null;      /* columns to display in pager */
     $this->relationTabs = null; /* tabs for related tables or actions */
     $this->inlineForm = true;  /* set true for inline form, useful for simple master tables */
+    $this->hasScript = null;
 
     $this->readOnly = false;
 
@@ -182,6 +184,7 @@ class xCrudApplication extends Application {
                     'filterForm' => $filterForm,
                     'editAction' => $this->editAction,
                     'readOnly' => $this->readOnly,
+                    'hasScript' => $this->hasScript,
                   ));
   }
 
@@ -195,6 +198,7 @@ class xCrudApplication extends Application {
                     'inlineForm' => $this->inlineForm,
                     'pager' => $this->pager,
                     'pagerAction' => $this->pagerAction,
+                    'hasScript' => $this->hasScript,
                   ));
   }
 
@@ -213,7 +217,6 @@ class xCrudApplication extends Application {
     if ($this->request->isPost()) {
       if (($retId = $this->form->bindValidateSave($this->request))) {
         if ($this->form->isSaveAndAdd($this->request)) {
-          $this->session->setFlash('Data is saved, please enter another one.');
           return $this->redirect($this->appName . '/edit' . $this->filter->getUrlFilter());
         }
         $this->session->setFlash('Data is saved.');

@@ -78,6 +78,8 @@ class Pager {
       if (is_array($this->header)) {
 
         $s .= '<tr>';
+        $row_id = (isset($d['id']))?$d['id']:$cnt;
+        $s .= '<tr id="row_'.$row_id.'" alt="'.$row_id.'">';
         foreach ($this->header as $h) {
           $val = '';
           if (isset($d[$h])) {
