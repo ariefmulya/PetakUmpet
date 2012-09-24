@@ -166,6 +166,7 @@ class xCrudApplication extends Application {
   public function indexAction()
   {
     $this->configurePager();
+    echo $this->filter->getValue('search');
 
     $filterForm = new SearchForm;
 

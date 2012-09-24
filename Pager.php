@@ -62,7 +62,7 @@ class Pager {
     if (count($this->pagerData) <= 0 || count($this->pagerData[0]) <= 0)
       return 'No data found';
 
-    $s = '<table class="table table-condensed table-bordered table-striped">';
+    $s = '<table class="table table-condensed table-bordered table-striped table-hover">';
 
     if (is_array($this->header)) {
       $s .= '<thead><tr>';
