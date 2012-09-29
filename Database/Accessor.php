@@ -282,6 +282,7 @@ class Accessor {
     }
     return $this->update($data, $pkvals);
   }
+  
   public function delete($params = array())
   {
     foreach ($params as $k=>$v) {
