@@ -82,7 +82,7 @@ class GroupField extends BaseField {
             $inputVal !== null && is_array($inputVal) && 
             in_array($c->getValue(), $this->getValue())
           ) {
-          $c->setChecked('checked');
+          $c->setAttribute('checked', 'checked');
         }
       } else {
         if ($inputVal !== null && $inputVal == $c->getValue()) $c->setAttribute('checked', 'checked');
