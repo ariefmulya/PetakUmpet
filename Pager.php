@@ -36,14 +36,14 @@ class Pager {
 
   public function __construct(Request $request, $pagerRows=10)
   {
-    $this->pagerRows = $pagerRows;
+    $this->pagerRows = $pagerRows === null ? 10 : $pagerRows;
     $this->pagerData = array();
     $this->header = null;
     $this->footer = null;
     $this->page = $request->get('page', 1);
     $this->total = null;
 
-    $this->nLinksBeforeAfter = 3;
+    $this->nLinksBeforeAfter = 1;
     $this->minDistance = 5;
 
     $this->readOnly = false;
@@ -66,6 +66,10 @@ class Pager {
 
     if (is_array($this->header)) {
       $s .= '<thead><tr>';
+
+      // show header for number
+      $s .= '<th>NO</th>';
+
       $s .= $this->formatTableRow($this->header, 'th', self::FORMAT_UCASE);
       if ($this->readOnly === false)  $s .= $this->headerCallback($this->header);
       $s .= '</tr></thead>';
@@ -80,7 +84,12 @@ class Pager {
         $s .= '<tr>';
         $row_id = (isset($d['id']))?$d['id']:$cnt;
         $s .= '<tr id="row_'.$row_id.'" alt="'.$row_id.'">';
+
+        // just a running number
+        $s .= '<td>' . ((($this->page-1)*$this->pagerRows) + $cnt) . '</td>';
+
         foreach ($this->header as $h) {
+          if ($h == 'id') continue;
           $val = '';
           if (isset($d[$h])) {
             $val = $this->formatValue($d[$h]);
@@ -144,6 +153,7 @@ class Pager {
   {
     $s = '';
     foreach ($data as $d) {
+      if ($d == 'id') continue;
       $d = str_replace('_', ' ', $d);
       switch ($format) {
         case self::FORMAT_UCASE:

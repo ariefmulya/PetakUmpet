@@ -97,9 +97,9 @@ class xCrudApplication extends Application {
   public function configurePager($query=null, $params=array())
   {
     if ($query === null) {
-      $this->pager = new TablePager($this->request);
+      $this->pager = new TablePager($this->request, 5);
     } else {
-      $this->pager = new QueryPager($this->request);
+      $this->pager = new QueryPager($this->request, 5);
     }
 
     // setting up filter for pager

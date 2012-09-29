@@ -11,7 +11,7 @@ class TablePager extends Pager {
 
   private $tableName;
 
-  public function __construct(Request $request, $pagerRows=8)
+  public function __construct(Request $request, $pagerRows=null)
   {
     parent::__construct($request, $pagerRows);
   }
