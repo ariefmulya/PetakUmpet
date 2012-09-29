@@ -89,9 +89,9 @@ class Process {
 		return $this->redirect($this->config->getStartPage());
 	}
 
-	public function redirectToLoginPage()
+	public function redirectToLoginPage($extra='')
 	{
-		return $this->redirect($this->config->getLoginPage());
+		return $this->redirect($this->config->getLoginPage() . $extra);
 	}
 
 	public function load404()

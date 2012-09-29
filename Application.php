@@ -43,9 +43,9 @@ abstract class Application {
     return $this->process->redirectToStartPage();
   }
 
-  public function redirectToLoginPage()
+  public function redirectToLoginPage($extra='')
   {
-    return $this->process->redirectToLoginPage();
+    return $this->process->redirectToLoginPage($extra);
   }
 
 }
