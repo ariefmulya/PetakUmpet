@@ -10,10 +10,17 @@ use PetakUmpet\Database\Schema;
 class TablePager extends Pager {
 
   private $tableName;
+  private $orderBy;
 
   public function __construct(Request $request, $pagerRows=null)
   {
     parent::__construct($request, $pagerRows);
+    $this->orderBy = 'id';
+  }
+
+  public function setOrderBy($value)
+  {
+    $this->orderBy = $value;
   }
 
   public function build($tableName, $columns=array())
@@ -37,7 +44,7 @@ class TablePager extends Pager {
 
     $this->setHeader($columns);
 
-    $data = $dba->findPagerData($this->page, $this->pagerRows, $this->filter, $schema->get());
+    $data = $dba->findPagerData($this->page, $this->pagerRows, $this->filter, $schema->get(), $this->orderBy);
 
     $this->setPagerData($data);
   }

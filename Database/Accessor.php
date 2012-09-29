@@ -177,7 +177,7 @@ class Accessor {
     return $this->db->queryFetchOne($query, $params);
   }
 
-  public function findPagerData($page, $nRows, $filter=null, $colData = array())
+  public function findPagerData($page, $nRows, $filter=null, $colData = array(), $orderBy='id')
   {
     $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
@@ -190,7 +190,8 @@ class Accessor {
       $query .= $where;
     }
 
-    $query .= " ORDER BY id ";
+    $orderBy = $this->db->escapeInput($orderBy);
+    $query .= " ORDER BY " . $orderBy;
 
     $query  = $this->db->getDriver()->generateLimit($query, $limit, $offset);
 
@@ -282,7 +283,7 @@ class Accessor {
     }
     return $this->update($data, $pkvals);
   }
-  
+
   public function delete($params = array())
   {
     foreach ($params as $k=>$v) {
