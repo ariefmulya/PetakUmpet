@@ -34,16 +34,6 @@
 
 <?php if ($inlineForm) : ?>
 <script type="text/javascript">
-  function preSubmit()
-  {
-    prices = $('#<?php echo $tableName; ?>').find('input[data-price=true]');
-    for (var i=0; i<prices.length; i++) {
-      $('#' + prices[i].getAttribute('id')).priceFormat();
-      var unmask = $('#' + prices[i].getAttribute('id')).unmask();
-      prices[i].value = unmask;
-    }
-    return true;
-  }
     // wait for the DOM to be loaded 
   $(document).ready(function() { 
       // bind form' and provide a simple callback function 
@@ -51,8 +41,7 @@
         target: '#crud-form',
         success: function() {
           $('#pager').load('<?php echo $pagerAction; ?>');
-        },
-        beforeSerialize: preSubmit
+        }
       }); 
   }); 
 </script> 

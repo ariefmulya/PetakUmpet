@@ -29,6 +29,15 @@ class Price extends BaseField {
     $this->currency = $value;
   }
 
+  public function getValue()
+  {
+    $value = $this->getAttribute('value');
+    $value = str_replace(",", "", $value);
+    $value = str_replace(".", "", $value);
+
+    return $value;
+  }
+
   public function __toString()
   {
     $s  = '<div class="input-prepend">';
@@ -36,8 +45,6 @@ class Price extends BaseField {
     $s .= parent::__toString();
     $s .= '</div>';
 
-    // extra script for datepicker field
-    $s .= '<script type="text/javascript">$(\'#'.$this->getAttribute('id').'\').priceFormat({prefix: "", centsSeparator: "", centsLimit: 0 });</script>';
     return $s;
   }
 

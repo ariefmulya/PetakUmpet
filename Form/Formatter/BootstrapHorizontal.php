@@ -83,6 +83,7 @@ class BootstrapHorizontal {
       $s .= $this->formEnd;
     }
     $s .= '</form>';
+    $s .= $this->form->getFormScript();
     return $s;
   }
 

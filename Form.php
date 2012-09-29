@@ -52,6 +52,23 @@ class Form {
     return (string) $formatter;
   }
 
+  public function getFormScript()
+  {
+    // any javascript function needed for the form should go here
+    $s = "<script>
+      $(document).ready(function() {
+        prices = $('#".$this->id."').find('input[data-price=true]');
+        for (var i=0; i<prices.length; i++) {
+          p = jQuery(prices[i]);
+          p.priceFormat({prefix: '', centsSeparator: '', centsLimit: 0 });
+        }
+      });
+    </script>
+    ";
+
+    return $s;
+  }
+
   private function create($field, $name=null, $extra=null, $label=null, $id=null)
   {
     if ($field instanceof BaseField) {
