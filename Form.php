@@ -15,7 +15,7 @@ class Form {
   private $readOnly;
   private $useMultipart;
 
-  public function __construct($name='Form', $action=null, $id=null, $method='POST', $formatter='BootstrapHorizontal')
+  public function __construct($name='Form', $action=null, $id=null, $method='POST', $formatter='\\PetakUmpet\\Form\\Formatter\\BootstrapHorizontal')
   {
     $this->name   = $name;
     $this->id     = ($id === null ? $name : $id);
@@ -40,7 +40,7 @@ class Form {
 
   public function __toString()
   {
-    $cname = '\\PetakUmpet\\Form\\Formatter\\' . $this->formatter;
+    $cname = $this->formatter;
     $formatter = new $cname($this);
 
     if ($this->readOnly === true) {
