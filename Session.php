@@ -44,6 +44,12 @@ class Session {
     $_SESSION[$name] = $value;
   }
 
+  public function remove($name)
+  {
+    $_SESSION[$name] = null;
+    unset($_SESSION[$name]);
+  }  
+
   public function getOrSet($name, $value=null)
   {
     if (isset($_SESSION[$name])) {
