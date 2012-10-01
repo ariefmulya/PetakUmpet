@@ -198,23 +198,28 @@ class Accessor {
     return $this->db->queryFetchAll($query, $params);
   }
 
-  private function prepareInsertQuery($data)
+  private function prepareInsertQuery($data, $columns=null)
   {
     $marker = array();
+    $params = array();
+
     foreach ($data as $k => $v) {
-      $marker[] = ":$k";
+      if ($k == 'id') continue;
+      if ($columns !== null && !in_array($k, $columns)) continue;
+      $marker[$k] = ":$k";
+      $params[$k] = $v;
     }
 
     $query =  "INSERT INTO " . $this->tableName 
-            . " (" . implode(',', array_keys($data)) . ") "
+            . " (" . implode(',', array_keys($marker)) . ") "
             . "VALUES ( " . implode(',', $marker) . ") " 
             . $this->db->getDriver()->getLastIdQuery() 
              ;
 
-    return $query;
+    return array($query, $params);
   }
 
-  public function insert($data)
+  public function insert($data, $columns=null)
   {
     if (count($data) == 0) return false;
 
@@ -222,9 +227,9 @@ class Accessor {
 
     $firstRow = $isMultiple ? current($data) : $data;
 
-    $query = $this->prepareInsertQuery($firstRow);
+    list($query, $params) = $this->prepareInsertQuery($firstRow, $columns);
 
-    $res = $this->db->preparedQuery($query, $data, $isMultiple);
+    $res = $this->db->preparedQuery($query, $params, $isMultiple);
 
     if ($res) {
       return $res->fetchColumn();
@@ -232,30 +237,44 @@ class Accessor {
     return false;
   }
 
-  public function update($data, $keyval)
+  public function update($data, $keyval, $columns=null)
   {
     $marker_data = array();
     $marker_keys = array();
-    $pkeys = array_keys($keyval);
+
+    foreach ($keyval as $k=>$v) {
+      $pkeys = $this->db->escapeInput($k);
+    }
+
+    $params = array();
 
     foreach ($data as $k => $v) {
-      if (in_array($k, $pkeys)) continue;
+      // make sure we are not updating 'id' column
+      if ($k == 'id') continue;
       $k = $this->db->escapeInput($k);
-      if (in_array($k, $pkeys)) continue;
+      if ($k == 'id') continue;
+
+      // make sure we are not updating unrequested columns
+      if ($columns !== null && !in_array($k, $columns)) continue;
+
       $marker_data[] = "$k = :$k";
+      $params[$k] = $v;
     }
 
     foreach ($keyval as $k => $v) {
       $k = $this->db->escapeInput($k);
+
+      // make sure we are not updating unrequested columns
+      if ($columns !== null && !in_array($k, $columns)) continue;
       $marker_keys[] = "$k = :$k";
+
+      $params[$k] = $v;
     }
 
     $query =  " UPDATE " . $this->tableName 
             . " SET " . implode(', ', $marker_data)
             . " WHERE " . implode(' AND ', $marker_keys) 
             . $this->db->getDriver()->getLastIdQuery() ;
-
-    $params = array_merge($data, $keyval);
 
     $res = $this->db->preparedQuery($query, $params);
     if ($res) {
@@ -264,14 +283,14 @@ class Accessor {
     return false;
   }
 
-  public function save($data, $pkeys)
+  public function save($data, $pkeys, $columns=null)
   {
     $pkvals = array();
     $insertMode = false;
 
     foreach ($pkeys as $pk) {
       if (!isset($data[$pk]) || empty($data[$pk]) || $data[$pk] === null) {
-        if (isset($data[$pk]) || $data[$pk] === null) unset($data[$pk]);
+        if (isset($data[$pk]) && $data[$pk] !== null) unset($data[$pk]);
         $insertMode=true;
         break;
       }
@@ -279,9 +298,9 @@ class Accessor {
     }
 
     if ($insertMode) {
-      return $this->insert($data);
+      return $this->insert($data, $columns);
     }
-    return $this->update($data, $pkvals);
+    return $this->update($data, $pkvals, $columns);
   }
 
   public function delete($params = array())
