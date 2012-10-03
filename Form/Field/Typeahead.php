@@ -6,7 +6,6 @@ class Typeahead extends BaseField {
 
   private $url;
 
-  private $actualName;
   private $actualValue;
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
@@ -22,15 +21,14 @@ class Typeahead extends BaseField {
     $this->url = $url;
   }
 
-  public function setValue($value)
-  {
-    parent::setValue($value);
-    $this->setActualValue($value);
-  }
-
   private function setActualValue($value)
   {
     $this->actualValue = $value;
+  }
+
+  public function getValue()
+  {
+    return $this->actualValue;
   }
 
   public function __toString()
@@ -38,16 +36,32 @@ class Typeahead extends BaseField {
     $s = parent::__toString();
 
     // extra script for datepicker field
-    $s .= '<script type="text/javascript">
+    $s .= '<input type="hidden" value="'.$this->actualValue.'" name="'.$this->getAttribute('name').'_actual" id="'.$this->getAttribute('id').'_actual">'
+        . '<script type="text/javascript">
+              var labels, mapped;
               $(\'#'.$this->getAttribute('id').'\').typeahead( 
                 { 
                   source: function(query, process) { 
                     return $.get("'.$this->url.'", {query: query}, 
                       function (data) { 
-                        res = $.parseJSON(data);
-                        process(res);
+                        labels = [];
+                        mapped = {};
+
+                        data = $.parseJSON(data);
+
+                        $.each(data, function (i, item) {
+                          mapped[item.label] = { id: item.id, label: item.label } ;
+                          labels.push(item.label);
+                        });
+                        process(labels);
                       }
                     );
+                  },
+                  updater: function (label) {
+                    var selObj = mapped[label];
+                    $("#'.$this->getAttribute('id').'_actual").val(selObj.id);
+                    alert(selObj.label);
+                    return selObj.label;
                   }
                 }
               );
