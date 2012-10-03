@@ -35,4 +35,19 @@ class Model {
     return false; 
   }
 
+  public function delete($params=array())
+  {
+    return $this->dba->delete($params);
+  }
+
+  public function get($id)
+  {
+    return $this->dba->findOneBy(array('id' => $id));
+  }
+
+  public function getBy($params)
+  {
+    return $this->dba->findOneBy($params);
+  }
+
 }
