@@ -34,6 +34,8 @@ class Pager {
   protected $deleteAction;
   protected $readOnly;
 
+  protected $useAjax;
+
   public function __construct(Request $request, $pagerRows=10)
   {
     $this->pagerRows = $pagerRows === null ? 10 : $pagerRows;
@@ -49,6 +51,7 @@ class Pager {
     $this->readOnly = false;
     $this->targetDiv = 'pager';
     $this->inlineForm = false;
+    $this->useAjax = true;
 
     $url = $request->getFullUrl();
 
@@ -180,7 +183,13 @@ class Pager {
     else if ($id == '...') $class = 'class="disabled"';
     else $class = $mode == '' ? '' : 'class="'.$mode.'"';
 
-    return '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->pagerAction.'&page='.$page.'\');" >'.$id.'</a></li>';
+    $link = '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->pagerAction.'&page='.$page.'\');" >'.$id.'</a></li>';
+
+    if (!$this->useAjax) {
+      $link = '<td ' . $class . '><a href="'.$this->pagerAction.'&page='.$page.'" >'.$id.'</a></td>&nbsp;';
+    }
+
+    return $link;
   }
 
   public function formatPager()
