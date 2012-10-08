@@ -24,7 +24,7 @@ class Typeahead extends BaseField {
   public function setValue($value)
   {
     parent::setValue($value);
-    $this->actualValue($value)
+    $this->actualValue($value);
   }
 
   public function setActualValue($value)
