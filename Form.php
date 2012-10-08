@@ -162,6 +162,11 @@ class Form {
     $this->validator = $validator;
   }
 
+  public function addValidator($name, \PetakUmpet\Validator\Base $validator)
+  {
+    $this->validator->add($name, $validator);
+  }
+  
   public function getField($name)
   {
     if (isset($this->fields[$name])) {

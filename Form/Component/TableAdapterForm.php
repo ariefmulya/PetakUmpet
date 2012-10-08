@@ -110,6 +110,11 @@ class TableAdapterForm {
     $this->cancelAction = $value;
   }
 
+  public function addValidator($name, \PetakUmpet\Validator\Base $validator)
+  {
+    $this->form->addValidator($name, $validator);
+  }
+
   public function setReadOnly($state)
   {
     $this->readOnly = $state;
@@ -208,6 +213,11 @@ class TableAdapterForm {
     foreach ($params as $k => $v) {
       $this->form->setFieldAttribute($k, key($v), $v);
     }
+  }
+
+  public function setFormValidator(\PetakUmpet\Validator $vld)
+  {
+    $this->form->setValidator($vld);
   }
 
   public function setFormLabels($params)
