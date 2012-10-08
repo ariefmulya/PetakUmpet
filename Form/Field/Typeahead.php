@@ -24,7 +24,7 @@ class Typeahead extends BaseField {
   public function setValue($value)
   {
     parent::setValue($value);
-    $this->actualValue($value);
+    $this->actualValue = $value;
   }
 
   public function setActualValue($value)
@@ -66,7 +66,6 @@ class Typeahead extends BaseField {
                   updater: function (label) {
                     var selObj = mapped[label];
                     $("#'.$this->getAttribute('id').'_actual").val(selObj.id);
-                    alert(selObj.label);
                     return selObj.label;
                   }
                 }
