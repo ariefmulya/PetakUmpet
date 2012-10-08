@@ -11,8 +11,9 @@ class Session {
 
   public function start()
   {
-    // FIXME: need a better session_id source, possibly using premade secrets
-    session_id(sha1($this->config->getProjectTitle())); 
+    // FIXME: need a better session_id source, 
+    // possibly using random generators
+    // also need prevention against session hijacking
     session_start();
   }
 
