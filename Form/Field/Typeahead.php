@@ -21,7 +21,13 @@ class Typeahead extends BaseField {
     $this->url = $url;
   }
 
-  private function setActualValue($value)
+  public function setValue($value)
+  {
+    parent::setValue($value);
+    $this->actualValue($value)
+  }
+
+  public function setActualValue($value)
   {
     $this->actualValue = $value;
   }
