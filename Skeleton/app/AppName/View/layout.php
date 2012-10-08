@@ -14,6 +14,7 @@
     <script src="<?php echo $T->getResourceUrl('js/jquery.cookie.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootstrap-datepicker.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/jquery.jstree/jquery.jstree.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/jquery.select-chain.js') ?>"></script>
   </head>
   <body data-offset="50" data-target=".subnav">
 
