@@ -64,6 +64,10 @@ class TableAdapterForm {
         $extra = array('required' => true);
       }
 
+      if (strstr($s[Schema::SC_COLTYPE], 'int')) {
+        $vld->add($name, new Validator\Numeric);
+      }
+
       if (($rel = $this->schema->getColumnRelation($name))) {
         $select = new \PetakUmpet\Form\Field\Select($name, $extra, $label);
         $options = $this->getOptionsFromRelation($rel);
