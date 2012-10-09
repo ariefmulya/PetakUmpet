@@ -15,6 +15,11 @@ class ColumnarPager extends QueryPager {
     $this->tableClass = '';
   }
 
+  public function useAjax($value)
+  {
+    $this->useAjax = $value;
+  }
+
   public function __toString()
   {
     if (count($this->pagerData) <= 0 || count($this->pagerData[0]) <= 0)
