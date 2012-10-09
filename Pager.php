@@ -90,6 +90,7 @@ class Pager {
     $s .= '<tbody>';
     $cnt = 1;
     foreach ($this->pagerData as $d) {
+      $align = '';
       if ($cnt > $this->pagerRows) break;
       if (is_array($this->header)) {
 
@@ -100,12 +101,14 @@ class Pager {
         $s .= '<td>' . ((($this->page-1)*$this->pagerRows) + $cnt) . '</td>';
 
         foreach ($this->header as $h) {
+          $align = '';
           if ($h == 'id') continue;
           $val = '';
+          if (is_numeric($d[$h])) $align= 'align="right"';
           if (isset($d[$h])) {
             $val = $this->formatValue($d[$h]);
           }
-          $s .= '<td>'.$val.'</td>';
+          $s .= '<td '.$align.'>'.$val.'</td>';
         }
         if ($this->readOnly === false) $s .= $this->rowCallback($d);
         $s .= '</tr>';
@@ -157,6 +160,10 @@ class Pager {
     if (is_bool($value)) {
       return ($value ? '<i class="icon-ok"></i>' : '<i class="icon-remove"></i>');
     }
+    // } else if (is_numeric($value)) {
+    //   $value = number_format($value, 2);
+    // }
+
     return $value;
   }
 
@@ -164,6 +171,7 @@ class Pager {
   {
     $s = '';
     foreach ($data as $d) {
+      $align = '';
       if ($d == 'id') continue;
       $d = str_replace('_', ' ', $d);
       switch ($format) {
@@ -171,7 +179,8 @@ class Pager {
           $d = strtoupper($d);
           break;
       }
-      $s .= '<'. $coltype . '>' . $this->formatValue($d) . '</' . $coltype . '>'; 
+      if (is_numeric($d)) $align= 'align="right"';
+      $s .= '<'. $coltype . ' '.$align.'>' . $this->formatValue($d) . '</' . $coltype . '>'; 
     }
 
     return $s;
