@@ -17,6 +17,8 @@ class Pager {
   protected $targetDiv;
   protected $inlineForm;
 
+  protected $tableClass;
+
   protected $pagerRows;
   protected $pagerData;
 
@@ -45,6 +47,8 @@ class Pager {
     $this->page = $request->get('page', 1);
     $this->total = null;
 
+    $this->tableClass = "table table-condensed table-bordered table-striped table-hover";
+
     $this->nLinksBeforeAfter = 1;
     $this->minDistance = 5;
 
@@ -60,12 +64,17 @@ class Pager {
     $this->pagerAction = preg_replace('/&page=[0-9]+/', '', $url);
   }
 
+  public function setTableClass($value)
+  {
+    $this->tableClass = $value;
+  }
+
   public function __toString()
   {
     if (count($this->pagerData) <= 0 || count($this->pagerData[0]) <= 0)
       return 'No data found';
 
-    $s = '<table class="table table-condensed table-bordered table-striped table-hover">';
+    $s = '<table class="'.$this->tableClass.'">';
 
     if (is_array($this->header)) {
       $s .= '<thead><tr>';
