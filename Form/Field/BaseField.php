@@ -17,6 +17,7 @@ class BaseField {
 
   protected $description;
  
+  protected $sourceId;
   protected $chainTarget;
   protected $chainUrl; 
 
@@ -122,9 +123,10 @@ class BaseField {
     return '<label class="'.$labelClass.'" for="'.$nm.'">'.$this->getLabel().'</label>';
   } 
 
-  public function setChainTarget($target, $url)
+  public function setChainTarget($target, $source='', $url)
   {
     $this->chainTarget = $target;
+    $this->sourceId = $source;
     $this->chainUrl = $url;
   }
   
@@ -140,13 +142,13 @@ class BaseField {
     $s .= "\n";
 
     if ($this->chainTarget !== false && $this->chainTarget != '') {
-      $id = $this->getAttribute('id');
+      $id = ($this->sourceId !== '') ? $this->sourceId : $this->getAttribute('id');
       $targetId = $this->chainTarget;
       $targetUrl = $this->chainUrl;
 
       $s .= "<script type='text/javascript'>
               $(document).ready(function() { 
-                  $('#$id').selectChain({ target: $('#$targetId'), url: '$targetUrl', type: 'post' });
+                  $('#$id').selectChain({ target: $('#$targetId'), url: '$targetUrl', type: 'post', data: { query: 'x' }  });
               });
             </script>";
     }
