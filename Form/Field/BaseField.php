@@ -16,7 +16,10 @@ class BaseField {
   protected $accessFilter;
 
   protected $description;
-  
+ 
+  protected $chainTarget;
+  protected $chainUrl; 
+
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
     if ($name === null ) throw new \Exception('Form field need to have name');
@@ -118,6 +121,12 @@ class BaseField {
     $nm = $this->attributes['name'];
     return '<label class="'.$labelClass.'" for="'.$nm.'">'.$this->getLabel().'</label>';
   } 
+
+  public function setChainTarget($target, $url)
+  {
+    $this->chainTarget = $target;
+    $this->chainUrl = $url;
+  }
   
   public function __toString()
   {
@@ -130,6 +139,17 @@ class BaseField {
     $s .= $this->endTag;
     $s .= "\n";
 
+    if ($this->chainTarget !== false && $this->chainTarget != '') {
+      $id = $this->getAttribute('id');
+      $targetId = $this->chainTarget;
+      $targetUrl = $this->chainUrl;
+
+      $s .= "<script type='text/javascript'>
+              $(document).ready(function() { 
+                  $('#$id').selectChain({ target: $('#$targetId'), url: '$targetUrl', type: 'post' });
+              });
+            </script>";
+    }
     return $s;
   }
 
