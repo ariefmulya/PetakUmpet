@@ -17,7 +17,6 @@ class BaseField {
 
   protected $description;
  
-  protected $sourceId;
   protected $chainTarget;
   protected $chainUrl; 
 
@@ -123,10 +122,9 @@ class BaseField {
     return '<label class="'.$labelClass.'" for="'.$nm.'">'.$this->getLabel().'</label>';
   } 
 
-  public function setChainTarget($target, $source='', $url)
+  public function setChainTarget($target, $url)
   {
     $this->chainTarget = $target;
-    $this->sourceId = $source;
     $this->chainUrl = $url;
   }
   
@@ -142,13 +140,17 @@ class BaseField {
     $s .= "\n";
 
     if ($this->chainTarget !== false && $this->chainTarget != '') {
-      $id = ($this->sourceId !== '') ? $this->sourceId : $this->getAttribute('id');
+      $id = $this->getAttribute('id');
       $targetId = $this->chainTarget;
       $targetUrl = $this->chainUrl;
 
-      $s .= "<script type='text/javascript'>
+      // FIXME: this works, but we need to work-out how to send the value in "query" params
+      $s .= "<script type=\"text/javascript\">
               $(document).ready(function() { 
-                  $('#$id').selectChain({ target: $('#$targetId'), url: '$targetUrl', type: 'post', data: { query: 'x' }  });
+                var origElem = $('#".$id."');
+                var actualElem = $('#".$id."_actual');
+                var elemObj = actualElem.length > 0 ? actualElem : origElem;
+                elemObj.selectChain({ target: $('#".$targetId."'), url: '".$targetUrl."', type: 'post', data: {query : 'query'} });
               });
             </script>";
     }
