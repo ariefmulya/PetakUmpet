@@ -27,6 +27,13 @@ class Validator {
     return $this->list[$name]->check($value);
   }
 
+  public function remove($name)
+  {
+    if (isset($this->list[$name])) {
+      unset($this->list[$name]);
+    }
+  }
+
   public function getErrorText($name=null)
   {
     if ($name === null || $name == '') throw new \Exception('Validator::check need a target name');

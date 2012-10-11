@@ -166,6 +166,11 @@ class Form {
   {
     $this->validator->add($name, $validator);
   }
+
+  public function removeValidator($name)
+  {
+    $this->validator->remove($name);
+  }
   
   public function getField($name)
   {

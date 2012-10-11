@@ -119,6 +119,11 @@ class TableAdapterForm {
     $this->form->addValidator($name, $validator);
   }
 
+  public function removeValidator($name)
+  {
+    $this->form->removeValidator($name);
+  }
+
   public function setReadOnly($state)
   {
     $this->readOnly = $state;
