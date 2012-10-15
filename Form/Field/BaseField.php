@@ -44,6 +44,9 @@ class BaseField {
 
     $this->useInnerValue = false;
     $this->useOptions = false;
+
+    $this->chainTarget = array();
+    $this->chainUrl = array();
   }
 
   public function useOptions()
@@ -124,8 +127,13 @@ class BaseField {
 
   public function setChainTarget($target, $url)
   {
-    $this->chainTarget = $target;
-    $this->chainUrl = $url;
+    return $this->addChainTarget($target, $url);
+  }
+
+  public function addChainTarget($target, $url)
+  {
+    $this->chainTarget[] = $target;
+    $this->chainUrl[] = $url;
   }
   
   public function __toString()
@@ -139,10 +147,11 @@ class BaseField {
     $s .= $this->endTag;
     $s .= "\n";
 
-    if ($this->chainTarget !== false && $this->chainTarget != '') {
+    if (count($this->chainTarget) > 0) {
       $id = $this->getAttribute('id');
-      $targetId = $this->chainTarget;
-      $targetUrl = $this->chainUrl;
+
+      $targets = '"' . implode('","', $this->chainTarget) . '"';
+      $urls = '"' . implode('","', $this->chainUrl) .'"';
 
       // FIXME: this works, but we need to work-out how to send the value in "query" params
       $s .= "<script type=\"text/javascript\">
@@ -150,7 +159,9 @@ class BaseField {
                 var origElem = $('#".$id."');
                 var actualElem = $('#".$id."_actual');
                 var elemObj = actualElem.length > 0 ? actualElem : origElem;
-                elemObj.selectChain({ target: $('#".$targetId."'), url: '".$targetUrl."', type: 'post', data: {query : 'query'} });
+                var targets = [".$targets."];
+                var urls = [".$urls."]
+                elemObj.selectChain({ target: targets, url: urls, type: 'post', data: {query : 'query'} });
               });
             </script>";
     }

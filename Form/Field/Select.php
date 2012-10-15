@@ -15,8 +15,6 @@ class Select extends BaseField {
     $this->useInnerValue = true;
     $this->useOptions = true;
     $this->options = array();
-    $this->chainTarget = false;
-    $this->chainUrl = false;
   }
 
   public function setOptions(array $options)
