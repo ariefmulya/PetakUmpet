@@ -20,6 +20,8 @@ class BaseField {
   protected $chainTarget;
   protected $chainUrl; 
 
+  protected $child;
+
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
     if ($name === null ) throw new \Exception('Form field need to have name');
@@ -47,6 +49,13 @@ class BaseField {
 
     $this->chainTarget = array();
     $this->chainUrl = array();
+
+    $this->child = array();
+  }
+
+  public function addChild(BaseField $child, $name)
+  {
+    $this->child[$name] = $child;
   }
 
   public function useOptions()
@@ -139,14 +148,24 @@ class BaseField {
   public function __toString()
   {
     $s = '';
+    if (count($this->child) > 0) {
+      $s = '<div class="input-append">';
+    }
 
     $s .= $this->startTag;
     $s .= $this->printAttributes();
     $s .= $this->closeStartTag;
     if ($this->useInnerValue && ($val = $this->getInnerValue()) !== null) $s .= $val;
     $s .= $this->endTag;
-    $s .= "\n";
 
+    foreach ($this->child as $name => $f) {
+      $s .= '<span>'. $f . '</span>';
+    }
+    if (count($this->child) > 0) {
+      $s .= '</div>';
+    }
+
+    $s .= "\n";
     if (count($this->chainTarget) > 0) {
       $id = $this->getAttribute('id');
 
