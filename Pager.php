@@ -204,7 +204,11 @@ class Pager {
     $link = '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->pagerAction.'&page='.$page.'\');" >'.$id.'</a></li>';
 
     if (!$this->useAjax) {
-      $link = '<td ' . $class . '><a href="'.$this->pagerAction.'&page='.$page.'" >'.$id.'</a></td>&nbsp;';
+      $link = '<td>' . 
+                ($id == $this->page || ($id == 'Prev' && $this->page == 1) || ($id == 'Next' && $this->page == $this->totalPage) ? '' : '<a href="'.$this->pagerAction.'&page='.$page.'" >') .
+                $id .
+                ($id == $this->page || ($id == 'Prev' && $this->page == 1) || ($id == 'Next' && $this->page == $this->totalPage) ? '' : '</a>') .
+                '</td>';
     }
 
     return $link;
