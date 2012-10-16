@@ -5,19 +5,13 @@ namespace PetakUmpet\Pager;
 use PetakUmpet\Request;
 use PetakUmpet\Pager;
 
-class ColumnarPager extends QueryPager {
+class ColumnarQueryPager extends QueryPager {
 
   protected $id;
 
   public function __construct(Request $request, $pagerRows=null)
   {
     parent::__construct($request, 1);
-    $this->tableClass = '';
-  }
-
-  public function useAjax($value)
-  {
-    $this->useAjax = $value;
   }
 
   public function __toString()
@@ -27,7 +21,7 @@ class ColumnarPager extends QueryPager {
 
     $s = '<table class="'.$this->tableClass.'">';
 
-     $cnt = 1;
+    $cnt = 1;
     foreach ($this->pagerData as $d) {
       if ($cnt > $this->pagerRows) break;
       if (is_array($this->header)) {

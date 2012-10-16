@@ -31,11 +31,13 @@ class Pager {
 
   protected $filter;
 
+  protected $actions;
+
   protected $editAction;
   protected $cancelAction;
   protected $deleteAction;
-  protected $readOnly;
 
+  protected $readOnly;
   protected $useAjax;
 
   public function __construct(Request $request, $pagerRows=10)
@@ -57,11 +59,19 @@ class Pager {
     $this->inlineForm = false;
     $this->useAjax = true;
 
+    // extra actions goes here
+    $this->actions = array();
+
     $url = $request->getFullUrl();
 
     if (!strstr($url, '?')) $url .= '?paging=paging';
 
     $this->pagerAction = preg_replace('/&page=[0-9]+/', '', $url);
+  }
+
+  public function useAjax($value)
+  {
+    $this->useAjax = $value;
   }
 
   public function setTableClass($value)
@@ -347,5 +357,9 @@ class Pager {
   {
     $this->pagerAction = $action;
   }
-  
+
+  public function addAction($name, $act)
+  {
+    $this->actions[$name] = $act;
+  }
 }
