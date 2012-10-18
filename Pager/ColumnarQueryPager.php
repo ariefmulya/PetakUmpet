@@ -44,7 +44,7 @@ class ColumnarQueryPager extends QueryPager {
     $s .= '</table>';
 
     if ($this->needPager()) {
-      $s .= $this->formatPager();
+      $s .= '<table>' . $this->formatPager() .'</table>';
     }
 
     return $s;
