@@ -12,7 +12,7 @@ class LoginForm extends Form {
   {
     parent::__construct($name);
 
-    $this->add('text', 'name', array('required' => 'required', 'focus' => 'focus'));
+    $this->add('text', 'name', array('required' => 'required', 'autofocus' => 'autofocus'));
     $this->add('password', 'password', array('required' => true));
 
     $this->addAction(new Form\Field\Submit('Login'));
