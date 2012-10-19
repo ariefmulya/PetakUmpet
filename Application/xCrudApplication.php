@@ -30,6 +30,7 @@ class xCrudApplication extends Application {
   private $appName;
   protected $tableName;
   protected $columns;
+  protected $skip;
   protected $hasScript;
 
   protected $relationTabs;
@@ -54,6 +55,7 @@ class xCrudApplication extends Application {
     $this->appName = $this->request->getModule();
     $this->tableName = null;    /* main table to CRUD */
     $this->columns = null;      /* columns to display in pager */
+    $this->skip = null;      /* skipped columns */
     $this->relationTabs = null; /* tabs for related tables or actions */
     $this->inlineForm = true;  /* set true for inline form, useful for simple master tables */
     $this->hasScript = null;
@@ -87,6 +89,11 @@ class xCrudApplication extends Application {
   public function setColumns($columns)
   {
     $this->columns = $columns;
+  }
+
+  public function setColumnsSkip($skip)
+  {
+    $this->skip = $skip;
   }
 
   public function setReadOnly($state=true)
@@ -146,7 +153,8 @@ class xCrudApplication extends Application {
       $cancelAction .= $this->filter->getUrlFilter();
 
       if (! $this->form  instanceof TableAdapterForm) {
-        $this->form = new TableAdapterForm($this->tableName, array(), array(), $formAction); 
+        $skip = ($this->skip == null) ? array() : $this->skip;
+        $this->form = new TableAdapterForm($this->tableName, array(), $skip, $formAction); 
       } else {
         $this->form->setFormAction($formAction);
       }
