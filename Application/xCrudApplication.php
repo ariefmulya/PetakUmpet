@@ -101,8 +101,13 @@ class xCrudApplication extends Application {
     $this->readOnly = $state;
   }
 
-  public function configurePager($query=null, $params=array())
+  public function configurePager()
   {
+    // to avoid php strict mode error
+    $numArgs = func_num_args();
+    $query = $numArgs >= 1 ? func_get_arg(0) : null;
+    $params = $numArgs >= 2 ? func_get_arg(1) : array();
+
     if ($query === null) {
       $this->pager = new TablePager($this->request, 5);
     } else {
@@ -139,8 +144,13 @@ class xCrudApplication extends Application {
     }
   }
 
-  public function configureForm($action=null, $cancelAction=null)
+  public function configureForm()
   {
+    // to avoid php strict mode error
+    $numArgs = func_num_args();
+    $action = $numArgs >= 1 ? func_get_arg(0) : null;
+    $cancelAction = $numArgs >= 2 ? func_get_arg(1) : null;
+
     static $isConfigured = false;
 
     if ($isConfigured === false) {
