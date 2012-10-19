@@ -159,7 +159,8 @@ class BaseField {
     $s .= $this->endTag;
 
     foreach ($this->child as $name => $f) {
-      $s .= '<span>'. $f . '</span>';
+      $s .= $f;
+      // $s .= '<span>'. $f . '</span>';
     }
     if (count($this->child) > 0) {
       $s .= '</div>';
