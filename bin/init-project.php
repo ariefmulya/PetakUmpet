@@ -57,7 +57,7 @@ file_put_contents($frmfile,str_replace('AppName', $app, file_get_contents($frmfi
 $appfiles = scandir (TARGETDIR . DS . 'app' . DS . $app . DS);
 foreach ($appfiles as $f) {
   if ($f == '.' || $f == '..') continue;
-  if (is_file(TARGETDIR . DS . 'app' . DS . $app . DS . $f) && strstr($f, 'Application') !== false) {
+  if (is_file(TARGETDIR . DS . 'app' . DS . $app . DS . $f)) {
     file_put_contents(TARGETDIR . DS . 'app' . DS . $app . DS . $f, 
       str_replace('AppName', $app, 
         file_get_contents(TARGETDIR . DS . 'app' . DS . $app . DS . $f)));
