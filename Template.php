@@ -69,7 +69,7 @@ class Template {
     $r .= '<ul class="dropdown-menu">';
 
     foreach($li as $k=>$v) {
-      $r .= ($v == '#')? '<li class="nav-header">'.$k.'</li>':'<li>'.$this->link($k, $v, '#navs').'<li>';
+      $r .= ($v == '#')? '<li class="nav-header">'.$k.'</li>':($v == '--')? '<li class="divider"></li>':'<li>'.$this->link($k, $v, '#navs').'<li>';
     }
 
     $r .= '</ul></li>';
