@@ -103,6 +103,13 @@ abstract class MasterDataApplication extends Application {
     }
   }
 
+  public function setPagerOrderBy($tableName, $value)
+  {
+    if (isset($this->ajaxCrudApps[$tableName])) {
+      $this->ajaxCrudApps[$tableName]->setPagerOrderBy($value);
+    }
+  }
+
   public function pagerAction()
   {
     if (($t = $this->request->get('table', false)) !== false && isset($this->ajaxCrudApps[$t])) {
