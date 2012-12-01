@@ -17,6 +17,8 @@ class Pager {
   protected $targetDiv;
   protected $inlineForm;
 
+  protected $tableClass;
+
   protected $pagerRows;
   protected $pagerData;
 
@@ -29,11 +31,13 @@ class Pager {
 
   protected $filter;
 
+  protected $actions;
+
   protected $editAction;
   protected $cancelAction;
   protected $deleteAction;
-  protected $readOnly;
 
+  protected $readOnly;
   protected $useAjax;
 
   public function __construct(Request $request, $pagerRows=10)
@@ -45,6 +49,8 @@ class Pager {
     $this->page = $request->get('page', 1);
     $this->total = null;
 
+    $this->tableClass = "table table-condensed table-bordered table-striped table-hover";
+
     $this->nLinksBeforeAfter = 1;
     $this->minDistance = 5;
 
@@ -53,6 +59,9 @@ class Pager {
     $this->inlineForm = false;
     $this->useAjax = true;
 
+    // extra actions goes here
+    $this->actions = array();
+
     $url = $request->getFullUrl();
 
     if (!strstr($url, '?')) $url .= '?paging=paging';
@@ -60,12 +69,22 @@ class Pager {
     $this->pagerAction = preg_replace('/&page=[0-9]+/', '', $url);
   }
 
+  public function useAjax($value)
+  {
+    $this->useAjax = $value;
+  }
+
+  public function setTableClass($value)
+  {
+    $this->tableClass = $value;
+  }
+
   public function __toString()
   {
     if (count($this->pagerData) <= 0 || count($this->pagerData[0]) <= 0)
       return 'No data found';
 
-    $s = '<table class="table table-condensed table-bordered table-striped table-hover">';
+    $s = '<table class="'.$this->tableClass.'">';
 
     if (is_array($this->header)) {
       $s .= '<thead><tr>';
@@ -81,6 +100,7 @@ class Pager {
     $s .= '<tbody>';
     $cnt = 1;
     foreach ($this->pagerData as $d) {
+      $align = '';
       if ($cnt > $this->pagerRows) break;
       if (is_array($this->header)) {
 
@@ -91,12 +111,14 @@ class Pager {
         $s .= '<td>' . ((($this->page-1)*$this->pagerRows) + $cnt) . '</td>';
 
         foreach ($this->header as $h) {
+          $align = '';
           if ($h == 'id') continue;
           $val = '';
+          if (is_numeric($d[$h])) $align= 'align="right"';
           if (isset($d[$h])) {
             $val = $this->formatValue($d[$h]);
           }
-          $s .= '<td>'.$val.'</td>';
+          $s .= '<td '.$align.'>'.$val.'</td>';
         }
         if ($this->readOnly === false) $s .= $this->rowCallback($d);
         $s .= '</tr>';
@@ -148,6 +170,10 @@ class Pager {
     if (is_bool($value)) {
       return ($value ? '<i class="icon-ok"></i>' : '<i class="icon-remove"></i>');
     }
+    // } else if (is_numeric($value)) {
+    //   $value = number_format($value, 2);
+    // }
+
     return $value;
   }
 
@@ -155,6 +181,7 @@ class Pager {
   {
     $s = '';
     foreach ($data as $d) {
+      $align = '';
       if ($d == 'id') continue;
       $d = str_replace('_', ' ', $d);
       switch ($format) {
@@ -162,7 +189,8 @@ class Pager {
           $d = strtoupper($d);
           break;
       }
-      $s .= '<'. $coltype . '>' . $this->formatValue($d) . '</' . $coltype . '>'; 
+      if (is_numeric($d)) $align= 'align="right"';
+      $s .= '<'. $coltype . ' '.$align.'>' . $this->formatValue($d) . '</' . $coltype . '>'; 
     }
 
     return $s;
@@ -186,7 +214,11 @@ class Pager {
     $link = '<li ' . $class . '><a href="#" onclick="$(\'#'. $this->targetDiv . '\').load(\''.$this->pagerAction.'&page='.$page.'\');" >'.$id.'</a></li>';
 
     if (!$this->useAjax) {
-      $link = '<td ' . $class . '><a href="'.$this->pagerAction.'&page='.$page.'" >'.$id.'</a></td>&nbsp;';
+      $link = '<td>' . 
+                ($id == $this->page || ($id == 'Prev' && $this->page == 1) || ($id == 'Next' && $this->page == $this->totalPage) ? '' : '<a href="'.$this->pagerAction.'&page='.$page.'" >') .
+                $id .
+                ($id == $this->page || ($id == 'Prev' && $this->page == 1) || ($id == 'Next' && $this->page == $this->totalPage) ? '' : '</a>') .
+                '</td>';
     }
 
     return $link;
@@ -325,5 +357,9 @@ class Pager {
   {
     $this->pagerAction = $action;
   }
-  
+
+  public function addAction($name, $act)
+  {
+    $this->actions[$name] = $act;
+  }
 }

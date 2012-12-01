@@ -8,8 +8,6 @@ use PetakUmpet\Database\Accessor;
 class User {
 
   private $data;
-  private $roles;
-  private $access;
 
   private $parentId;
   private $isAdmin;
@@ -53,13 +51,6 @@ class User {
   
   public function hasAccess($page, $refresh=false)
   {
-    if (count($this->access) > 0 && !$refresh) {
-      if (isset($this->access[$page]) && $this->access[$page] === true) {
-        return true;
-      }
-      return false;
-    } 
-
     $query = "SELECT a.name FROM userdata u "
             . "JOIN user_role ur ON u.id = ur.user_id "
             . "JOIN role_access ra ON ra.role_id = ur.role_id "
@@ -79,7 +70,6 @@ class User {
         if ($page == $r['name']) $status = true;
       }
     }
-    $this->access = $access;
     return $status;
   }
 

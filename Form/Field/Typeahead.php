@@ -66,6 +66,7 @@ class Typeahead extends BaseField {
                   updater: function (label) {
                     var selObj = mapped[label];
                     $("#'.$this->getAttribute('id').'_actual").val(selObj.id);
+                    $("#'.$this->getAttribute('id').'_actual").trigger("change");
                     return selObj.label;
                   }
                 }

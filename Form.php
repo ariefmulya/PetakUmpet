@@ -166,6 +166,11 @@ class Form {
   {
     $this->validator->add($name, $validator);
   }
+
+  public function removeValidator($name)
+  {
+    $this->validator->remove($name);
+  }
   
   public function getField($name)
   {
@@ -215,6 +220,13 @@ class Form {
       }
     }
     return $status;
+  }
+
+  public function reset()
+  {
+    foreach ($this->fields as $k => $f) {
+      $f->setValue(null);
+    }
   }
 
   public function bind($data)

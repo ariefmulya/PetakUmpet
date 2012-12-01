@@ -25,6 +25,11 @@ class Model {
     $this->schema = new Schema($this->tableName);
   }
 
+  public function insert($data)
+  {
+    return $this->dba->insert($data, $this->schema->getColumnNames());
+  }
+
   public function save($data)
   {
     $id = $this->dba->save($data, $this->schema->getPK(), $this->schema->getColumnNames());
