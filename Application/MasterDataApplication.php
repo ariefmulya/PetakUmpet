@@ -12,6 +12,7 @@ abstract class MasterDataApplication extends Application {
 
   private $formTypes;
   private $formOptions;
+  private $fieldLabels;
 
   protected $user;
 
@@ -22,7 +23,8 @@ abstract class MasterDataApplication extends Application {
 
     $this->formTypes = array();
     $this->formOptions = array();
-    
+    $this->fieldLabels = array();
+
     $this->user = $this->session->getUser();
 
     $this->configure();
@@ -52,6 +54,11 @@ abstract class MasterDataApplication extends Application {
     $this->formOptions[$tableName] = $options;
   }
 
+  public function setCrudFormFieldLabel($tableName, $labelOptions)
+  {
+    $this->fieldLabels[$tableName] = $labelOptions;
+  }
+
   abstract protected function configure() ;
 
   public function indexAction()
@@ -67,11 +74,18 @@ abstract class MasterDataApplication extends Application {
   {
     if (($t = $this->request->get('table', false)) !== false && isset($this->ajaxCrudApps[$t])) {
 
-      if (isset($this->formTypes[$t]) || isset($this->formOptions[$t])) {
+      if (isset($this->formTypes[$t]) || isset($this->formOptions[$t]) || isset($this->fieldLabels[$t])) {
         $this->ajaxCrudApps[$t]->configureForm();
 
         if (isset($this->formTypes[$t])) $this->ajaxCrudApps[$t]->getForm()->setFormTypes($this->formTypes[$t]);
         if (isset($this->formOptions[$t])) $this->ajaxCrudApps[$t]->getForm()->setFormOptions($this->formOptions[$t]);
+        if (isset($this->fieldLabels[$t])) {
+          $this->ajaxCrudApps[$t]->getForm()->getFormObject()
+                ->setFieldLabel(
+                    $this->fieldLabels[$t]['fieldName'], 
+                    $this->fieldLabels[$t]['fieldLabel']
+                  );
+        }
       }
       return $this->ajaxCrudApps[$t]->editAction();
     } else  {
