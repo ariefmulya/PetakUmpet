@@ -46,6 +46,7 @@ class xCrudApplication extends Application {
   private $pagerAction;
   private $editAction;
   private $deleteAction;
+  private $pagerOrderBy;
 
   public function __construct(Process $process, Request $request, Session $session, Config $config)
   {
@@ -61,6 +62,8 @@ class xCrudApplication extends Application {
     $this->hasScript = null;
 
     $this->readOnly = false;
+
+    $this->pagerOrderBy = null;
 
     /* filters */
     $this->filter = new Filter;
@@ -101,6 +104,11 @@ class xCrudApplication extends Application {
     $this->readOnly = $state;
   }
 
+  public function setPagerOrderBy($value=null)
+  {
+    $this->pagerOrderBy = $value;
+  }
+  
   public function configurePager()
   {
     // to avoid php strict mode error
@@ -130,6 +138,10 @@ class xCrudApplication extends Application {
 
     $this->pager->setFilter($this->filter);
     $this->pager->setInlineForm($this->inlineForm);
+
+    if (isset($this->pagerOrderBy)) {
+      $this->pager->setOrderBy($this->pagerOrderBy);
+    }
 
     $this->pager->setPagerAction($this->pagerAction);
     $this->pager->setEditAction($this->editAction);
