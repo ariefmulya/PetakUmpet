@@ -63,4 +63,8 @@ class PostgreSQL {
     return " RETURNING " . $this->db->escapeInput($idCol) ;
   }
 
+  public function getColumnQuote()
+  {
+    return '"';
+  }
 }
