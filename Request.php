@@ -7,6 +7,7 @@ class Request {
 
   private $requestData;
   private $base_url;
+  private $path;
   private $root_url;
   private $resource_base_url;
   private $query_string;
@@ -31,7 +32,12 @@ class Request {
 
     $this->query_string = $_SERVER['QUERY_STRING'];
 
-    $this->full_url = $this->base_url . '?' . $this->query_string;
+    $this->path_info = $_SERVER['PATH_INFO'];
+
+    $this->path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
+    if ($this->path != '/') rtrim($this->path, '/');
+
+    $this->full_url = $this->base_url . $this->path . '?' . $this->query_string;
 
     $this->resource_base_url = $this->root_url . dirname ($_SERVER['SCRIPT_NAME']) . '/';
 
@@ -83,10 +89,7 @@ class Request {
 
   public function getPathInfo()
   {
-    $path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
-    if ($path != '/') rtrim($path, '/');
-
-    return $path;
+    return $this->path;
   }
 
   public function getResourceBaseUrl()
