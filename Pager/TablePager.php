@@ -11,16 +11,19 @@ class TablePager extends Pager {
 
   private $tableName;
   private $orderBy;
+  private $orderAsc;
 
   public function __construct(Request $request, $pagerRows=null)
   {
     parent::__construct($request, $pagerRows);
     $this->orderBy = 'id';
+    $this->orderAsc = true;
   }
 
-  public function setOrderBy($value)
+  public function setOrderBy($value, $asc=true)
   {
     $this->orderBy = $value;
+    $this->orderAsc = $asc;
   }
 
   public function build($tableName, $columns=array())
@@ -44,7 +47,7 @@ class TablePager extends Pager {
 
     $this->setHeader($columns);
 
-    $data = $dba->findPagerData($this->page, $this->pagerRows, $this->filter, $schema->get(), $this->orderBy);
+    $data = $dba->findPagerData($this->page, $this->pagerRows, $this->filter, $schema->get(), $this->orderBy, $this->orderAsc);
 
     $this->setPagerData($data);
   }
