@@ -177,7 +177,7 @@ class Accessor {
     return $this->db->queryFetchOne($query, $params);
   }
 
-  public function findPagerData($page, $nRows, $filter=null, $colData = array(), $orderBy='id')
+  public function findPagerData($page, $nRows, $filter=null, $colData = array(), $orderBy='id', $orderAsc=true)
   {
     $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
@@ -191,7 +191,7 @@ class Accessor {
     }
 
     $orderBy = $this->db->escapeInput($orderBy);
-    $query .= " ORDER BY " . $orderBy;
+    $query .= " ORDER BY " . $orderBy . ($orderAsc ? " ASC " : " DESC ");
 
     $query  = $this->db->getDriver()->generateLimit($query, $limit, $offset);
 
@@ -210,13 +210,27 @@ class Accessor {
       $params[$k] = $v;
     }
 
+    $colQuote = $this->db->getDriver()->getColumnQuote();
+
     $query =  "INSERT INTO " . $this->tableName 
-            . " (" . implode(',', array_keys($marker)) . ") "
+            . " ($colQuote" .  implode("$colQuote,$colQuote", array_keys($marker)) . "$colQuote) "
             . "VALUES ( " . implode(',', $marker) . ") " 
             . $this->db->getDriver()->getLastIdQuery() 
              ;
 
     return array($query, $params);
+  }
+
+  private function prepareInsertParams($data, $columns=null)
+  {
+    $params = array();
+    foreach ($data as $k => $v) {
+      if ($k == 'id') continue;
+      if ($columns !== null && !in_array($k, $columns)) continue;
+      $params[$k] = $v;
+    }
+
+    return $params;
   }
 
   public function insert($data, $columns=null)
@@ -228,6 +242,17 @@ class Accessor {
     $firstRow = $isMultiple ? current($data) : $data;
 
     list($query, $params) = $this->prepareInsertQuery($firstRow, $columns);
+
+    if ($isMultiple) {
+      $p1 = $params; 
+      unset($params); 
+      $params[] = $p1;
+      array_shift($data);
+      foreach ($data as $d) {
+        $p = $this->prepareInsertParams($d, $columns);
+        $params[] = $p; 
+      }
+    }
 
     $res = $this->db->preparedQuery($query, $params, $isMultiple);
 
