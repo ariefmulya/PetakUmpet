@@ -82,9 +82,17 @@ class Accessor {
   public function findBy(array $keyval) 
   {
     $marker = array();
+    $params = array();
+
     foreach ($keyval as $k => $v) {
       $k = $this->db->escapeInput($k);
-      $marker[] = "$k = :$k";
+      $m = "$k = :$k";
+      if ($v === null) {
+        $m = "$k IS NULL";
+      } else {
+        $params[$k] = $v;
+      }
+      $marker[] = $m;
     }
 
     if (count($marker) == 0) 
@@ -92,18 +100,24 @@ class Accessor {
 
     $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) . ";" ;
 
-    return $this->db->queryFetchAll($query, $keyval);
+    return $this->db->queryFetchAll($query, $params);
   }
 
   public function findOneBy(array $keyval) 
   {
     $marker = array();
+    $params = array();
 
     foreach ($keyval as $k => $v) {
       $k = $this->db->escapeInput($k);
-      $marker[] = "$k = :$k";
+      $m = "$k = :$k";
+      if ($v === null) {
+        $m = "$k IS NULL";
+      } else {
+        $params[$k] = $v;
+      }
+      $marker[] = $m;
     }
-
 
     if (count($marker) == 0) 
       throw new \Exception ('findBy on table '.$this->tableName.' with no params');
@@ -111,7 +125,7 @@ class Accessor {
     $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) ;
     $query = $this->db->getDriver()->generateLimit($query, 1);
 
-    return $this->db->queryFetchRow($query, $keyval);
+    return $this->db->queryFetchRow($query, $params);
   }
 
   public function findAll()
@@ -266,10 +280,6 @@ class Accessor {
   {
     $marker_data = array();
     $marker_keys = array();
-
-    foreach ($keyval as $k=>$v) {
-      $pkeys = $this->db->escapeInput($k);
-    }
 
     $params = array();
 
