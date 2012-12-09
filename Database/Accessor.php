@@ -82,9 +82,17 @@ class Accessor {
   public function findBy(array $keyval) 
   {
     $marker = array();
+    $params = array();
+
     foreach ($keyval as $k => $v) {
       $k = $this->db->escapeInput($k);
-      $marker[] = "$k = :$k";
+      $m = "$k = :$k";
+      if ($v === null) {
+        $m = "$k IS NULL";
+      } else {
+        $params[$k] = $v;
+      }
+      $marker[] = $m;
     }
 
     if (count($marker) == 0) 
@@ -92,18 +100,24 @@ class Accessor {
 
     $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) . ";" ;
 
-    return $this->db->queryFetchAll($query, $keyval);
+    return $this->db->queryFetchAll($query, $params);
   }
 
   public function findOneBy(array $keyval) 
   {
     $marker = array();
+    $params = array();
 
     foreach ($keyval as $k => $v) {
       $k = $this->db->escapeInput($k);
-      $marker[] = "$k = :$k";
+      $m = "$k = :$k";
+      if ($v === null) {
+        $m = "$k IS NULL";
+      } else {
+        $params[$k] = $v;
+      }
+      $marker[] = $m;
     }
-
 
     if (count($marker) == 0) 
       throw new \Exception ('findBy on table '.$this->tableName.' with no params');
@@ -111,7 +125,7 @@ class Accessor {
     $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) ;
     $query = $this->db->getDriver()->generateLimit($query, 1);
 
-    return $this->db->queryFetchRow($query, $keyval);
+    return $this->db->queryFetchRow($query, $params);
   }
 
   public function findAll()
@@ -177,7 +191,7 @@ class Accessor {
     return $this->db->queryFetchOne($query, $params);
   }
 
-  public function findPagerData($page, $nRows, $filter=null, $colData = array(), $orderBy='id')
+  public function findPagerData($page, $nRows, $filter=null, $colData = array(), $orderBy='id', $orderAsc=true)
   {
     $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
@@ -191,7 +205,7 @@ class Accessor {
     }
 
     $orderBy = $this->db->escapeInput($orderBy);
-    $query .= " ORDER BY " . $orderBy;
+    $query .= " ORDER BY " . $orderBy . ($orderAsc ? " ASC " : " DESC ");
 
     $query  = $this->db->getDriver()->generateLimit($query, $limit, $offset);
 
@@ -210,13 +224,27 @@ class Accessor {
       $params[$k] = $v;
     }
 
+    $colQuote = $this->db->getDriver()->getColumnQuote();
+
     $query =  "INSERT INTO " . $this->tableName 
-            . " (" . implode(',', array_keys($marker)) . ") "
+            . " ($colQuote" .  implode("$colQuote,$colQuote", array_keys($marker)) . "$colQuote) "
             . "VALUES ( " . implode(',', $marker) . ") " 
             . $this->db->getDriver()->getLastIdQuery() 
              ;
 
     return array($query, $params);
+  }
+
+  private function prepareInsertParams($data, $columns=null)
+  {
+    $params = array();
+    foreach ($data as $k => $v) {
+      if ($k == 'id') continue;
+      if ($columns !== null && !in_array($k, $columns)) continue;
+      $params[$k] = $v;
+    }
+
+    return $params;
   }
 
   public function insert($data, $columns=null)
@@ -228,6 +256,17 @@ class Accessor {
     $firstRow = $isMultiple ? current($data) : $data;
 
     list($query, $params) = $this->prepareInsertQuery($firstRow, $columns);
+
+    if ($isMultiple) {
+      $p1 = $params; 
+      unset($params); 
+      $params[] = $p1;
+      array_shift($data);
+      foreach ($data as $d) {
+        $p = $this->prepareInsertParams($d, $columns);
+        $params[] = $p; 
+      }
+    }
 
     $res = $this->db->preparedQuery($query, $params, $isMultiple);
 
@@ -241,10 +280,6 @@ class Accessor {
   {
     $marker_data = array();
     $marker_keys = array();
-
-    foreach ($keyval as $k=>$v) {
-      $pkeys = $this->db->escapeInput($k);
-    }
 
     $params = array();
 
