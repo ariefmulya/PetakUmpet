@@ -62,7 +62,18 @@ class Form {
           p = jQuery(prices[i]);
           p.priceFormat({prefix: '', centsSeparator: '', centsLimit: 0 });
         }
+
+        nicedit = $('#".$this->id."').find('input[data-nicedit=true]');
+
+        bkLib.onDomLoaded(function() {
+          for (var i=0; i<nicedit.length; i++) {            
+            alert(nicedit.id);
+            new nicEditor({fullPanel : true}).panelInstance( 'content' );
+          }
+        });
+
       });
+      
     </script>
     ";
 

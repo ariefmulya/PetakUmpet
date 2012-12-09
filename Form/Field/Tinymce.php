@@ -2,18 +2,15 @@
 
 namespace PetakUmpet\Form\Field;
 
-class Tinymce extends BaseField {
+class Tinymce extends Textarea {
 
-  private $url    = 'js/tinymce/tiny_mce.js';
-  private $theme  = 'simple';
+  private $url    = 'js/nicEdit.js';
+  private $explanation = '';
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
     parent::__construct($name, $extra, $label, $id);
-
-    $this->startTag = '<textarea ';
-    $this->closeStartTag = '>';
-    $this->endTag = '</textarea>';
+    $this->setAttribute('class', 'wysiwyg');
   }
 
   public function setSourceUrl($url)
@@ -26,17 +23,20 @@ class Tinymce extends BaseField {
     $this->theme = $theme;
   }
 
+  public function setExplanation($explanation)
+  {
+    $this->explanation = '<br />'.$explanation;
+  }
+
   public function __toString()
   {
     $s = parent::__toString();
     $s .= '<script type="text/javascript">
-              $().ready(function() {
-               $("textarea#'.$this->getAttribute('id').'").tinymce({
-                  script_url : "'.$this->url.'",
-                  theme : "simple",
-               });
-          </script>';
-
+          $(document).ready(function() {
+            $(".tinymce").tinymce();
+          });
+          </script>';    
+    $s .= $explanation;
     return $s;
   }
 
