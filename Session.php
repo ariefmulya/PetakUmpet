@@ -70,7 +70,7 @@ class Session {
 
   public function getUser()
   {
-    if (!isset($_SESSION['user'])) return null;
+    if (!isset($_SESSION) || !isset($_SESSION['user']) || !is_object($_SESSION['user'])) return null;
     return $_SESSION['user'];
   }
   
