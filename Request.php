@@ -32,8 +32,6 @@ class Request {
 
     $this->query_string = $_SERVER['QUERY_STRING'];
 
-    $this->path_info = $_SERVER['PATH_INFO'];
-
     $this->path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
     if ($this->path != '/') rtrim($this->path, '/');
 
