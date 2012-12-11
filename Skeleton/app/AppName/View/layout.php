@@ -39,7 +39,7 @@
 
             <div class="btn-group pull-right">
               <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                <i class="icon-user"></i> <?php echo $session->getUser()->getName() ?>
+                <i class="icon-user"></i> <?php if ($session->getUser()) echo $session->getUser()->getName() ?>
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
