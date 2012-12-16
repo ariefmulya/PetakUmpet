@@ -31,7 +31,7 @@ class Event {
     $id = null;
     $user = $session->getUser();
 
-    if ($user) 
+    if (is_object($user)) 
       $id = $user->getId();
 
     $data = array(
