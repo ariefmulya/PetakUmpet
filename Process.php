@@ -45,8 +45,9 @@ class Process {
 
 		if (!$this->config->isOpenApp($app)) {
 			if (!$this->config->isAnonymousPage($page)) {
+        $this->session->start();
         $user = $this->session->getUser();
-				if (!$user) {
+				if (!$user || !is_object($user)) {
 					return $this->redirect($this->config->getLoginPage());
 				}
 				if (!$user->hasAccess($page)) {

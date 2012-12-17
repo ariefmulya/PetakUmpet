@@ -6,7 +6,7 @@ class Session {
   public function __construct()
   {
     $this->config = Singleton::acquire('\\PetakUmpet\\Config');
-    if (session_id() == '') $this->start();
+    if (session_id() == '') return $this->start();
   }
 
   public function start()
@@ -14,12 +14,12 @@ class Session {
     // FIXME: need a better session_id source, 
     // possibly using random generators
     // also need prevention against session hijacking
-    session_start();
+    if (session_id() == '') session_start();
   }
 
   public function destroy()
   {
-    if (session_id() == "") $this->start();
+    if (session_id() == '') $this->start();
     session_destroy();
   }
 
@@ -70,7 +70,7 @@ class Session {
 
   public function getUser()
   {
-    if (!isset($_SESSION['user'])) return null;
+    if (!isset($_SESSION) || !isset($_SESSION['user']) || !is_object($_SESSION['user'])) return null;
     return $_SESSION['user'];
   }
   
