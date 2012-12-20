@@ -321,16 +321,14 @@ class Accessor {
   public function save($data, $pkeys, $columns=null)
   {
     $pkvals = array();
-    $insertMode = false;
 
     foreach ($pkeys as $pk) {
-      if (!isset($data[$pk]) || empty($data[$pk]) || $data[$pk] === null) {
-        if (isset($data[$pk]) && $data[$pk] !== null) unset($data[$pk]);
-        $insertMode=true;
-        break;
-      }
       $pkvals[$pk] = $data[$pk];
     }
+
+    $insertMode = true;
+    $count = $this->countBy($pkvals);
+    if ($count && $count > 0) $insertMode = false;
 
     if ($insertMode) {
       return $this->insert($data, $columns);
