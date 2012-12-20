@@ -307,7 +307,7 @@ class Accessor {
     }
 
     $query =  " UPDATE " . $this->tableName 
-            . " SET " . implode(', ', $marker_data)
+            . " SET " . implode('::text, ', $marker_data)
             . " WHERE " . implode(' AND ', $marker_keys) 
             . $this->db->getDriver()->getLastIdQuery() ;
 
