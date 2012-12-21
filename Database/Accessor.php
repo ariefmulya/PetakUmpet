@@ -292,7 +292,11 @@ class Accessor {
       // make sure we are not updating unrequested columns
       if ($columns !== null && !in_array($k, $columns)) continue;
 
-      $marker_data[] = "$k = :$k";
+      $cast = "::text";
+      if (is_numeric($v)) {
+        $cast ="";
+      }
+      $marker_data[] = "$k = :$k".$cast;
       $params[$k] = $v;
     }
 
@@ -307,7 +311,7 @@ class Accessor {
     }
 
     $query =  " UPDATE " . $this->tableName 
-            . " SET " . implode('::text, ', $marker_data)
+            . " SET " . implode(', ', $marker_data)
             . " WHERE " . implode(' AND ', $marker_keys) 
             . $this->db->getDriver()->getLastIdQuery() ;
 
