@@ -114,10 +114,14 @@ class Pager {
           $align = '';
           if ($h == 'id') continue;
           $val = '';
-          if (is_numeric($d[$h])) $align= 'align="right"';
           if (isset($d[$h])) {
             $val = $this->formatValue($d[$h]);
           }
+          if (is_numeric($d[$h])) {
+            $align= 'align="right" style="text-align: right"';
+            if ($val == 0) $val="";
+          }
+          $val = trim($val);
           $s .= '<td '.$align.'>'.$val.'</td>';
         }
         if ($this->readOnly === false) $s .= $this->rowCallback($d);
