@@ -10,4 +10,9 @@ class MenuBootstrap {
   {
     $this->menu = $menu;
   }
+
+  public function navMenu()
+  {
+  }
+
 }

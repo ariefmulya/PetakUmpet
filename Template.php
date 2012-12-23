@@ -9,6 +9,8 @@ class Template {
   private $request;
   private $session;
   private $config;
+
+  private $menu;
 	
 	public function __construct(Request $request, Session $session, Config $config)
 	{
@@ -52,6 +54,11 @@ class Template {
 		$this->layout =  $this->baseViewDir . ($layout === null ? 'layout' : $layout) . '.php' ;
 	}
 
+  public function setMenu($menu)
+  {
+    $this->menu = new Menu($menu);
+  }
+  
   public function link($name, $page, $class="", $icon=null)
   {
     $page = str_replace('/', '&a=', $page);
