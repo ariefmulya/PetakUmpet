@@ -56,7 +56,7 @@ abstract class MasterDataApplication extends Application {
 
   public function setCrudFormFieldLabel($tableName, $labelOptions)
   {
-    $this->fieldLabels[$tableName] = $labelOptions;
+    $this->fieldLabels[$tableName][] = $labelOptions;
   }
 
   abstract protected function configure() ;
@@ -80,11 +80,13 @@ abstract class MasterDataApplication extends Application {
         if (isset($this->formTypes[$t])) $this->ajaxCrudApps[$t]->getForm()->setFormTypes($this->formTypes[$t]);
         if (isset($this->formOptions[$t])) $this->ajaxCrudApps[$t]->getForm()->setFormOptions($this->formOptions[$t]);
         if (isset($this->fieldLabels[$t])) {
-          $this->ajaxCrudApps[$t]->getForm()->getFormObject()
-                ->setFieldLabel(
-                    $this->fieldLabels[$t]['fieldName'], 
-                    $this->fieldLabels[$t]['fieldLabel']
-                  );
+          $form = $this->ajaxCrudApps[$t]->getForm()->getFormObject();  
+          foreach ($this->fieldLabels[$t] as $arr) {
+            $form->setFieldLabel(
+                $arr['fieldName'], 
+                $arr['fieldLabel']
+              );
+          }
         }
       }
       return $this->ajaxCrudApps[$t]->editAction();
@@ -107,6 +109,13 @@ abstract class MasterDataApplication extends Application {
   {
     if (isset($this->ajaxCrudApps[$tableName])) {
       $this->ajaxCrudApps[$tableName]->setPagerOrderBy($value);
+    }
+  }
+
+  public function setPagerQuery($tableName, $query, $params)
+  {
+    if (isset($this->ajaxCrudApps[$tableName])) {
+      $this->ajaxCrudApps[$tableName]->setPagerQuery($query, $params);
     }
   }
 

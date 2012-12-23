@@ -43,10 +43,13 @@ class xCrudApplication extends Application {
 
   private $readOnly;  
 
+  /* pager related variables */
   private $pagerAction;
   private $editAction;
   private $deleteAction;
   private $pagerOrderBy;
+  private $pagerQuery;
+  private $pagerParams;
 
   public function __construct(Process $process, Request $request, Session $session, Config $config)
   {
@@ -108,7 +111,13 @@ class xCrudApplication extends Application {
   {
     $this->pagerOrderBy = $value;
   }
-  
+
+  public function setPagerQuery($query, $params)
+  {
+    $this->pagerQuery = $query;
+    $this->pagerParams = $params;
+  }
+
   public function configurePager()
   {
     // to avoid php strict mode error
@@ -116,7 +125,7 @@ class xCrudApplication extends Application {
     $query = $numArgs >= 1 ? func_get_arg(0) : null;
     $params = $numArgs >= 2 ? func_get_arg(1) : array();
 
-    if ($query === null) {
+    if ($query === null && !isset($this->pagerQuery)) {
       $this->pager = new TablePager($this->request, 5);
     } else {
       $this->pager = new QueryPager($this->request, 5);
@@ -139,7 +148,7 @@ class xCrudApplication extends Application {
     $this->pager->setFilter($this->filter);
     $this->pager->setInlineForm($this->inlineForm);
 
-    if (isset($this->pagerOrderBy)) {
+    if (isset($this->pagerOrderBy) && $this->pager instanceof TablePager) {
       $this->pager->setOrderBy($this->pagerOrderBy);
     }
 
@@ -149,10 +158,11 @@ class xCrudApplication extends Application {
 
     $this->pager->setReadOnly($this->readOnly);
 
-    if ($query === null) {
+    if ($query === null && !isset($this->pagerQuery)) {
       $this->pager->build($this->tableName, $this->columns);
     } else {
-      $this->pager->build($query, $params, $this->columns);
+      $this->pager->build(($query === null ? $this->pagerQuery : $query), 
+        ($query === null ? $this->pagerParams : $params), $this->columns);
     }
   }
 
