@@ -23,6 +23,7 @@ class Pager {
   protected $pagerData;
 
   protected $header;
+  protected $headerClass;
   protected $footer;
 
   protected $page;
@@ -50,6 +51,7 @@ class Pager {
     $this->total = null;
 
     $this->tableClass = "table table-condensed table-bordered table-striped table-hover";
+    $this->headerClass = "";
 
     $this->nLinksBeforeAfter = 1;
     $this->minDistance = 5;
@@ -79,6 +81,11 @@ class Pager {
     $this->tableClass = $value;
   }
 
+  public function setHeaderClass($value)
+  {
+    $this->headerClass = $value;
+  }
+
   public function __toString()
   {
     if (count($this->pagerData) <= 0 || count($this->pagerData[0]) <= 0)
@@ -87,7 +94,7 @@ class Pager {
     $s = '<table class="'.$this->tableClass.'">';
 
     if (is_array($this->header)) {
-      $s .= '<thead><tr>';
+      $s .= '<thead class="'.$this->headerClass.'"><tr>';
 
       // show header for number
       $s .= '<th>NO</th>';
