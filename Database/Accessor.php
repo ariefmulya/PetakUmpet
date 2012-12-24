@@ -327,12 +327,14 @@ class Accessor {
     $pkvals = array();
 
     foreach ($pkeys as $pk) {
-      $pkvals[$pk] = $data[$pk];
+      if (isset($data[$pk])) $pkvals[$pk] = $data[$pk];
     }
 
     $insertMode = true;
-    $count = $this->countBy($pkvals);
-    if ($count && $count > 0) $insertMode = false;
+    if (count($pkvals) > 0 ) {
+      $count = $this->countBy($pkvals);
+      if ($count && $count > 0) $insertMode = false;
+    }
 
     if ($insertMode) {
       return $this->insert($data, $columns);
