@@ -276,7 +276,7 @@ class Accessor {
     return false;
   }
 
-  public function update($data, $keyval, $columns=null)
+  public function update($data, $keyval, $columns=null, $schema=null)
   {
     $marker_data = array();
     $marker_keys = array();
@@ -293,8 +293,14 @@ class Accessor {
       if ($columns !== null && !in_array($k, $columns)) continue;
 
       $cast = "::text";
-      if (is_numeric($v)) {
-        $cast ="";
+      if ($schema !== null) {
+        $sc = $schema->get();
+        if ($sc[$k][Schema::COL_IS_STRING] === false) { $cast = ""; }
+
+      } else {
+        if (is_numeric($v) || is_bool($v)) {
+          $cast ="";
+        }
       }
       $marker_data[] = "$k = :$k".$cast;
       $params[$k] = $v;
@@ -322,7 +328,7 @@ class Accessor {
     return false;
   }
 
-  public function save($data, $pkeys, $columns=null)
+  public function save($data, $pkeys, $columns=null, $schema=null)
   {
     $pkvals = array();
 
@@ -339,7 +345,7 @@ class Accessor {
     if ($insertMode) {
       return $this->insert($data, $columns);
     }
-    return $this->update($data, $pkvals, $columns);
+    return $this->update($data, $pkvals, $columns, $schema);
   }
 
   public function delete($params = array())
