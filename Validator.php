@@ -15,16 +15,17 @@ class Validator {
   {
     if ($name === null || $name == '') throw new \Exception('Validator::set need a target name');
 
+    $validator->setName($name);
     $this->list[$name] = $validator;
   }
 
-  public function check($name=null, $value=null)
+  public function check($name=null, $value=null, $field)
   {
     if ($name === null || $name == '') throw new \Exception('Validator::check need a target name');
 
     if (!isset($this->list[$name])) return true;
 
-    return $this->list[$name]->check($value);
+    return $this->list[$name]->check($value, $field);
   }
 
   public function remove($name)

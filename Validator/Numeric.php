@@ -28,7 +28,7 @@ class Numeric extends Base {
   public function min($value) { return $this->ge($value); }
   public function max($value) { return $this->le($value); }
 
-  public function check($value=null)
+  public function check($value=null, $field=null)
   {
     if (!is_numeric($value)) return false;
     if ($this->gt && $value <= $this->gt) { $this->errorText = 'Value must be greater than ' . $this->gt; return false; } 
