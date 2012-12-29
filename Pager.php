@@ -164,6 +164,11 @@ class Pager {
     return (count($this->pagerData) > 0);
   }
 
+  public function count()
+  {
+    return count($this->pagerData);
+  }
+
   public function headerCallback($rowData)
   { 
     // If needed child class can implement this to add more columns
