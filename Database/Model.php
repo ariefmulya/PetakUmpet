@@ -30,9 +30,11 @@ class Model {
     return $this->dba->insert($data, $this->schema->getColumnNames());
   }
 
-  public function save($data)
+  public function save($data, $pkeys=array())
   {
-    $id = $this->dba->save($data, $this->schema->getPK(), $this->schema->getColumnNames());
+    $usePKeys = (count($pkeys) > 0 ? $pkeys : $this->schema->getPK());
+
+    $id = $this->dba->save($data, $usePKeys, $this->schema->getColumnNames(), $this->schema);
 
     if ($id) {
       return $id;
