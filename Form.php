@@ -214,7 +214,7 @@ class Form {
       }
 
       if (isset($this->validator)) {
-        if (!$this->validator->check($name, $f->getValue())) {
+        if (!$this->validator->check($name, $f->getValue(), $f)) {
           $f->setErrorText($this->validator->getErrorText($name));
           $status = false;
         }
