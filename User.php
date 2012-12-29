@@ -3,6 +3,7 @@
 namespace PetakUmpet;
 
 use PetakUmpet\Database\Accessor;
+use PetakUmpet\Database\Model;
 
 
 class User {
@@ -16,6 +17,7 @@ class User {
   private $id;
   private $name;
   private $userid;
+  private $profile;
 
   public function __construct($username, $password)
   {
@@ -27,6 +29,7 @@ class User {
     $this->name = null;
     $this->id = null;
     $this->userid = null;
+    $this->profile = array();
     $this->roles = array();
     $this->access = array();
     $this->parentId = null;
@@ -37,6 +40,21 @@ class User {
   public function getUserid() { return $this->userid; }
   public function getId() { return $this->id; }
   public function getData()   { return $this->data;   }
+  
+  public function getProfileData($key) 
+  { 
+    if (is_array($this->profile) && isset($this->profile[$key])) {
+      return $this->profile[$key];
+    } 
+    return false;
+  }
+
+  public function setProfileData($key, $value)
+  {
+    $this->profile[$key] = $value;
+    $dba = new Model('user_profile');
+    $dba->save($this->profile, array('user_id'));
+  }
 
   public function validate()
   {
@@ -44,6 +62,8 @@ class User {
       $this->name = $this->data['name'];
       $this->userid = $this->data['userid'];
       $this->id = $this->data['id'];
+      $dba = new Accessor('user_profile');
+      $this->profile = $dba->findOneBy(array('user_id' => $this->id));
       return true;
     }
     return false;
