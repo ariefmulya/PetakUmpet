@@ -9,19 +9,30 @@ abstract class Application {
   protected $session;
   protected $config;
 
+  protected $tplVars;
+
   public function __construct(Process $process, Request $request, Session $session, Config $config)
   {
     $this->process = $process;
     $this->request = $request;
     $this->session = $session;
     $this->config  = $config;
+
+    $this->tplVars = array();
+  }
+
+  protected function setVariable($name, $value)
+  {
+    $this->tplVars[$name] = $value;
   }
 
   protected function renderView($view, $variables=array(), $layout=null)
   {
     $T = new Template($this->request, $this->session, $this->config);
 
-    return $T->render($view, $variables, $layout);
+    $vars = array_merge($this->tplVars, $variables);
+
+    return $T->render($view, $vars, $layout);
   }
 
   protected function render($variables=array(), $layout=null)
