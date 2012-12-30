@@ -29,6 +29,7 @@ class User {
     $this->name = null;
     $this->id = null;
     $this->userid = null;
+    $this->first_login = true;
     $this->profile = array();
     $this->roles = array();
     $this->access = array();
@@ -40,6 +41,17 @@ class User {
   public function getUserid() { return $this->userid; }
   public function getId() { return $this->id; }
   public function getData()   { return $this->data;   }
+  public function isFirstLogin()   { return $this->first_login;   }
+
+  public function setFirstLogin($value)
+  {
+    $this->first_login = $value;
+    $value = $value ? 'TRUE' : 'FALSE';
+    $data['id'] = $this->id;
+    $data['first_login'] = $value;
+    $m = new Model('userdata');
+    $m->save($data);
+  }
   
   public function getProfileData($key) 
   { 
@@ -62,6 +74,7 @@ class User {
       $this->name = $this->data['name'];
       $this->userid = $this->data['userid'];
       $this->id = $this->data['id'];
+      $this->first_login = $this->data['first_login'];
       $dba = new Accessor('user_profile');
       $this->profile = $dba->findOneBy(array('user_id' => $this->id));
       return true;
