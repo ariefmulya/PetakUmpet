@@ -79,14 +79,18 @@ class Accessor {
     return $this->db->queryFetchRow($query, (array) $pkvals);
   }
 
-  public function findBy(array $keyval) 
+  public function findBy(array $keyval, $compareType=array()) 
   {
     $marker = array();
     $params = array();
 
     foreach ($keyval as $k => $v) {
       $k = $this->db->escapeInput($k);
-      $m = "$k = :$k";
+
+      $compare = '=';
+      if (isset($compareType[$k])) $compare = $compareType[$k];
+      $m = "$k $compare :$k";
+
       if ($v === null) {
         $m = "$k IS NULL";
       } else {
@@ -103,14 +107,18 @@ class Accessor {
     return $this->db->queryFetchAll($query, $params);
   }
 
-  public function findOneBy(array $keyval) 
+  public function findOneBy(array $keyval, $compareType=array()) 
   {
     $marker = array();
     $params = array();
 
     foreach ($keyval as $k => $v) {
       $k = $this->db->escapeInput($k);
-      $m = "$k = :$k";
+
+      $compare = '=';
+      if (isset($compareType[$k])) $compare = $compareType[$k];
+      $m = "$k $compare :$k";
+
       if ($v === null) {
         $m = "$k IS NULL";
       } else {

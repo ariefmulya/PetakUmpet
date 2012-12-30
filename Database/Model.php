@@ -52,9 +52,9 @@ class Model {
     return $this->dba->findOneBy(array('id' => $id));
   }
 
-  public function getBy($params)
+  public function getBy($params, $compareType=array())
   {
-    return $this->dba->findOneBy($params);
+    return $this->dba->findOneBy($params, $compareType);
   }
 
 }
