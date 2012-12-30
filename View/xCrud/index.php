@@ -1,6 +1,6 @@
 <div class="row">
   <div class="span5">
-    <h3>Cari data <?php echo ucwords(str_replace('_', ' ', $tableName)) ?></h3>
+    <h3>Find <?php echo ucwords(str_replace('_', ' ', $tableName)) ?></h3>
     <?php echo $filterForm; ?>
     <?php if ($readOnly === false) : ?>
       <?php if ($inlineForm) : ?>
@@ -9,7 +9,7 @@
       <?php else : ?>
         <a class="btn" href="<?php echo $editAction; ?>"> 
       <?php endif ?>
-        Tambah Data</a>
+        Add Data</a>
     <?php endif ?>
     <hr/>
     <div id="pager" class="row-fluid">
