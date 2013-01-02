@@ -4,6 +4,7 @@ namespace PetakUmpet;
 class Request {
   const MOD_ACCESSOR = 'm';
   const ACT_ACCESSOR = 'a';
+  const APP_ACCESSOR = 'application';
 
   private $requestData;
   private $base_url;
@@ -77,12 +78,12 @@ class Request {
 
   public function setApplication($value)
   {
-    return $this->set('application', $value);
+    return $this->set(self::APP_ACCESSOR, $value);
   }
 
   public function getApplication()
   {
-    return $this->get('application');
+    return $this->get(self::APP_ACCESSOR);
   }
 
   public function getPathInfo()
