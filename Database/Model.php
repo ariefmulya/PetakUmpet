@@ -21,20 +21,15 @@ class Model {
     $this->db = $db;
     $this->tableName = $db->escapeInput($tableName);
 
-    $this->dba = new Accessor($this->tableName);
     $this->schema = new Schema($this->tableName);
-  }
-
-  public function insert($data)
-  {
-    return $this->dba->insert($data, $this->schema->getColumnNames());
+    $this->dba = new Accessor($this->tableName, $db, $this->schema);
   }
 
   public function save($data, $pkeys=array())
   {
-    $usePKeys = (count($pkeys) > 0 ? $pkeys : $this->schema->getPK());
+    $usedPKeys = (count($pkeys) > 0 ? $pkeys : $this->schema->getPK());
 
-    $id = $this->dba->save($data, $usePKeys, $this->schema->getColumnNames(), $this->schema);
+    $id = $this->dba->save($data, $usedPKeys);
 
     if ($id) {
       return $id;

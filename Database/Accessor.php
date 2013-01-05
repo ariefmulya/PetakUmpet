@@ -6,77 +6,41 @@ use PetakUmpet\Singleton;
 class Accessor {
 
   private $db;
-  private $tableName;
+  private $sourceData;  /* Can be tablename or a sub-query alias */
+  private $schema;
 
-  public function __construct($tableName, $db=null)
+  public function __construct($sourceData, $db=null, $schema=null)
   {
     if ($db === null) 
       $db = Singleton::acquire('\\PetakUmpet\\Database');
 
     $this->db = $db;
-    $this->tableName = $db->escapeInput($tableName);
-  }
-
-  public function countByPK($pkeys, $pkvals)
-  {
-    $marker = array();
-
-    foreach($pkvals as $k => $v) {
-      $marker[] = ":$k";
-    }
-
-    if (count($marker) == 0) 
-      throw new \Exception ('findByPK on table '.$this->tableName.' without primary keys');
-
-    if (count($marker) != count ((array) $pkvals)) 
-      throw new \Exception('findByPK not enough pkey values');
-    
-    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName 
-            . " WHERE (" . implode(', ', $pkeys) . ") = (" . implode(', ', $marker). ") ; ";
-
-    return $this->db->queryFetchOne($query, (array) $pkvals);
+    $this->schema = $schema;
+    $this->sourceData = $db->escapeInput($sourceData);
   }
 
   public function countAll()
   {
-    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
+    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->sourceData;
     return $this->db->queryFetchOne($query);
   }
 
-  public function countBy(array $keyval)
+  public function countBy(array $keyval, $compareType=array())
   {
     $marker = array();
     foreach ($keyval as $k => $v) {
       $k = $this->db->escapeInput($k);
-      $marker[] = "$k = :$k";
+      $compare = '=';
+      if (isset($compareType[$k])) $compare = $compareType[$k];
+      $m = "$k $compare :$k";
+      $marker[] = $m;
     }
 
     if (count($marker) == 0) 
-      throw new \Exception ('countBy on table '.$this->tableName.' with no params');
+      throw new \Exception ('countBy on table '.$this->sourceData.' with no params');
 
-    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) . ";" ;
+    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->sourceData . " WHERE " . implode(' AND ', $marker) . ";" ;
     return $this->db->queryFetchOne($query, $keyval);
-  }
-
-
-  public function findByPK($pkeys, $pkvals)
-  {
-    $marker = array();
-
-    foreach($pkvals as $k => $v) {
-      $marker[] = ":$k";
-    }
-
-    if (count($marker) == 0) 
-      throw new \Exception ('findByPK on table '.$this->tableName.' without primary keys');
-
-    if (count($marker) != count ((array) $pkvals)) 
-      throw new \Exception('findByPK not enough pkey values');
-    
-    $query =  "SELECT * FROM " . $this->tableName 
-            . " WHERE (" . implode(', ', $pkeys) . ") = (" . implode(', ', $marker). ") ; ";
-
-    return $this->db->queryFetchRow($query, (array) $pkvals);
   }
 
   public function findBy(array $keyval, $compareType=array()) 
@@ -100,9 +64,9 @@ class Accessor {
     }
 
     if (count($marker) == 0) 
-      throw new \Exception ('findBy on table '.$this->tableName.' with no params');
+      throw new \Exception ('findBy on table '.$this->sourceData.' with no params');
 
-    $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) . ";" ;
+    $query =  "SELECT * FROM " . $this->sourceData . " WHERE " . implode(' AND ', $marker) . ";" ;
 
     return $this->db->queryFetchAll($query, $params);
   }
@@ -128,9 +92,9 @@ class Accessor {
     }
 
     if (count($marker) == 0) 
-      throw new \Exception ('findBy on table '.$this->tableName.' with no params');
+      throw new \Exception ('findBy on table '.$this->sourceData.' with no params');
 
-    $query =  "SELECT * FROM " . $this->tableName . " WHERE " . implode(' AND ', $marker) ;
+    $query =  "SELECT * FROM " . $this->sourceData . " WHERE " . implode(' AND ', $marker) ;
     $query = $this->db->getDriver()->generateLimit($query, 1);
 
     return $this->db->queryFetchRow($query, $params);
@@ -138,7 +102,7 @@ class Accessor {
 
   public function findAll()
   {
-    $query =  "SELECT * FROM " . $this->tableName;
+    $query =  "SELECT * FROM " . $this->sourceData;
     return $this->db->queryFetchAll($query);
   }
 
@@ -147,7 +111,7 @@ class Accessor {
     $key = $this->db->escapeInput($keyCol);
     $val = $this->db->escapeInput($valCol);
 
-    $query =  "SELECT $key, $val FROM " . $this->tableName;
+    $query =  "SELECT $key, $val FROM " . $this->sourceData;
     $res = $this->db->queryFetchAll($query);
 
     $options = array(null => '');
@@ -188,7 +152,7 @@ class Accessor {
 
   public function countPagerData($filter=null, $colData=array())
   {
-    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->tableName;
+    $query =  "SELECT COUNT(*) AS cnt FROM " . $this->sourceData;
 
     $params = array();
     if ($filter && count($filter->getQueryData()) > 0) {
@@ -204,7 +168,7 @@ class Accessor {
     $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
 
-    $query  =  "SELECT * FROM " . $this->tableName ;
+    $query  =  "SELECT * FROM " . $this->sourceData ;
 
     $params = array();
     if ($filter && count($filter->getQueryData()) > 0) {
@@ -234,7 +198,7 @@ class Accessor {
 
     $colQuote = $this->db->getDriver()->getColumnQuote();
 
-    $query =  "INSERT INTO " . $this->tableName 
+    $query =  "INSERT INTO " . $this->sourceData 
             . " ($colQuote" .  implode("$colQuote,$colQuote", array_keys($marker)) . "$colQuote) "
             . "VALUES ( " . implode(',', $marker) . ") " 
             . $this->db->getDriver()->getLastIdQuery() 
@@ -255,9 +219,13 @@ class Accessor {
     return $params;
   }
 
-  public function insert($data, $columns=null)
+  public function insert($data)
   {
+    if ($this->schema === null) throw new \Exception("insert() called with no Schema defined");
+
     if (count($data) == 0) return false;
+
+    $columns = $this->schema->getColumns();
 
     $isMultiple = is_array(current($data));
 
@@ -276,7 +244,7 @@ class Accessor {
       }
     }
 
-    $res = $this->db->preparedQuery($query, $params, $isMultiple);
+    $res = $this->db->preparedQuery($query, $params, $isMultiple, $this->schema->getPdoTypes());
 
     if ($res) {
       return $res->fetchColumn();
@@ -284,8 +252,10 @@ class Accessor {
     return false;
   }
 
-  public function update($data, $keyval, $columns=null, $schema=null)
+  public function update($data, $keyval)
   {
+    if ($this->schema === null) throw new \Exception("update() called with no Schema defined");
+
     $marker_data = array();
     $marker_keys = array();
 
@@ -300,17 +270,7 @@ class Accessor {
       // make sure we are not updating unrequested columns
       if ($columns !== null && !in_array($k, $columns)) continue;
 
-      $cast = "::text";
-      if ($schema !== null) {
-        $sc = $schema->get();
-        if ($sc[$k][Schema::COL_IS_STRING] === false) { $cast = ""; }
-
-      } else {
-        if (is_numeric($v) || is_bool($v)) {
-          $cast ="";
-        }
-      }
-      $marker_data[] = "$k = :$k".$cast;
+      $marker_data[] = "$k = :$k";
       $params[$k] = $v;
     }
 
@@ -324,19 +284,19 @@ class Accessor {
       $params[$k] = $v;
     }
 
-    $query =  " UPDATE " . $this->tableName 
+    $query =  " UPDATE " . $this->sourceData 
             . " SET " . implode(', ', $marker_data)
             . " WHERE " . implode(' AND ', $marker_keys) 
             . $this->db->getDriver()->getLastIdQuery() ;
 
-    $res = $this->db->preparedQuery($query, $params);
+    $res = $this->db->preparedQuery($query, $params, false, $this->schema->getPdoTypes());
     if ($res) {
       return $res->fetchColumn();
     }
     return false;
   }
 
-  public function save($data, $pkeys, $columns=null, $schema=null)
+  public function save($data, $pkeys)
   {
     $pkvals = array();
 
@@ -353,7 +313,7 @@ class Accessor {
     if ($insertMode) {
       return $this->insert($data, $columns);
     }
-    return $this->update($data, $pkvals, $columns, $schema);
+    return $this->update($data, $pkvals);
   }
 
   public function delete($params = array())
@@ -362,11 +322,16 @@ class Accessor {
       $marker[] = "$k = :$k";
     }
 
-    $query = " DELETE FROM " . $this->tableName
+    $query = " DELETE FROM " . $this->sourceData
             . " WHERE " . implode(' AND ', $marker)
             ;
 
-    $res = $this->db->preparedQuery($query, $params);
+    $pdoTypes = array();
+    if ($this->schema !== null) {
+      $pdoTypes = $this->schema->getPdoTypes();
+    }
+
+    $res = $this->db->preparedQuery($query, $params, false, $pdoTypes);
 
     if ($res) return true;
     else return false;
