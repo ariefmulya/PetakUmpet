@@ -2,7 +2,7 @@
 
 namespace PetakUmpet;
 
-use PetakUmpet\Database\Accessor;
+use PetakUmpet\Database\Model;
 
 class Event {
 
@@ -24,7 +24,7 @@ class Event {
       return;
     }
 
-    $dba = new Accessor('event', $db);
+    $event = new Model('event', $db);
 
     $time = new \DateTime();
     
@@ -43,7 +43,7 @@ class Event {
         'created_at' => $time->format('Y-m-d H:i:s'),
       );
 
-    $dba->insert($data);
+    $event->save($data);
   }
 
   
