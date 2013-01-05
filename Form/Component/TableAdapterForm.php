@@ -196,13 +196,6 @@ class TableAdapterForm {
     return false; 
   }
 
-  public function setActionButtons($save=true, $saveadd=true, $cancel=true)
-  {
-    $this->useSaveButton = $save;
-    $this->useSaveAddButton = $saveadd;
-    $this->useCancelButton = $cancel;
-  }
-
   public function bindValidateSave(Request $request)
   {
     if ($this->bindValidate($request)) 
@@ -211,18 +204,11 @@ class TableAdapterForm {
     return false;
   }
 
-  public function setFormValues($params)
+  public function setActionButtons($save=true, $saveadd=true, $cancel=true)
   {
-    foreach ($params as $k => $v) {
-      $this->form->setFieldValue($k, $v);
-    }
-  }
-
-  public function setFormAttributes($params)
-  {
-    foreach ($params as $k => $v) {
-      $this->form->setFieldAttribute($k, key($v), current($v));
-    }
+    $this->useSaveButton = $save;
+    $this->useSaveAddButton = $saveadd;
+    $this->useCancelButton = $cancel;
   }
 
   public function setFormValidator(\PetakUmpet\Validator $vld)
@@ -230,21 +216,35 @@ class TableAdapterForm {
     $this->form->setValidator($vld);
   }
 
-  public function setFormLabels($params)
+  public function setFieldValues($params)
+  {
+    foreach ($params as $k => $v) {
+      $this->form->setFieldValue($k, $v);
+    }
+  }
+
+  public function setFieldAttributes($params)
+  {
+    foreach ($params as $k => $v) {
+      $this->form->setFieldAttribute($k, key($v), current($v));
+    }
+  }
+
+  public function setFieldLabels($params)
   {
     foreach ($params as $k => $v) {
       $this->form->setFieldLabel($k, $v);
     }
   }
 
-  public function setFormTypes($params)
+  public function setFieldTypes($params)
   {
     foreach ($params as $k => $v) {
       $this->form->setFieldType($k, $v);
     }
   }
 
-  public function setFormOptions($params)
+  public function setFieldOptions($params)
   {
     foreach ($params as $k => $v) {
       $this->form->setFieldOptions($k, $v);
