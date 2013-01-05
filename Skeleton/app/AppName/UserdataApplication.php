@@ -37,7 +37,7 @@ class UserdataApplication extends xCrudApplication {
   public function configureForm()
   {
     parent::configureForm();
-    $this->form->setFormOptions(array(
+    $this->form->setFieldOptions(array(
       'is_admin' => array('1' => 'Ya', '0' => 'Tidak'),
       ));
   }
@@ -77,12 +77,12 @@ class UserdataApplication extends xCrudApplication {
   {
     $form = new TableAdapterForm('user_role', array('id', 'user_id', 'role_id'), array(), $this->request->getAppUrl('Userdata/rolesForm'));
 
-    $form->setFormTypes(array('user_id' => 'hidden'));
+    $form->setFieldTypes(array('user_id' => 'hidden'));
 
     if (($id = $this->request->get('id'))) {
       $form->setValuesById($id);
     }
-    $form->setFormValues(array('user_id' => $this->request->get('userid')));
+    $form->setFieldValues(array('user_id' => $this->request->get('userid')));
 
     if ($this->request->isPost() && $form->bindValidateSave($this->request)) {
       $this->session->setFlash('Data is saved');
@@ -93,8 +93,8 @@ class UserdataApplication extends xCrudApplication {
 
   public function rolesDeleteAction()
   {
-    $dba = new Accessor('user_role');
-    if ($dba->delete(array('id' => $this->request->get('id')))) {
+    $dbm = new Model('user_role');
+    if ($dbm->delete(array('id' => $this->request->get('id')))) {
       return new Response('success');
     }
     return new Response('fail', 404);
@@ -139,7 +139,7 @@ class UserdataApplication extends xCrudApplication {
     if (($id = $this->request->get('id'))) {
       $form->setValuesById($id);
     }
-    $form->setFormValues(array('user_id' => $this->request->get('userid')));
+    $form->setFieldValues(array('user_id' => $this->request->get('userid')));
 
     if ($this->request->isPost() && $form->bindValidateSave($this->request)) {
       $this->session->setFlash('Data is saved');
@@ -150,8 +150,8 @@ class UserdataApplication extends xCrudApplication {
 
   public function accessDeleteAction()
   {
-    $dba = new Accessor('role_access');
-    if ($dba->delete(array('id' => $this->request->get('id')))) {
+    $dbm = new Model('role_access');
+    if ($dbm->delete(array('id' => $this->request->get('id')))) {
       return new Response('success');
     }
     return new Response('fail', 404);

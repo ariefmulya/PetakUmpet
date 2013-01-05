@@ -330,12 +330,12 @@ class xCrudApplication extends Application {
   {
     $form = new TableAdapterForm('user_role', array('id', 'user_id', 'role_id'), array(), $this->request->getAppUrl('Userdata/rolesForm'));
 
-    $form->setFormTypes(array('user_id' => 'hidden'));
+    $form->setFieldTypes(array('user_id' => 'hidden'));
 
     if (($id = $this->request->get('id'))) {
       $form->setValuesById($id);
     }
-    $form->setFormValues(array('user_id' => $this->request->get('userid')));
+    $form->setFieldValues(array('user_id' => $this->request->get('userid')));
 
     if ($this->request->isPost() && $form->bindValidateSave($this->request)) {
       $this->session->setFlash('Data is saved');

@@ -12,7 +12,7 @@ class UserApplication extends Application {
   {
     $dbf = new TableAdapterForm('userdata', array('id', 'name', 'password'));
 
-    $dbf->setFormOptions(array('is_admin' => array('1' => 'Ya', '0' => 'Tidak')));
+    $dbf->setFieldOptions(array('is_admin' => array('1' => 'Ya', '0' => 'Tidak')));
     $dbf->setValuesById($this->session->getUser()->getId());
 
     if ($this->request->isPost()) {
