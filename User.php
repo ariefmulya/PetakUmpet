@@ -46,7 +46,6 @@ class User {
   public function setFirstLogin($value)
   {
     $this->first_login = $value;
-    $value = $value ? 'TRUE' : 'FALSE';
     $data['id'] = $this->id;
     $data['first_login'] = $value;
     $m = new Model('userdata');
