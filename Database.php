@@ -30,7 +30,7 @@ class Database {
     $this->baseDriverObject = new $class_name;
 
     if ($initialize) {
-      $this->Connect($db_host, $db_name, $db_user, $db_cred);
+      $this->connect($db_host, $db_name, $db_user, $db_cred);
     }
 
     $this->baseDriverObject->setDbo($this);
@@ -46,7 +46,7 @@ class Database {
     return $this->baseDriverObject;
   }
 
-  public function Connect($host, $dbname, $user, $cred, $extra=null)
+  public function connect($host, $dbname, $user, $cred, $extra=null)
   {
     try {
       $this->db = new \PDO($this->baseDriverObject->generateDSN($host, $dbname, $extra), $user, $cred);
@@ -58,7 +58,7 @@ class Database {
     }
   }
 
-  public function Close()
+  public function close()
   {
     $this->db = null;
   }
@@ -89,24 +89,32 @@ class Database {
     return $res;
   }
 
-  public function multiPreparedQuery($value='')
-  {
-    # code...
-  }
-
-  public function preparedQuery($query, $params=array(), $trans=false)
+  public function preparedQuery($query, $params=array(), $trans=false, $pdoTypes=array())
   {
     $st = $this->db->prepare($query);
     $st->setFetchMode(\PDO::FETCH_ASSOC);
 
     Logger::log('Database: preparedQuery QUERY  = ' . $st->queryString);
+    Logger::log('Database: preparedQuery PDOTYPES = ('.implode(',', $pdoTypes) .')');
 
     if ($trans === false) $params = array(0 => $params);
 
     if ($trans) $this->db->beginTransaction();
 
     foreach ($params as $p) {
-      $ret = $st->execute($p);
+      if (count($pdoTypes) > 0) {
+        foreach ($p as $k=>$v) {
+          $paramName = str_replace(':', '', trim($k));
+          $bindParamType = isset($pdoTypes[$paramName]) ? $pdoTypes[$paramName] : \PDO::PARAM_STR;
+
+          if ($v === null) $bindParamType = \PDO::PARAM_NULL;
+
+          $st->bindParam($k, $v, $bindParamType);
+        }
+        $st->execute();
+      } else {
+        $ret = $st->execute($p);
+      }
       Logger::log('Database: preparedQuery PARAMS = (' . implode(',', $p) . ')');
     }
     
