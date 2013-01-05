@@ -33,8 +33,8 @@ class Date extends Text {
   {
     if ($value) {
       $value = substr($value, 0, 19);
-      $v = \DateTime::createFromFormat('Y-m-d H:i:s', $value);
-      parent::setValue($v->format('Y-m-d H:i:s'));
+      $v = \DateTime::createFromFormat('Y-m-d', $value);
+      parent::setValue($v->format('Y-m-d'));
     }
   }
 }
