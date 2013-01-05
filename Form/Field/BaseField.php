@@ -74,6 +74,11 @@ class BaseField {
     return null;
   }
 
+  public function removeAttribute($key)
+  {
+    if (isset($this->attributes[$key])) unset($this->attributes[$key]);
+  }
+
   public function setValue($value)
   {
     $this->attributes['value'] = $value;
