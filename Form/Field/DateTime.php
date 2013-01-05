@@ -2,17 +2,15 @@
 
 namespace PetakUmpet\Form\Field;
 
-class Date extends Text {
+class DateTime extends Text {
 
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
     $d = new\DateTime;
 
-    $extra['data-format'] = 'yyyy-MM-dd';
-
-    // set value default to today
-    $extra['value'] = $d->format('Y-m-d'); 
-
+    $extra['data-format'] = 'yyyy-MM-dd hh:mm:ss';
+    // set value default to current time
+    $extra['value'] = $d->format('Y-m-d H:i:s'); 
     parent::__construct($name, $extra, $label, $id);
   }
 
@@ -25,7 +23,7 @@ class Date extends Text {
     $s .= parent::__toString();
     $s .= '<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>';
     $s .= '</div>';
-    $s .= '<script type="text/javascript">$(\'#'.$id.'\').datetimepicker({pickTime: false});</script>';
+    $s .= '<script type="text/javascript">$(\'#'.$id.'\').datetimepicker();</script>';
     return $s;
   }
 
