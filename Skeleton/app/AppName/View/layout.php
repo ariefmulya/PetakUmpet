@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><?php echo $config->getProjectTitle(); ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <link href="<?php echo $T->getResourceUrl('css/bootstrap.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/bootstrap-responsive.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/bootstrap-docs.css') ?>" rel="stylesheet">
