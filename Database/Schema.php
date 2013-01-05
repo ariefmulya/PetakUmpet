@@ -18,89 +18,31 @@ class Schema {
   const FK_DSTTABLE = 'dsttable';
   const FK_DSTID    = 'dstid';
 
-  const COL_TYPE = 'type';
-  const COL_IS_STRING = 'string';
+  public $pkeys;
+  public $fkeys;
+  public $columns;
+  public $type;
+  public $pdoType;
+  public $detail;
+  public $isString;
 
-  private $db;
- 
-  private $tableName;
-
-  private $mc;           // schema model cache
-  private $columnNames;  // column names
-  private $colTypeMap;   // column type maps SQL <=> php-types
-  private $pkeys;        // primary keys
-  private $fkeys;        // foreign keys
-
-  function __construct($tableName, $db=null)
+  public function __construct($tableName, $db=null)
   {
-    if ($db === null) 
-      $db = Singleton::acquire('\\PetakUmpet\\Database');
-
-    $this->tableName = $db->escapeInput($tableName);
-
-    $this->db  = $db;
-
-    $this->coltypeMap = array(
-        'varchar' => 'string',
-        'text' => 'string',
-        'char' => 'string',
-       /* TODO: complete with most used column type maps */ 
-      );
-
-    $this->build();
+    SchemaBuilder::build($this, $tableName, $db);
   }
 
-  private function build()
+  public function getPK() { return $this->pkeys; }
+
+  public function getFK() { return $this->fkeys; }
+
+  public function getColumnNames() { return $this->columns; }
+
+  public function getColumnSchema($colName)
   {
-    $db =& $this->db;
-
-    $res = $db->queryFetchAll($db->getDriver()->getTableSchemaQuery(), array($this->tableName));
-
-    if (!$res) throw new \Exception('Building database schema failed');
-
-    $mc = array();
-
-    foreach ($res as $s) {
-      if ($s[self::SC_PRIMARY]) {
-        $this->pkeys[] = $s[self::SC_COLNAME];
-      }
-      $this->columnNames[] = $s[self::SC_COLNAME];
-
-      $isString = ($this->mapColumnType($s[self::SC_COLTYPE]) == 'string');
-
-      $s[self::COL_IS_STRING] = $isString; 
-      $mc[$s[self::SC_COLNAME]] = $s;
+    if (isset($this->detail[$colName])) {
+      return $this->detail[$colName];
     }
-
-    $this->mc = $mc;
-
-    // get foreign keys
-    $fdata = $db->queryFetchAll($db->getDriver()->getForeignKeyQuery(), array($this->tableName));
-    if ($fdata) {
-      foreach ($fdata as $d) {
-        $this->fkeys[$d[self::FK_SRCID]] = $d;
-      }
-    }
-  }
-
-  public function get()
-  {
-    return $this->mc;
-  }
-
-  public function getPK()
-  {
-    return $this->pkeys;
-  }
-
-  public function getFK()
-  {
-    return $this->fkeys;
-  }
-
-  public function getColumnNames()
-  {
-    return $this->columnNames;
+    return null;
   }
 
   public function getColumnRelation($colName)
@@ -111,12 +53,28 @@ class Schema {
     return null;
   }
 
-  public function mapColumnType($type)
+  public function getColumnNativeType($colName)
   {
-    if (isset($this->colTypeMap[$type])) {
-      return $this->colTypeMap[$type];
+    if (isset($this->type[$colName])) {
+      return $this->type[$colName];
     }
-    return $type;
+    return null;
   }
 
+  public function getColumnPdoType($colName)
+  {
+    if (isset($this->pdoType[$colName])) {
+      return $this->pdoType[$colName];
+    }
+    return null;
+  }
+
+  public function isStringColumn($colName)
+  {
+    if (isset($this->isString[$colName])) {
+      return $this->isString[$colName];
+    }
+    return false;
+  }
+  
 }
