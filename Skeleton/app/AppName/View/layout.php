@@ -6,14 +6,14 @@
     <link href="<?php echo $T->getResourceUrl('css/bootstrap.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/bootstrap-responsive.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/bootstrap-docs.css') ?>" rel="stylesheet">
-    <link href="<?php echo $T->getResourceUrl('css/bootstrap-datepicker.css') ?>" rel="stylesheet">
+    <link href="<?php echo $T->getResourceUrl('css/bootstrap-datetimepicker.min.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/custom.css') ?>" rel="stylesheet">
     <script src="<?php echo $T->getResourceUrl('js/jquery.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/jquery.form.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootstrap.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootbox.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/jquery.cookie.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/bootstrap-datepicker.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/bootstrap-datetimepicker.min.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/jquery.jstree/jquery.jstree.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/jquery.select-chain.js') ?>"></script>
   </head>
