@@ -1,0 +1,6 @@
+#!/bin/sh 
+
+for i in `git status | grep "\.php" | cut -f 2 -d ':' | tr -d ' '`; do
+  echo "Checking syntax for $i...";
+  php -l $i 2>&1 | sed 's/^/  -- /';
+done;
