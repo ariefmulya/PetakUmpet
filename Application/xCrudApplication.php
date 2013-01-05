@@ -13,7 +13,7 @@ use PetakUmpet\Pager\TablePager;
 use PetakUmpet\Pager\QueryPager;
 use PetakUmpet\Filter;
 
-use PetakUmpet\Database\Accessor;
+use PetakUmpet\Database\Model;
 use PetakUmpet\Database\Schema;
 
 use PetakUmpet\Form;
@@ -188,7 +188,7 @@ class xCrudApplication extends Application {
         $skip = ($this->skip == null) ? array() : $this->skip;
         $this->form = new TableAdapterForm($this->tableName, array(), $skip, $formAction); 
       } else {
-        $this->form->setFormAction($formAction);
+        $this->form->setAction($formAction);
       }
       $this->form->setReadOnly($this->readOnly);
 
@@ -283,11 +283,73 @@ class xCrudApplication extends Application {
   {
     if ($this->readOnly === true) return;
 
-    $dba = new Accessor($this->tableName);
-    if ($dba->delete(array('id' => $this->request->get('id')))) {
+    $dbm = new Model($this->tableName);
+    if ($dbm->delete(array('id' => $this->request->get('id')))) {
       return new Response('success');
     }
     return new Response('fail', 404);
   }
 
+  public function tabPagerAction()
+  {
+    $relid  = $this->request->get('relid');
+    $linkid = $this->request->get('linkid');
+
+    if (!isset($this->tabs[$relid])) {
+      return $this->process->load404();
+    }
+
+    $tab = $this->tabs[$relid];
+
+    /* "SELECT ur.id, r.name FROM user_role ur "
+        ."JOIN roledata r ON r.id = ur.role_id "
+        ."JOIN userdata u ON u.id = ur.user_id WHERE u.id = ?"; */
+
+    $this->inlineForm = false;
+
+    $editHref = $this->request->getAppUrl($this->tabs[$relid]);
+    $delHref = $this->request->getAppUrl('Userdata/rolesDelete&userid='.$userid);
+    $targetId = 'roles';
+
+    $pager = new ModalPager($this->request);
+    $pager->setEditAction($editHref);
+    $pager->setDeleteAction($delHref);
+    $pager->setTargetId($targetId);
+    $pager->setTargetDiv($targetId.'Div');
+
+    $pager->build($tab['query'], $tab['params'], $tab['columns']);
+
+    return $this->renderView(Response::PetakUmpetView . 'xCrud/relationTabPager', array(
+        'pager' => $pager,
+        'href' => $editHref,
+        'targetId' => $targetId,
+      ));
+  }
+
+  public function tabFormAction()
+  {
+    $form = new TableAdapterForm('user_role', array('id', 'user_id', 'role_id'), array(), $this->request->getAppUrl('Userdata/rolesForm'));
+
+    $form->setFormTypes(array('user_id' => 'hidden'));
+
+    if (($id = $this->request->get('id'))) {
+      $form->setValuesById($id);
+    }
+    $form->setFormValues(array('user_id' => $this->request->get('userid')));
+
+    if ($this->request->isPost() && $form->bindValidateSave($this->request)) {
+      $this->session->setFlash('Data is saved');
+    }
+
+    return $this->renderView(Response::PetakUmpetView . 'xCrud/relationForm', array('targetId' => 'roles', 'form' => $form));
+  }
+
+  public function tabDeleteAction()
+  {
+    $dbm = new Model('user_role');
+    if ($dbm->delete(array('id' => $this->request->get('id')))) {
+      return new Response('success');
+    }
+    return new Response('fail', 404);
+  }
 }
