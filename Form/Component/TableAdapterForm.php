@@ -9,7 +9,7 @@ use PetakUmpet\Form;
 use PetakUmpet\Form\Field;
 use PetakUmpet\Validator;
 use PetakUmpet\Database\Schema;
-use PetakUmpet\Database\Accessor;
+use PetakUmpet\Database\Model;
 
 class TableAdapterForm {
 
@@ -39,12 +39,13 @@ class TableAdapterForm {
     $this->useSaveAddButton = true;
     $this->useCancelButton = true;
 
-    $schema = $this->schema->get();
+    $schemaDetail = $this->schema->getSchemaDetail();
     $vld = new Validator;
 
-    foreach ($schema as $s) {
+    foreach ($schemaDetail as $s) {
+
       $name  = $s[Schema::SC_COLNAME];
-      $type  = $this->columnTypeMap($s[Schema::SC_COLTYPE]);
+      $type  = $s[Schema::SC_FFIELDTYPE];
       $label = ucwords(str_replace('_', ' ', str_replace('_id', '', $name)));
       $extra = array();
 
@@ -64,7 +65,7 @@ class TableAdapterForm {
         $extra = array('required' => true);
       }
 
-      if (strstr($s[Schema::SC_COLTYPE], 'int')) {
+      if (strstr($s[Schema::SC_PDOTYPE], \PDO::PARAM_INT)) {
         $vld->add($name, new Validator\Numeric);
       }
 
@@ -99,8 +100,8 @@ class TableAdapterForm {
         'text' => 'textarea',
         'hidden' => 'hidden',
         'date' => 'date',
-        'timestamp' => 'date',
-        'datetime' => 'date',
+        'timestamp' => 'dateTime',
+        'datetime' => 'dateTime',
         'boolean' => 'radioGroup',
         'bool' => 'radioGroup',
       );
@@ -185,8 +186,8 @@ class TableAdapterForm {
 
   public function save()
   {
-    $dba = new Accessor($this->tableName);
-    $id = $dba->save($this->form->getValues(), $this->schema->getPK());
+    $dbm = new Model($this->tableName);
+    $id = $dbm->save($this->form->getValues());
 
     if ($id) {
       $this->form->setFieldValue('id', $id);
@@ -257,15 +258,15 @@ class TableAdapterForm {
   
   public function setValuesById($id)
   {
-    $dba = new Accessor($this->tableName);
-    $data = $dba->findOneBy(array('id' => $id));
+    $dbm = new Model($this->tableName);
+    $data = $dbm->get($id);
     $this->form->bind($data);
   }
 
   public function setValuesBy($params)
   {
-    $dba = new Accessor($this->tableName);
-    $data = $dba->findOneBy($params);
+    $dbm = new Model($this->tableName);
+    $data = $dbm->getBy($params);
     $this->form->bind($data);
   }
 
