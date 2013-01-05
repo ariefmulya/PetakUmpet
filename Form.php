@@ -34,7 +34,7 @@ class Form {
   public function getMethod()   { return $this->method; }
   public function isMultipart() { return $this->useMultipart; }
 
-  public function setFormAction($action)    { $this->action = $action; }
+  public function setAction($action)    { $this->action = $action; }
   public function setReadOnly($state=true)  { $this->readOnly = $state; }
   public function setMultipart($state=true) { $this->useMultipart = $state; }
 
@@ -52,7 +52,7 @@ class Form {
     return (string) $formatter;
   }
 
-  public function getFormScript()
+  public function getScript()
   {
     // any javascript function needed for the form should go here
     $s = "<script>
