@@ -5,13 +5,16 @@ use PetakUmpet\Singleton;
 
 class Schema {
 
-  const SC_COLNUM  = 'colnum';
-  const SC_COLNAME = 'column';
-  const SC_COLTYPE = 'type';
-  const SC_MAXLEN  = 'maxlen';
-  const SC_VARLEN  = 'varlen';
-  const SC_PRIMARY = 'primary';
-  const SC_NOTNULL = 'notnull';
+  const SC_COLNUM     = 'colnum';
+  const SC_COLNAME    = 'column';
+  const SC_COLTYPE    = 'type';
+  const SC_MAXLEN     = 'maxlen';
+  const SC_VARLEN     = 'varlen';
+  const SC_PRIMARY    = 'primary';
+  const SC_NOTNULL    = 'notnull';
+  const SC_ISSTRING   = 'isstring';
+  const SC_PDOTYPE    = 'pdotype';
+  const SC_FFIELDTYPE = 'fieldtype';
 
   const FK_SRCTABLE = 'srctable';
   const FK_SRCID    = 'srcid';
@@ -21,8 +24,8 @@ class Schema {
   public $pkeys;
   public $fkeys;
   public $columns;
-  public $type;
-  public $pdoType;
+  public $types;
+  public $pdoTypes;
   public $detail;
   public $isString;
 
@@ -31,9 +34,13 @@ class Schema {
     SchemaBuilder::build($this, $tableName, $db);
   }
 
+  public function getSchemaDetail() { return $this->detail; }
+
   public function getPK() { return $this->pkeys; }
 
   public function getFK() { return $this->fkeys; }
+
+  public function getPdoTypes() { return $this->pdoTypes; }
 
   public function getColumnNames() { return $this->columns; }
 
@@ -55,16 +62,16 @@ class Schema {
 
   public function getColumnNativeType($colName)
   {
-    if (isset($this->type[$colName])) {
-      return $this->type[$colName];
+    if (isset($this->types[$colName])) {
+      return $this->types[$colName];
     }
     return null;
   }
 
   public function getColumnPdoType($colName)
   {
-    if (isset($this->pdoType[$colName])) {
-      return $this->pdoType[$colName];
+    if (isset($this->pdoTypes[$colName])) {
+      return $this->pdoTypes[$colName];
     }
     return null;
   }

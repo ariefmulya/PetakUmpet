@@ -17,20 +17,27 @@ abstract class SchemaBuilder {
     }
 
     foreach ($res as $s) {
-      $colName = $s[Schema::SC_COLNAME];
-      $colType = $s[Schema::SC_COLTYPE];
-      $pdoType = $db->getDriver()->getPdoTypeMap($coltype);
+      $colName   = $s[Schema::SC_COLNAME];
+      $colType   = $s[Schema::SC_COLTYPE];
+      $pdoType   = $db->getDriver()->getPdoTypeMap($colType);
+      $fieldType = $db->getDriver()->getFormFieldTypeMap($colType);
+      $isString  = ($pdoType == \PDO::PARAM_STR);
 
       if ($s[Schema::SC_PRIMARY]) {
         $schema->pkeys[] = $colName;
       }
 
       $schema->columns[] = $colName;
-      $schema->type[$colname] = $colType;
-      $schema->pdoType[$colname] = $pdoType;
-      $schema->isString[$colName] = ($pdoType == \PDO::PARAM_STR);
-      $schema->detail[$colname] = $s;
+      $schema->types[$colName] = $colType;
+      $schema->pdoTypes[$colName] = $pdoType;
+      $schema->isString[$colName] = $isString;
+
+      $s[Schema::SC_PDOTYPE] = $pdoType;
+      $s[Schema::SC_FFIELDTYPE] = $fieldType;
+      $s[Schema::SC_ISSTRING] = $isString;
+      $schema->detail[$colName] = $s;
     }
+
 
     // get foreign keys
     $fdata = $db->queryFetchAll($db->getDriver()->getForeignKeyQuery(), array($tableName));

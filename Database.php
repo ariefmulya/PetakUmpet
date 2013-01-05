@@ -95,7 +95,6 @@ class Database {
     $st->setFetchMode(\PDO::FETCH_ASSOC);
 
     Logger::log('Database: preparedQuery QUERY  = ' . $st->queryString);
-    Logger::log('Database: preparedQuery PDOTYPES = ('.implode(',', $pdoTypes) .')');
 
     if ($trans === false) $params = array(0 => $params);
 
@@ -105,13 +104,14 @@ class Database {
       if (count($pdoTypes) > 0) {
         foreach ($p as $k=>$v) {
           $paramName = str_replace(':', '', trim($k));
-          $bindParamType = isset($pdoTypes[$paramName]) ? $pdoTypes[$paramName] : \PDO::PARAM_STR;
+          $bindType = isset($pdoTypes[$paramName]) ? $pdoTypes[$paramName] : \PDO::PARAM_STR;
 
-          if ($v === null) $bindParamType = \PDO::PARAM_NULL;
+          if ($v === null) $bindType = \PDO::PARAM_NULL;
 
-          $st->bindParam($k, $v, $bindParamType);
+          Logger::log("Database: preparedQuery PARAM: $bindType for COLUMN: $k (VALUE: $v)");
+          $st->bindValue($k, $v, $bindType);
         }
-        $st->execute();
+        $ret = $st->execute();
       } else {
         $ret = $st->execute($p);
       }

@@ -150,9 +150,14 @@ class Accessor {
     return $ret;
   } 
 
-  public function countPagerData($filter=null, $colData=array())
+  public function countPagerData($filter=null)
   {
     $query =  "SELECT COUNT(*) AS cnt FROM " . $this->sourceData;
+
+    $colData = array();
+    if ($this->schema !== null) {
+      $colData = $this->schema->getSchemaDetail();
+    }
 
     $params = array();
     if ($filter && count($filter->getQueryData()) > 0) {
@@ -163,12 +168,16 @@ class Accessor {
     return $this->db->queryFetchOne($query, $params);
   }
 
-  public function findPagerData($page, $nRows, $filter=null, $colData = array(), $orderBy='id', $orderAsc=true)
+  public function findPagerData($page, $nRows, $filter=null, $orderBy='id', $orderAsc=true)
   {
     $offset = max(($page-1) * $nRows, 0);
     $limit  = $nRows;
 
     $query  =  "SELECT * FROM " . $this->sourceData ;
+    $colData = array();
+    if ($this->schema !== null) {
+      $colData = $this->schema->getSchemaDetail();
+    }
 
     $params = array();
     if ($filter && count($filter->getQueryData()) > 0) {
@@ -219,19 +228,24 @@ class Accessor {
     return $params;
   }
 
-  public function insert($data)
+  public function insert($data, $columns)
   {
     if ($this->schema === null) throw new \Exception("insert() called with no Schema defined");
 
     if (count($data) == 0) return false;
 
-    $columns = $this->schema->getColumns();
+    $schema_columns = $this->schema->getColumnNames();
+
+    $targetColumns = $schema_columns;
+    if ($columns !== null) {
+      $targetColumns = array_intersect($columns, $schema_columns);
+    }
 
     $isMultiple = is_array(current($data));
 
     $firstRow = $isMultiple ? current($data) : $data;
 
-    list($query, $params) = $this->prepareInsertQuery($firstRow, $columns);
+    list($query, $params) = $this->prepareInsertQuery($firstRow, $targetColumns);
 
     if ($isMultiple) {
       $p1 = $params; 
@@ -239,7 +253,7 @@ class Accessor {
       $params[] = $p1;
       array_shift($data);
       foreach ($data as $d) {
-        $p = $this->prepareInsertParams($d, $columns);
+        $p = $this->prepareInsertParams($d, $targetColumns);
         $params[] = $p; 
       }
     }
@@ -252,7 +266,7 @@ class Accessor {
     return false;
   }
 
-  public function update($data, $keyval)
+  public function update($data, $keyval, $columns)
   {
     if ($this->schema === null) throw new \Exception("update() called with no Schema defined");
 
@@ -296,7 +310,7 @@ class Accessor {
     return false;
   }
 
-  public function save($data, $pkeys)
+  public function save($data, $pkeys, $columns=null)
   {
     $pkvals = array();
 
@@ -313,7 +327,7 @@ class Accessor {
     if ($insertMode) {
       return $this->insert($data, $columns);
     }
-    return $this->update($data, $pkvals);
+    return $this->update($data, $pkvals, $columns);
   }
 
   public function delete($params = array())

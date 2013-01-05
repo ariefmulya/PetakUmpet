@@ -25,11 +25,11 @@ class Model {
     $this->dba = new Accessor($this->tableName, $db, $this->schema);
   }
 
-  public function save($data, $pkeys=array())
+  public function save($data, $pkeys=array(), $columns=null)
   {
     $usedPKeys = (count($pkeys) > 0 ? $pkeys : $this->schema->getPK());
 
-    $id = $this->dba->save($data, $usedPKeys);
+    $id = $this->dba->save($data, $usedPKeys, $columns);
 
     if ($id) {
       return $id;
