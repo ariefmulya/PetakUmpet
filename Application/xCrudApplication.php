@@ -365,8 +365,19 @@ class xCrudApplication extends Application {
 
     $formColumns = isset($tab['formColumns']) ? $tab['formColumns'] : array();
 
-    $form = new TableAdapterForm($tab['tableName'], $formColumns, array(), $formAction);
+    if (count($formColumns) > 0 && !in_array($relKey, $formColumns)) {
+      $formColumns[] = $relKey;
+    }
 
+    if (isset($tab['relatedData']) && count($tab['relatedData']) > 0) {
+      foreach ($tab['relatedData'] as $relId => $relVal) {
+        if (count($formColumns) > 0 && !in_array($relId, $formColumns)) {
+          $formColumns[] = $relId;
+        }
+      }
+    }
+
+    $form = new TableAdapterForm($tab['tableName'], $formColumns, array(), $formAction);
 
     $form->setFieldTypes(array($relKey => 'hidden'));
     $form->setFieldValues(array($relKey => $relVal));
@@ -378,6 +389,18 @@ class xCrudApplication extends Application {
       foreach ($tab['relatedData'] as $relId => $relVal) {
         $form->setFieldTypes(array($relId => 'hidden'));
         $form->setFieldValues(array($relId => $relVal));
+      }
+    }
+
+    if (isset($tab['formFieldTypes']) && count($tab['formFieldTypes']) > 0) {
+      foreach ($tab['formFieldTypes'] as $field => $type) {
+        $form->setFieldTypes(array($field=> $type));
+      }
+    }
+
+    if (isset($tab['formFieldOptions']) && count($tab['formFieldOptions']) > 0) {
+      foreach ($tab['formFieldOptions'] as $field => $options) {
+        $form->setFieldOptions(array($field=> $options));
       }
     }
 
