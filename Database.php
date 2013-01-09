@@ -115,7 +115,7 @@ class Database {
       } else {
         $ret = $st->execute($p);
       }
-      Logger::log('Database: preparedQuery PARAMS = (' . implode(',', $p) . ')');
+      Logger::log('Database: preparedQuery PARAMS, KEYS = (' . implode(',', array_keys($p)) . ') VALUES = (' . implode(',', $p) . ')');
     }
     
     if ($trans) $ret = $this->db->commit();
