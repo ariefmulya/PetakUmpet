@@ -4,10 +4,14 @@ namespace PetakUmpet;
 
 class Report {
 
+  private $reportVars;
+  private $reportQueries;
+  private $reportData;
+
+
   private $title;
   private $header;
   private $columns;
-  private $reportData;
   private $summaryData;
   private $extraData;
   private $footer;
