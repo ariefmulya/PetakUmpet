@@ -1,11 +1,9 @@
 <?php
 
-namespace AppName;
+namespace frontend;
 
 use PetakUmpet\Application\xCrudApplication;
 use PetakUmpet\Database\Accessor;
-use PetakUmpet\Pager\ModalPager;
-use PetakUmpet\Pager\QueryPager;
 use PetakUmpet\Response;
 use PetakUmpet\Form\Component\TableAdapterForm;
 
@@ -20,16 +18,32 @@ class UserdataApplication extends xCrudApplication {
 
     $this->inlineForm = false;
 
-    $this->relationTabs = array(
+    // parameter names in queries should be the same with relKey and relatedData keys in tabs array
+    $rolesQuery = "SELECT ur.id, r.name FROM user_role ur "
+        ."JOIN roledata r ON r.id = ur.role_id "
+        ."JOIN userdata u ON u.id = ur.user_id WHERE u.id = :user_id";
+    $accessQuery = "SELECT ra.id, a.name FROM role_access ra "
+        ."JOIN accessdata a ON ra.access_id = a.id "
+        ."JOIN user_role ur ON ur.role_id = ra.role_id "
+        ."JOIN userdata u ON u.id = ur.user_id WHERE u.id = :user_id";
+
+    $this->tabs = array(
+      'roles' => 
         array (
-            'targetId' => 'roles',
-            'href' => $this->request->getAppUrl('Userdata/rolesPager&userid='),
-            'name' => 'Roles'
+            'name' => 'Roles',
+            'tableName' => 'user_role',
+            'query' => $rolesQuery,
+            'columns' => array('id', 'name'),
+            'relKey' => 'user_id',
+            'formColumns' => array('id', 'user_id', 'role_id'),
           ),
+      'access' =>
         array (
-            'targetId' => 'access',
-            'href' => $this->request->getAppUrl('Userdata/accessPager&userid='),
-            'name' => 'Access'
+            'name' => 'Access',
+            'tableName' => 'role_access',
+            'query' => $accessQuery,
+            'columns' => array('id', 'name'),
+            'relKey' => 'user_id',
           ),
       );
   }
@@ -38,123 +52,9 @@ class UserdataApplication extends xCrudApplication {
   {
     parent::configureForm();
     $this->form->setFieldOptions(array(
-      'is_admin' => array('1' => 'Ya', '0' => 'Tidak'),
+      'first_login' => array('1' => 'Yes', '0' => 'No'),
+      'is_admin' => array('1' => 'Yes', '0' => 'No'),
       ));
   }
 
-  public function rolesPagerAction()
-  {
-    $userid = $this->request->get('userid');
-
-    $q = "SELECT ur.id, r.name FROM user_role ur "
-        ."JOIN roledata r ON r.id = ur.role_id "
-        ."JOIN userdata u ON u.id = ur.user_id WHERE u.id = ?";
-
-    $columns = array('id', 'name');
-
-    $this->inlineForm = false;
-
-    $editHref = $this->request->getAppUrl('Userdata/rolesForm&userid='.$userid);
-    $delHref = $this->request->getAppUrl('Userdata/rolesDelete&userid='.$userid);
-    $targetId = 'roles';
-
-    $pager = new ModalPager($this->request);
-    $pager->setEditAction($editHref);
-    $pager->setDeleteAction($delHref);
-    $pager->setTargetId($targetId);
-    $pager->setTargetDiv($targetId.'Div');
-
-    $pager->build($q, array($userid), $columns);
-
-    return $this->renderView(Response::PetakUmpetView . 'xCrud/relationTabPager', array(
-        'pager' => $pager,
-        'href' => $editHref,
-        'targetId' => $targetId,
-      ));
-  }
-
-  public function rolesFormAction()
-  {
-    $form = new TableAdapterForm('user_role', array('id', 'user_id', 'role_id'), array(), $this->request->getAppUrl('Userdata/rolesForm'));
-
-    $form->setFieldTypes(array('user_id' => 'hidden'));
-
-    if (($id = $this->request->get('id'))) {
-      $form->setValuesById($id);
-    }
-    $form->setFieldValues(array('user_id' => $this->request->get('userid')));
-
-    if ($this->request->isPost() && $form->bindValidateSave($this->request)) {
-      $this->session->setFlash('Data is saved');
-    }
-
-    return $this->renderView(Response::PetakUmpetView . 'xCrud/relationForm', array('targetId' => 'roles', 'form' => $form));
-  }
-
-  public function rolesDeleteAction()
-  {
-    $dbm = new Model('user_role');
-    if ($dbm->delete(array('id' => $this->request->get('id')))) {
-      return new Response('success');
-    }
-    return new Response('fail', 404);
-  }
-
-  public function accessPagerAction()
-  {
-    $userid = $this->request->get('userid');
-
-    $q = "SELECT ra.id, a.name FROM role_access ra "
-        ."JOIN accessdata a ON ra.access_id = a.id "
-        ."JOIN user_role ur ON ur.role_id = ra.role_id "
-        ."JOIN userdata u ON u.id = ur.user_id WHERE u.id = ?";
-
-    $columns = array('id', 'name');
-
-
-    $this->inlineForm = false;
-    $editHref = $this->request->getAppUrl('Userdata/accessForm&userid='.$userid);
-    $delHref = $this->request->getAppUrl('Userdata/accessDelete&userid='.$userid);
-    $targetId = 'access';
-
-    $pager = new ModalPager($this->request);
-    $pager->setEditAction($editHref);
-    $pager->setDeleteAction($delHref);
-    $pager->setTargetId($targetId);
-    $pager->setTargetDiv($targetId.'Div');
-
-    $pager->build($q, array($userid), $columns);
-
-    return $this->renderView(Response::PetakUmpetView . 'xCrud/relationTabPager', array(
-        'pager' => $pager,
-        'href' => $editHref,
-        'targetId' => $targetId,
-      ));
-  }
-
-  public function accessFormAction()
-  {
-    $form = new TableAdapterForm('role_access', array(), array(), $this->request->getAppUrl('Userdata/accessForm'));
-
-    if (($id = $this->request->get('id'))) {
-      $form->setValuesById($id);
-    }
-    $form->setFieldValues(array('user_id' => $this->request->get('userid')));
-
-    if ($this->request->isPost() && $form->bindValidateSave($this->request)) {
-      $this->session->setFlash('Data is saved');
-    }
-
-    return $this->renderView(Response::PetakUmpetView . 'xCrud/relationForm', array('targetId' => 'access', 'form' => $form));
-  }
-
-  public function accessDeleteAction()
-  {
-    $dbm = new Model('role_access');
-    if ($dbm->delete(array('id' => $this->request->get('id')))) {
-      return new Response('success');
-    }
-    return new Response('fail', 404);
-  }
-  
 }
