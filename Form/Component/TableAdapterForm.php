@@ -29,7 +29,7 @@ class TableAdapterForm {
 
     $this->schema = new Schema($tableName);
 
-    $this->form = new Form($tableName, $action);
+    $this->form = new Form($tableName . 'Form', $action);
 
     $this->readOnly = false;
 
