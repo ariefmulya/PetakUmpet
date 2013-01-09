@@ -4,16 +4,16 @@
   <?php echo $form; ?>
 </div>
 
-<?php if (isset($relations) && count($relations) > 0) : ?>
+<?php if (isset($tabs) && count($tabs) > 0) : ?>
 <div class="span5">
   <ul class="nav nav-tabs" id="userTab">
-  <?php $cnt=0; foreach ($relations as $r) : $cnt++; ?>
-    <li><a data-toggle="taba" id="<?php echo $r['targetId'].'Tab'; ?>" data-target="#<?php echo $r['targetId'] ?>" href="<?php echo $r['href'] . $id ?>"><?php echo $r['name'] ?></a></li>
+  <?php $cnt=0; foreach ($tabs as $idx => $t) : $cnt++; ?>
+    <li><a data-toggle="taba" id="<?php echo $idx.'Tab'; ?>" data-target="#<?php echo $idx ?>" href="<?php echo $tabHref . '&relkey=' . $t['relKey'] . '&relval=' . $id . '&tabid=' . $idx; ?>"><?php echo $t['name'] ?></a></li>
   <?php endforeach ?>
   </ul>
   <div id="tabContent" class="tab-content">
-  <?php foreach ($relations as $r) : ?>
-    <div class="tab-pane" id="<?php echo $r['targetId'] ?>"></div>
+  <?php foreach ($tabs as $idx => $t) : ?>
+    <div class="tab-pane" id="<?php echo $idx ?>"></div>
   <?php endforeach ?>
   </div>  
 </div>

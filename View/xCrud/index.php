@@ -1,6 +1,6 @@
 <div class="row">
   <div class="span5">
-    <h3>Find <?php echo ucwords(str_replace('_', ' ', $tableName)) ?></h3>
+    <h3>Find <?php echo ucwords(str_replace('_', ' ', $crudTitle)) ?></h3>
     <?php echo $filterForm; ?>
     <?php if ($readOnly === false) : ?>
       <?php if ($inlineForm) : ?>

@@ -10,6 +10,8 @@ use PetakUmpet\Response;
 use PetakUmpet\Config;
 use PetakUmpet\Pager;
 use PetakUmpet\Pager\TablePager;
+
+use PetakUmpet\Pager\ModalPager;
 use PetakUmpet\Pager\QueryPager;
 use PetakUmpet\Filter;
 
@@ -28,12 +30,15 @@ class xCrudApplication extends Application {
   const USE_TABLE_PAGER = 2;
 
   private $appName;
+
+  protected $crudTitle;
   protected $tableName;
   protected $columns;
   protected $skip;
   protected $hasScript;
 
-  protected $relationTabs;
+  protected $tabs;
+
   protected $inlineForm;
 
   protected $pager;
@@ -58,9 +63,10 @@ class xCrudApplication extends Application {
     /* main variables */
     $this->appName = $this->request->getModule();
     $this->tableName = null;    /* main table to CRUD */
+    $this->crudTitle = null;
     $this->columns = null;      /* columns to display in pager */
     $this->skip = null;      /* skipped columns */
-    $this->relationTabs = null; /* tabs for related tables or actions */
+    $this->tabs = null; /* tabs for related tables or actions */
     $this->inlineForm = true;  /* set true for inline form, useful for simple master tables */
     $this->hasScript = null;
 
@@ -216,7 +222,12 @@ class xCrudApplication extends Application {
       $this->filter->setValue('search', $filterForm->getValue());
     }
 
+    if ($this->crudTitle === null) $this->crudTitle = $this->tableName;
+
+    $module = $this->request->getModule();
+
     return $this->renderView(Response::PetakUmpetView . 'xCrud/index', array(
+                    'crudTitle' => $this->crudTitle,
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
                     'inlineForm' => $this->inlineForm,
@@ -232,7 +243,10 @@ class xCrudApplication extends Application {
   {
     $this->configurePager();
 
+    if ($this->crudTitle === null) $this->crudTitle = $this->tableName;
+
     return $this->renderView(Response::PetakUmpetView . 'xCrud/pager', array(
+                    'crudTitle' => $this->crudTitle,
                     'tableName' => $this->tableName,
                     'appName' => $this->appName,
                     'inlineForm' => $this->inlineForm,
@@ -265,12 +279,15 @@ class xCrudApplication extends Application {
     }
 
     $id = $this->request->get('id', $retId);
+    if ($this->crudTitle === null) $this->crudTitle = $this->tableName;
 
     return $this->renderView(Response::PetakUmpetView . 'xCrud/edit', array(
+                    'crudTitle' => $this->crudTitle,      
                     'tableName' => $this->tableName,
+                    'tabHref' => $this->request->getAppUrl($this->request->getModule() . '/tabPager'),
                     'id' => $id,
                     'inlineForm' => $this->inlineForm,
-                    'relations' => $this->relationTabs,  
+                    'tabs' => $this->tabs,  
                     'appName' => $this->appName,
                     'pagerAction' => $this->pagerAction,
                     'pager' => $this->pager,
@@ -292,61 +309,102 @@ class xCrudApplication extends Application {
 
   public function tabPagerAction()
   {
-    $relid  = $this->request->get('relid');
-    $linkid = $this->request->get('linkid');
+    $tabId  = $this->request->get('tabid');
 
-    if (!isset($this->tabs[$relid])) {
+    if (!isset($this->tabs[$tabId])) {
       return $this->process->load404();
     }
 
-    $tab = $this->tabs[$relid];
+    $tab = $this->tabs[$tabId];
+    $relKey = $tab['relKey'];
+    $relVal  = $this->request->get('relval');
 
-    /* "SELECT ur.id, r.name FROM user_role ur "
-        ."JOIN roledata r ON r.id = ur.role_id "
-        ."JOIN userdata u ON u.id = ur.user_id WHERE u.id = ?"; */
-
-    $this->inlineForm = false;
-
-    $editHref = $this->request->getAppUrl($this->tabs[$relid]);
-    $delHref = $this->request->getAppUrl('Userdata/rolesDelete&userid='.$userid);
-    $targetId = 'roles';
+    $module = $this->request->getModule();
+    $editHref = $this->request->getAppUrl($module . '/tabForm&tabid=' . $tabId  . '&relkey=' . $relKey . '&relval=' . $relVal);
+    $delHref = $this->request->getAppUrl($module . '/tabDelete&tabid=' . $tabId );
 
     $pager = new ModalPager($this->request);
     $pager->setEditAction($editHref);
     $pager->setDeleteAction($delHref);
-    $pager->setTargetId($targetId);
-    $pager->setTargetDiv($targetId.'Div');
+    $pager->setTargetId($tabId);
+    $pager->setTargetDiv($tabId.'Div');
 
-    $pager->build($tab['query'], $tab['params'], $tab['columns']);
+    $params= array($relKey => $relVal);
 
-    return $this->renderView(Response::PetakUmpetView . 'xCrud/relationTabPager', array(
+    if (isset($tab['relatedData']) && count($tab['relatedData']) > 0) {
+      foreach ($tab['relatedData'] as $relId => $relVal) {
+        $params[$relId] = $relVal;
+      }
+    }
+
+    $pager->build($tab['query'], $params, $tab['columns']);
+
+    return $this->renderView(Response::PetakUmpetView . 'xCrud/tabPager', array(
         'pager' => $pager,
         'href' => $editHref,
-        'targetId' => $targetId,
+        'targetId' => $tabId,
       ));
   }
 
   public function tabFormAction()
   {
-    $form = new TableAdapterForm('user_role', array('id', 'user_id', 'role_id'), array(), $this->request->getAppUrl('Userdata/rolesForm'));
+    $tabId  = $this->request->get('tabid');
 
-    $form->setFieldTypes(array('user_id' => 'hidden'));
+    if (!isset($this->tabs[$tabId])) {
+      return $this->process->load404();
+    }
 
+    $tab = $this->tabs[$tabId];
+
+    $module = $this->request->getModule();
+
+    $relVal = $this->request->get('relval');
+    $relKey = $this->request->get('relkey');
+
+    $formAction = $this->request->getAppUrl($module . '/tabForm&tabid=' . $tabId  . '&relkey=' . $relKey . '&relval=' . $relVal . '&id=' . $this->request->get('id'));
+
+    $formColumns = isset($tab['formColumns']) ? $tab['formColumns'] : array();
+
+    $form = new TableAdapterForm($tab['tableName'], $formColumns, array(), $formAction);
+
+
+    $form->setFieldTypes(array($relKey => 'hidden'));
+    $form->setFieldValues(array($relKey => $relVal));
+
+    // for extra params to be saved, useful for adding
+    // default set of params to every forms.
+    // the extra-params could come from unrelated data (things like current userid)
+    if (isset($tab['relatedData']) && count($tab['relatedData']) > 0) {
+      foreach ($tab['relatedData'] as $relId => $relVal) {
+        $form->setFieldTypes(array($relId => 'hidden'));
+        $form->setFieldValues(array($relId => $relVal));
+      }
+    }
+
+    // 'id' is really a special field for our framework, don't ever forget that ;-)
     if (($id = $this->request->get('id'))) {
       $form->setValuesById($id);
     }
-    $form->setFieldValues(array('user_id' => $this->request->get('userid')));
-
+ 
     if ($this->request->isPost() && $form->bindValidateSave($this->request)) {
       $this->session->setFlash('Data is saved');
     }
 
-    return $this->renderView(Response::PetakUmpetView . 'xCrud/relationForm', array('targetId' => 'roles', 'form' => $form));
+    return $this->renderView(Response::PetakUmpetView . 'xCrud/tabForm', array('targetId' => $tabId, 'form' => $form));
   }
 
   public function tabDeleteAction()
   {
-    $dbm = new Model('user_role');
+    $tabId  = $this->request->get('tabid');
+
+    if (!isset($this->tabs[$tabId])) {
+      return $this->process->load404();
+    }
+
+    $tab = $this->tabs[$tabId];
+
+    $dbm = new Model($tab['tableName']);
+
     if ($dbm->delete(array('id' => $this->request->get('id')))) {
       return new Response('success');
     }
