@@ -197,11 +197,17 @@ class xCrudApplication extends Application {
         $this->form->setAction($formAction);
       }
       $this->form->setReadOnly($this->readOnly);
+      
+      $user = $this->session->getUser();
+      $userId = null;
+      if ($user) {
+        $userId = $user->getId();
+      }
 
       /* user_id field is always hidden */
       $this->form->getFormObject()->setFieldType('user_id', 'hidden');
       /* and set value for user_id from session */
-      $this->form->getFormObject()->setFieldValue('user_id', $this->session->getUser()->getId());
+      $this->form->getFormObject()->setFieldValue('user_id', $userId);
 
       $this->form->setCancelAction('location.href = \'' . $cancelAction . '\'');
 
