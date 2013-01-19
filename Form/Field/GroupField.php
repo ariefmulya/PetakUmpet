@@ -41,10 +41,11 @@ class GroupField extends BaseField {
 
   public function getLabel()
   {
-    if ($this->getAttribute('label') == null) {
-      return ucwords(str_replace('_', ' ', $this->name));
+    $label = $this->label;
+    if ($label === null) {
+      $label = $this->name;
     }
-    return parent::getLabel();
+    return ucwords(str_replace('_', ' ', $label));
   }
 
   public function setOptions(array $options)
@@ -85,7 +86,9 @@ class GroupField extends BaseField {
           $c->setAttribute('checked', 'checked');
         }
       } else {
-        if ($inputVal !== null && $inputVal == $c->getValue()) $c->setAttribute('checked', 'checked');
+        if ($inputVal !== null && $inputVal == $c->getValue()) {
+          $c->setAttribute('checked', 'checked');
+        }
       }
       $s .= $c;
       $s .= $c->getDescription();
