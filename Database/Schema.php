@@ -13,6 +13,7 @@ class Schema {
   const SC_PRIMARY    = 'primary';
   const SC_NOTNULL    = 'notnull';
   const SC_ISSTRING   = 'isstring';
+  const SC_ISARRAY    = 'isarray';
   const SC_PDOTYPE    = 'pdotype';
   const SC_FFIELDTYPE = 'fieldtype';
 
@@ -80,6 +81,14 @@ class Schema {
   {
     if (isset($this->isString[$colName])) {
       return $this->isString[$colName];
+    }
+    return false;
+  }
+
+  public function isArrayColumn($colName) 
+  {
+    if (isset($this->detail[$colName])) {
+      return $this->detail[$colName][self::SC_ISARRAY];
     }
     return false;
   }

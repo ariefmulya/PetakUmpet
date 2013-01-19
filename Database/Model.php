@@ -25,9 +25,34 @@ class Model {
     $this->dba = new Accessor($this->tableName, $db, $this->schema);
   }
 
+  private function adaptForDB($data)
+  {
+    foreach ($data as $k => $v) {
+      if (is_array($v)) {
+        if ($this->schema->isArrayColumn($k)) {
+          $arrayVal = $this->db->getDriver()->convertArray($v); 
+          $data[$k] = $arrayVal;
+        } else {
+          $v = $v[0];
+          $data[$k] = $v;
+        }
+      }
+      if ($this->schema->getColumnPdoType($k) == \PDO::PARAM_BOOL) {
+        if ($v == '' || $v === null) {
+          $v = 0;
+          $data[$k] = $v;
+        }
+      }
+    }
+
+    return $data;
+  }
+
   public function save($data, $pkeys=array(), $columns=null)
   {
     $usedPKeys = (count($pkeys) > 0 ? $pkeys : $this->schema->getPK());
+
+    $data = $this->adaptForDB($data);
 
     $id = $this->dba->save($data, $usedPKeys, $columns);
 

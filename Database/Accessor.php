@@ -275,6 +275,8 @@ class Accessor {
 
     $params = array();
 
+    $colQuote = $this->db->getDriver()->getColumnQuote();
+
     foreach ($data as $k => $v) {
       // make sure we are not updating 'id' column
       if ($k == 'id') continue;
@@ -284,7 +286,8 @@ class Accessor {
       // make sure we are not updating unrequested columns
       if ($columns !== null && !in_array($k, $columns)) continue;
 
-      $marker_data[] = "$k = :$k";
+      $col = $colQuote . $k . $colQuote;
+      $marker_data[] = "$col = :$k";
       $params[$k] = $v;
     }
 
@@ -293,7 +296,8 @@ class Accessor {
 
       // make sure we are not updating unrequested columns
       if ($columns !== null && !in_array($k, $columns)) continue;
-      $marker_keys[] = "$k = :$k";
+      $col = $colQuote . $k . $colQuote;
+      $marker_keys[] = "$col = :$k";
 
       $params[$k] = $v;
     }

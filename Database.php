@@ -108,7 +108,7 @@ class Database {
 
           if ($v === null) $bindType = \PDO::PARAM_NULL;
 
-          Logger::log("Database: preparedQuery PARAM: $bindType for COLUMN: $k (VALUE: $v)");
+          Logger::log("Database: preparedQuery PARAM: `$bindType` for COLUMN: `$k` (VALUE: `$v`)");
           $st->bindValue($k, $v, $bindType);
         }
         $ret = $st->execute();
