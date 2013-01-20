@@ -18,7 +18,7 @@ class GroupField extends BaseField {
     $this->name = $name;
     $this->extra = $extra;
     $this->label = $label;
-    $this->id = $id;
+    $this->id = ( $id === null ? $id=$name : $id);
     $this->multiple = false;
     $this->useOptions = true;
     $this->childs = array();

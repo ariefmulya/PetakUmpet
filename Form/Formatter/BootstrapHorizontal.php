@@ -17,6 +17,8 @@ class BootstrapHorizontal {
     $this->fieldRowStart['normal'] = '<div class="control-group">';
     $this->fieldRowEnd['normal'] = '</div>';
 
+    $this->fieldRowStart['hide'] = '<div class="control-group" style="display: none;">';
+
     $this->fieldRowStart['error'] = '<div class="control-group error">';
     $this->fieldRowEnd['error'] = '</div>';
 
@@ -57,7 +59,11 @@ class BootstrapHorizontal {
         $errorText = $f->getErrorText();
         $fieldStatus = $errorText == '' ? 'normal' : 'error';
 
-        $s .= $this->fieldRowStart[$fieldStatus];
+        if ($f->getShowDisplay() === false) {
+          $s .= $this->fieldRowStart['hide'];
+        } else {
+          $s .= $this->fieldRowStart[$fieldStatus];
+        }
 
         $s .= $f->getLabelTag($this->fieldLabelClass);
 

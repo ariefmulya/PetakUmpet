@@ -22,6 +22,8 @@ class BaseField {
 
   protected $child;
 
+  protected $showDisplay;
+
   public function __construct($name=null, $extra=null, $label=null, $id=null)
   {
     if ($name === null ) throw new \Exception('Form field need to have name');
@@ -39,6 +41,7 @@ class BaseField {
       $this->attributes = array_merge($this->attributes, $extra);
     }
  
+    $this->showDisplay = true;
     $this->startTag = '<input ';
     $this->closeStartTag = '';
     $this->endTag = '>';
@@ -149,7 +152,17 @@ class BaseField {
     $this->chainTarget[] = $target;
     $this->chainUrl[] = $url;
   }
-  
+ 
+  public function setShowDisplay($mode)
+  {
+    $this->showDisplay = $mode;
+  }
+
+  public function getShowDisplay()
+  {
+    return $this->showDisplay;
+  }
+
   public function __toString()
   {
     $s = '';
