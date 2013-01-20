@@ -97,6 +97,7 @@ class PostgreSQL {
     // might also worked in 8 and above
     return  "SELECT a.attnum as colnum, a.attname as column, c.typname as type, "
         . "a.atttypmod as maxlen, a.attlen as varlen, "
+        . "case when a.attndims <> 0 then 1 else 0 end as isarray, "
         . "case when d.contype ='p' then 1 else 0 end as primary, "
         . "case when a.attnotnull ='t' then 1 else 0 end as notnull "
         . "FROM pg_attribute a JOIN pg_class b ON a.attrelid=b.oid "
@@ -165,5 +166,24 @@ class PostgreSQL {
     if (isset($this->formFieldTypeMap[$type])) 
       return $this->formFieldTypeMap[$type];
     return 'text';
+  }
+
+  public function convertArray($value)
+  {
+    // taken from: http://stackoverflow.com/questions/5631387/php-array-to-postgres-array
+    // XXX: verify if this works
+    settype($set, 'array'); // can be called with a scalar or array
+    $result = array();
+    foreach ($set as $t) {
+        if (is_array($t)) {
+            $result[] = to_pg_array($t);
+        } else {
+            $t = str_replace('"', '\\"', $t); // escape double quote
+            if (! is_numeric($t)) // quote only non-numeric values
+                $t = '"' . $t . '"';
+            $result[] = $t;
+        }
+    }
+    return '{' . implode(",", $result) . '}'; // format  
   }
 }
