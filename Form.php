@@ -138,6 +138,13 @@ class Form {
     }
   }
 
+  public function setFieldDisplay($name, $mode)
+  {
+    if (isset($this->fields[$name])) {
+      $this->fields[$name]->setShowDisplay($mode);
+    }
+  }
+
   public function setFieldType($name, $type)
   {
     if (isset($this->fields[$name])) {
@@ -204,6 +211,10 @@ class Form {
   public function bindValidate(Request $request)
   {
     $status = true;
+
+    // clear previous data first
+    // to make sure we process only post-ed data
+    $this->reset();
 
     foreach ($this->fields as $k => $f) {
       $name = $f->getName();
