@@ -133,7 +133,7 @@ class Accessor {
       $s = $c;
       if (!isset($colData[$c]) || $v === null || $v == '') continue;
 
-      if (!$colData[$c][Schema::COL_IS_STRING]) {
+      if (!$colData[$c][Schema::SC_ISSTRING]) {
         $s = "CAST ($c AS text) ";
       }
       $marker[] = $s ." ILIKE :$c" ;

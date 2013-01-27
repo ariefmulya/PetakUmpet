@@ -21,7 +21,9 @@ abstract class SchemaBuilder {
       $colType   = $s[Schema::SC_COLTYPE];
       $pdoType   = $db->getDriver()->getPdoTypeMap($colType);
       $fieldType = $db->getDriver()->getFormFieldTypeMap($colType);
-      $isString  = ($pdoType == \PDO::PARAM_STR);
+      $isString  = ($pdoType == \PDO::PARAM_STR  
+                      && !(stristr($colType, 'time')) 
+                      && !(stristr($colType, 'date')) );
 
       if ($s[Schema::SC_PRIMARY]) {
         $schema->pkeys[] = $colName;
