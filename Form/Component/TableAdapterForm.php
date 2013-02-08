@@ -21,7 +21,7 @@ class TableAdapterForm {
 
   private $readOnly;
 
-  public function __construct($tableName, $columns=array(), $skip=array(), $action=null)
+  public function __construct($tableName, $columns=array(), $skip=array(), $action=null, $formatter=null)
   {
     $this->db = Singleton::acquire('\\PetakUmpet\\Database');
 
@@ -29,7 +29,11 @@ class TableAdapterForm {
 
     $this->schema = new Schema($tableName);
 
-    $this->form = new Form($tableName . 'Form', $action);
+    if ($formatter === null) {
+      $this->form = new Form($tableName . 'Form', $action);
+    } else {
+      $this->form = new Form($tableName . 'Form', $action, null, 'POST', $formatter);
+    }
 
     $this->readOnly = false;
 
