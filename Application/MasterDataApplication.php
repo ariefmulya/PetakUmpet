@@ -77,8 +77,8 @@ abstract class MasterDataApplication extends Application {
       if (isset($this->formTypes[$t]) || isset($this->formOptions[$t]) || isset($this->fieldLabels[$t])) {
         $this->ajaxCrudApps[$t]->configureForm();
 
-        if (isset($this->formTypes[$t])) $this->ajaxCrudApps[$t]->getForm()->setFormTypes($this->formTypes[$t]);
-        if (isset($this->formOptions[$t])) $this->ajaxCrudApps[$t]->getForm()->setFormOptions($this->formOptions[$t]);
+        if (isset($this->formTypes[$t])) $this->ajaxCrudApps[$t]->getForm()->setFieldTypes($this->formTypes[$t]);
+        if (isset($this->formOptions[$t])) $this->ajaxCrudApps[$t]->getForm()->setFieldOptions($this->formOptions[$t]);
         if (isset($this->fieldLabels[$t])) {
           $form = $this->ajaxCrudApps[$t]->getForm()->getFormObject();  
           foreach ($this->fieldLabels[$t] as $arr) {
