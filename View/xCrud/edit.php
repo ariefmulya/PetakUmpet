@@ -37,7 +37,7 @@
     // wait for the DOM to be loaded 
   $(document).ready(function() { 
       // bind form' and provide a simple callback function 
-      $('#<?php echo $tableName; ?>').ajaxForm({
+      $('#<?php echo $form->getName(); ?>').ajaxForm({
         target: '#crud-form',
         success: function() {
           $('#pager').load('<?php echo $pagerAction; ?>');
