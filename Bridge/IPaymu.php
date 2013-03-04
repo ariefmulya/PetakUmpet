@@ -81,10 +81,13 @@ class IPaymu {
     //execute post
     $request = curl_exec($ch);
 
+    $sessionID = null;
+
     if ( $request === false ) {
         echo 'Curl Error: ' . curl_error($ch);
     } else {
       $result = json_decode($request, true);
+      $sessionID = $result['sessionID'];
       if( isset($result['url']) )
           header('location: '. $result['url']);
       else {
@@ -92,8 +95,9 @@ class IPaymu {
       }
     }
 
-    //close connection
     curl_close($ch);
+
+    return $sessionID;
   }
 
 } 
