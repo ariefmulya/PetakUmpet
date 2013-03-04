@@ -81,7 +81,7 @@ class GroupField extends BaseField {
       if ($this->multiple) {
         if (
             $inputVal !== null && is_array($inputVal) && 
-            in_array($c->getValue(), $this->getValue())
+            in_array($c->getValue(), $inputVal)
           ) {
           $c->setAttribute('checked', 'checked');
         }
