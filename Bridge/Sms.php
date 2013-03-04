@@ -3,7 +3,7 @@
 namespace PetakUmpet\Bridge;
 
 // the use of this bridge require SmsTools library 
-// download from life2play.net / contact: info@lif2play.net
+// download from life2play.net / contact: info@life2play.net
 
 use SmsGateway\SmsTools;
 
