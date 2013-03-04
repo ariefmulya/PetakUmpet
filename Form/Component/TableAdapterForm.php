@@ -114,6 +114,11 @@ class TableAdapterForm {
     return 'text';
   }
 
+  public function getName()
+  {
+    return $this->getFormObject()->getName();
+  }
+  
   public function setCancelAction($value)
   {
     $this->cancelAction = $value;
