@@ -15,6 +15,9 @@ abstract class Email {
     extract($emailConf);
 
     $transport = \Swift_SmtpTransport::newInstance($server, $port)->setUsername($username)->setPassword($password);
+    if (isset($encryption) && $encryption != '') {
+      $transport->setEncryption($encryption);
+    }
     $mailer    = \Swift_Mailer::newInstance($transport);
     $mailer->from = $from;
 
