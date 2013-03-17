@@ -18,7 +18,9 @@ abstract class Sms {
     $messages = SmsTools::scanInbox();
     if (count($messages) > 0) {
       $smsInbox = new Model('sms_inbox');
-      $smsInbox->save($messages);
+      foreach ($messages as $m) {
+        $smsInbox->save($m);
+      }
     }
 
     $pager = new TablePager($request, $rows);
