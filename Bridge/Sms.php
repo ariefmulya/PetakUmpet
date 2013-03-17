@@ -65,7 +65,7 @@ abstract class Sms {
         $data['content'] = $content;
         $data['smsfile'] = $fname;
         $smsOutbox = new Model('sms_outbox');
-        $smsOutbox->insert($data);
+        $smsOutbox->save($data);
       }
     }
 
