@@ -37,11 +37,12 @@ abstract class Sms {
 
     $messages = $dba->findBy(array('sent_at' => null));
 
+    $smsOutbox = new Model('sms_outbox');
     foreach ($messages as $m) {
       $sentAt = SmsTools::getSentStatus($m['smsfile']);
       if ($sentAt) {
         $m['sent_at'] = $sentAt;
-          $dba->update($m, array('id' => $m['id']));
+        $smsOutbox->save($m);
       }
     }
 
