@@ -2,8 +2,11 @@
 
 namespace PetakUmpet;
 
-ini_set('display_errors', 'On');
 define('PU_DIR',  __DIR__ . DS . '..' . DS . '..' . DS);
+
+ini_set('display_errors', 'On');
+ini_set('upload_tmp_dir', PU_DIR . 'web' . DS . 'uploads' . DS . 'tmp');
+
 include(__DIR__ . DS . 'Loader.php');
 
 class Init {
