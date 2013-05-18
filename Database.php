@@ -9,6 +9,7 @@ class Database {
   const FETCH_TYPE_ONE = 1;
   const FETCH_TYPE_ROW = 2;
   const FETCH_TYPE_ALL = 4;
+  const FETCH_TYPE_ASSOC = 8;
 
   private $db;
   private $baseDriverObject;
@@ -140,6 +141,7 @@ class Database {
       if ($fetch_type == self::FETCH_TYPE_ONE) return $st->fetchColumn();
       if ($fetch_type == self::FETCH_TYPE_ROW) return $st->fetch();
       if ($fetch_type == self::FETCH_TYPE_ALL) return $st->fetchAll();
+      if ($fetch_type == self::FETCH_TYPE_ASSOC) return $st->fetchAll(\PDO::FETCH_NUM);
     }
     return false;
   }
@@ -152,6 +154,18 @@ class Database {
   public function queryFetchOne($query, $params=array(), $trans=false)
   {
     return $this->queryFetch($query, $params, $trans, self::FETCH_TYPE_ONE);
+  }
+
+  public function queryFetchAssoc($query, $params=array(), $trans=false) 
+  {
+    $result = $this->queryFetch($query, $params, $trans, self::FETCH_TYPE_ASSOC);
+    $arr = array();
+    if ($result) {
+      foreach ($result as $r) {
+        $arr[$r[0]] = $r[1];
+      }
+    }
+    return $arr;
   }
 
   public function queryFetchRow($query, $params=array(), $trans=false)
