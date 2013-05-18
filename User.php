@@ -18,6 +18,7 @@ class User {
   private $name;
   private $userid;
   private $profile;
+  private $confirmedAt;
 
   public function __construct($username, $password)
   {
@@ -29,19 +30,22 @@ class User {
     $this->name = null;
     $this->id = null;
     $this->userid = null;
-    $this->first_login = true;
+    $this->firstLogin = true;
     $this->profile = array();
     $this->roles = array();
     $this->access = array();
     $this->parentId = null;
     $this->isAdmin = false;
+    $this->confirmedAt = false;
   }
 
   public function getName()   { return $this->name;   }
   public function getUserid() { return $this->userid; }
   public function getId() { return $this->id; }
   public function getData()   { return $this->data;   }
-  public function isFirstLogin()   { return $this->first_login;   }
+  public function isFirstLogin()   { return $this->firstLogin;   }
+  public function getConfirmedAt() { return $this->confirmedAt; }
+  public function isConfirmed() { return $this->confirmedAt !== null; }
 
   public function setFirstLogin($value)
   {
@@ -73,7 +77,8 @@ class User {
       $this->name = $this->data['name'];
       $this->userid = $this->data['userid'];
       $this->id = $this->data['id'];
-      $this->first_login = $this->data['first_login'];
+      $this->firstLogin = $this->data['first_login'];
+      $this->confirmedAt = $this->data['confirmed_at'];
       $dba = new Accessor('user_profile');
       $this->profile = $dba->findOneBy(array('user_id' => $this->id));
       return true;
