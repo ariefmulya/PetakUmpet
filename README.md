@@ -1,4 +1,1 @@
-PetakUmpet
-==========
-
-PHP Web Development Framework
+README
