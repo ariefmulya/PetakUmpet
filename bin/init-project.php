@@ -14,7 +14,7 @@ $app = $argv[1];
 $mode = isset($argv[2]) ? $argv[2] : '--normal';
 if ($mode=='') $mode='--normal';
 
-function rcopy($src, $dst, $mode) {
+function rcopy($src, $dst, $mode="--normal") {
   if (is_dir($src) && ( (!is_dir($dst) && !is_file($dst)) || $mode == '--reset'))  {
     echo "    - Initialize " . basename($src) . "\n";
     mkdir($dst);
@@ -41,12 +41,27 @@ foreach ($dirs as $d) {
 echo "  init-project: Setting up Application... $app\n" ;
 rename(TARGETDIR . DS . 'app' . DS . 'AppName', TARGETDIR . DS . 'app' . DS . $app);
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//
 // updating AppName to provided application name
+//
 
-
-// in config file
+// in config stub file
+// we are separating config stub with app-used config so that 
+// people can have localized config file in version control
+//
 $cfgfile = TARGETDIR . DS . 'config' . DS . 'Config.php.dist';
 file_put_contents($cfgfile,str_replace('AppName', $app, file_get_contents($cfgfile)));
+
+// Copying config stub to Config.php - which will be used by app
+//
+$cfgfile_target = TARGETDIR . DS . 'config' . DS . 'Config.php';
+rcopy($cfgfile, $cfgfile_target);
+
+//
+//////////////////////////////////////////////////////////////////////////////////////////
+
 
 // in form login file
 $frmfile = TARGETDIR . DS . 'app' . DS . $app . DS . 'Form' . DS . 'LoginForm.php';
@@ -72,9 +87,8 @@ echo "\n  init-project: Finished.\n";
 echo "\n";
 echo "        Make sure to setup the project with following steps:\n";
 echo "------------------------------------------------------------------------\n";
-echo "  1. Move config\Config.php.dist to config\Config.php file, updates it accordingly\n";
-echo "  2. Create the database\n";
-echo "  3. Update and execute SQL files in app\\". $app."\\res\\sql\\ folder\n";
+echo "  1. Create the database\n";
+echo "  2. Update and execute SQL files in app\\". $app."\\res\\sql\\ folder\n";
 echo "     - Can use init-db.php to create database and execute the sql files\n";
 echo "       command: php lib\PetakUmpet\bin\init-db.php APPNAME --reset\n";
 echo "\n";
