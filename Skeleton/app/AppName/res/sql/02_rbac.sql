@@ -20,12 +20,9 @@ INSERT INTO accessdata (name) VALUES ('Userdata/pager');
 INSERT INTO accessdata (name) VALUES ('Userdata/delete');
 
 -- Userdata relations table CRUD access
-INSERT INTO accessdata (name) VALUES ('Userdata/rolesPager');
-INSERT INTO accessdata (name) VALUES ('Userdata/rolesForm');
-INSERT INTO accessdata (name) VALUES ('Userdata/rolesDelete');
-INSERT INTO accessdata (name) VALUES ('Userdata/accessPager');
-INSERT INTO accessdata (name) VALUES ('Userdata/accessForm');
-INSERT INTO accessdata (name) VALUES ('Userdata/accessDelete');
+INSERT INTO accessdata (name) VALUES ('Userdata/tabPager');
+INSERT INTO accessdata (name) VALUES ('Userdata/tabForm');
+INSERT INTO accessdata (name) VALUES ('Userdata/tabDelete');
 
 -- Roledata table CRUD access
 INSERT INTO accessdata (name) VALUES ('Roledata/index');
