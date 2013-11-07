@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend;
+namespace AppName;
 
 use PetakUmpet\Application\xCrudApplication;
 use PetakUmpet\Database\Accessor;
