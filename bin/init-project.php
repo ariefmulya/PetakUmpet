@@ -4,7 +4,6 @@ define('DS', DIRECTORY_SEPARATOR);
 define('SKELDIR', __DIR__ . DS . '..' . DS . 'Skeleton' . DS);
 define('TARGETDIR', SKELDIR . '..' . DS . '..' . DS . '..' . DS);
 
-
 if (!isset($argv[1]) || $argv[1] == '') {
   echo "  init-project: Please provide application name\n";
   exit();
@@ -80,7 +79,7 @@ foreach ($appfiles as $f) {
 }
 
 echo "  init-project: Fixing log mode\n";
-chmod (TARGETDIR . DS . 'app' . DS . $app . DS . 'res' . DS . 'log' . DS . 'app.log', '0666');
+chmod (TARGETDIR . DS . 'app' . DS . $app . DS . 'res' . DS . 'log' . DS . 'app.log', 0666);
 
 echo "\n  init-project: Finished.\n";
 
