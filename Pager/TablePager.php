@@ -72,12 +72,12 @@ class TablePager extends Pager {
       $link .=  "<a class=\"btn btn-mini btn-primary\" href=\"$editHref\" >";
     }
 
-    $link .=  '<i class="icon-pencil icon-white"></i></a>&nbsp;'
+    $link .=  '<span class="glyphicon glyphicon-edit"></span></a>&nbsp;'
           . '<a class="btn btn-mini btn-warning" href="#" ' 
           . "onclick=\"bootbox.confirm('Are you sure?', function(result) "
           . "   { if (result) $.ajax({url: '$deleteHref', success: function() " 
           . "       { $('#pager').load('$pagerHref'); } });  });\"> "
-          . '<i class="icon-remove icon-white"></i></a>&nbsp;'
+          . '<span class="glyphicon glyphicon-remove"></span></a>&nbsp;'
           . '</div></td>';
 
     return $link;
