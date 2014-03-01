@@ -105,6 +105,14 @@ class Form {
     }
   }
 
+  public function addFromArray($arr=array())
+  {
+    // handle exception
+    foreach($arr as $a) {
+      $this->add($a[0], $a[1], $a[2], $a[3], $a[4]);
+    }
+  }
+  
   public function remove($name)
   {
     if (isset($this->fields[$name])) {
