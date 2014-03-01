@@ -131,6 +131,11 @@ class Request {
     return $this->base_url . $this->getPathInfo() . '?'.self::MOD_ACCESSOR.'=' . $page;
   }
 
+  public function getBaseUrl()
+  {
+    return $this->base_url;
+  }
+
   public function getModule()
   {
     return $this->get(self::MOD_ACCESSOR);

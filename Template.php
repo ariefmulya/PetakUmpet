@@ -69,6 +69,16 @@ class Template {
            ($icon === null ? '' : '<i class="'.$icon.'"></i>&nbsp;') . $name . '</a>';
   }
 
+  public function appLink($app, $name, $page, $class="", $icon=null)
+  {
+    $page = str_replace('/', '&a=', $page);
+
+    $href = $this->request->getBaseUrl() . '/' . $app . '?' . $page;
+
+    return '<a class="'.$class.'" href="'.$href.'">' . 
+           ($icon === null ? '' : '<i class="'.$icon.'"></i>&nbsp;') . $name . '</a>';
+  }
+
   public function dropdown($name, $li, $class="", $icon=null)
   {
     $r  = '<li class="dropdown">';
