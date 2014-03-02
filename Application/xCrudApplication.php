@@ -83,6 +83,11 @@ class xCrudApplication extends Application {
     $this->user = $this->session->getUser();
   }
 
+  public function setInlineForm($value)
+  {
+    $this->inlineForm = $value;
+  }
+
   public function getFilter()
   {
     return $this->filter;
