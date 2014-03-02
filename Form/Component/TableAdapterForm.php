@@ -92,7 +92,7 @@ class TableAdapterForm {
     if ($this->readOnly === false) {
       if ($this->useSaveButton) $this->form->addAction(new Field\Submit('Save'));
       if ($this->useSaveAddButton) $this->form->addAction(new Field\Submit('Save & Add', array('class' => 'btn')));
-      if ($this->useCancelButton) $this->form->addAction(new Field\Button('Cancel', 
+      if ($this->useCancelButton) $this->form->addAction(new Field\Button('Back', 
                     array('class' => 'btn btn-warning', 'onclick' => $this->cancelAction )));
     }
     return (string) $this->form;
