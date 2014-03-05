@@ -282,6 +282,8 @@ class Accessor {
       if ($k == 'id') continue;
       $k = $this->db->escapeInput($k);
       if ($k == 'id') continue;
+      // or primary keys
+      if (in_array($k, array_keys($keyval))) continue;
 
       // make sure we are not updating unrequested columns
       if ($columns !== null && !in_array($k, $columns)) continue;
