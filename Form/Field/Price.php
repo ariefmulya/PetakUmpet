@@ -17,6 +17,14 @@ class Price extends BaseField {
     $this->setAttribute('style', 'text-align: right;');
     $this->setAttribute('class', 'input-medium');
     $this->setAttribute('data-price', 'true');
+
+    $this->scripts =
+      "prices = $('#".$this->id."').find('input[data-price=true]');
+      for (var i=0; i<prices.length; i++) {
+        p = jQuery(prices[i]);
+        p.priceFormat({prefix: '', centsSeparator: '', centsLimit: 0 });
+      }
+      ";
   }
 
   public function setCurrencyTag($value)

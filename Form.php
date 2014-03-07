@@ -29,15 +29,6 @@ class Form {
 
     $this->formatter = $formatter;
 
-    $this->scripts =     
-    // any javascript function needed for the form should go here
-    "prices = $('#".$this->id."').find('input[data-price=true]');
-    for (var i=0; i<prices.length; i++) {
-      p = jQuery(prices[i]);
-      p.priceFormat({prefix: '', centsSeparator: '', centsLimit: 0 });
-    }
-    ";
-
   }
 
   public function getName()     { return $this->name;   }
@@ -50,6 +41,7 @@ class Form {
   public function setReadOnly($state=true)  { $this->readOnly = $state; }
   public function setMultipart($state=true) { $this->useMultipart = $state; }
   public function setFormatter($value) { $this->formatter = $value; }
+  public function addScript($value) { $this->scripts .= $value; }
 
   public function __toString()
   {
@@ -69,17 +61,17 @@ class Form {
   {
     $s = '<script>' . 
         '$(document).ready(function() {' . 
-        $this->scripts .
-        '}); ' .
-        '</script>' ;
+        $this->scripts ;
+
+    foreach ($this->fields as $f) {
+      $f->getScript();
+    }
+
+    $s .= '}); ' . '</script>' ;
 
     return $s;
   }
 
-  public function addScript($value)
-  {
-    $this->scripts .= $value;
-  }
 
   private function create($field, $name=null, $extra=null, $label=null, $id=null)
   {

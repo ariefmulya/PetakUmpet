@@ -21,6 +21,7 @@ class BaseField {
   protected $chainUrl; 
 
   protected $child;
+  protected $scripts;
 
   protected $showDisplay;
 
@@ -55,6 +56,9 @@ class BaseField {
 
     $this->child = array();
   }
+
+  public function addScript($value) { $this->scripts .= $value; }
+  public function getScript() { return $this->scripts; }
 
   public function addChild(BaseField $child, $name)
   {
