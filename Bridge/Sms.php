@@ -54,14 +54,14 @@ abstract class Sms {
     return $pager;
   }
 
-  static public function send($numbers, $content)
+  static public function send($numbers, $content, $save=false)
   {
     $numbers = explode(";", $numbers);
 
     foreach ($numbers as $n) {
       $n = trim($n);
       $fname = SmsTools::send($n, $content);
-      if ($fname) {
+      if ($fname && $save) {
         $data['destination'] = $n;
         $data['content'] = $content;
         $data['smsfile'] = $fname;

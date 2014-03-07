@@ -27,25 +27,29 @@ class Model {
 
   private function adaptForDB($data)
   {
-    foreach ($data as $k => $v) {
-      if (is_array($v)) {
-        if ($this->schema->isArrayColumn($k)) {
-          $arrayVal = $this->db->getDriver()->convertArray($v); 
-          $data[$k] = $arrayVal;
-        } else {
-          $v = $v[0];
-          $data[$k] = $v;
+    $normalizedData = array();
+    foreach ($this->schema->getColumnNames() as $c) {
+      if (isset($data[$c])) {
+        $k = $c; $v = $data[$c];
+        $newv = $v;
+        if (is_array($v)) {
+          if ($this->schema->isArrayColumn($k)) {
+            $arrayVal = $this->db->getDriver()->convertArray($v); 
+            $newv = $arrayVal;
+          } else {
+            $newv = $v[0];
+          }
         }
-      }
-      if ($this->schema->getColumnPdoType($k) == \PDO::PARAM_BOOL) {
-        if ($v == '' || $v === null) {
-          $v = 0;
-          $data[$k] = $v;
+        if ($this->schema->getColumnPdoType($k) == \PDO::PARAM_BOOL) {
+          if ($v == '' || $v === null) {
+            $newv = 0;
+          }
         }
+        $normalizedData[$k] = $newv;
       }
     }
 
-    return $data;
+    return $normalizedData;
   }
 
   public function save($data, $pkeys=array(), $columns=null)

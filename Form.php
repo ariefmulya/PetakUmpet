@@ -12,6 +12,8 @@ class Form {
   protected $validator;
   protected $formatter;
 
+  protected $scripts;
+
   private $readOnly;
   private $useMultipart;
 
@@ -26,6 +28,16 @@ class Form {
     $this->useMultipart = false;
 
     $this->formatter = $formatter;
+
+    $this->scripts =     
+    // any javascript function needed for the form should go here
+    "prices = $('#".$this->id."').find('input[data-price=true]');
+    for (var i=0; i<prices.length; i++) {
+      p = jQuery(prices[i]);
+      p.priceFormat({prefix: '', centsSeparator: '', centsLimit: 0 });
+    }
+    ";
+
   }
 
   public function getName()     { return $this->name;   }
@@ -37,6 +49,7 @@ class Form {
   public function setAction($action)    { $this->action = $action; }
   public function setReadOnly($state=true)  { $this->readOnly = $state; }
   public function setMultipart($state=true) { $this->useMultipart = $state; }
+  public function setFormatter($value) { $this->formatter = $value; }
 
   public function __toString()
   {
@@ -54,20 +67,18 @@ class Form {
 
   public function getScript()
   {
-    // any javascript function needed for the form should go here
-    $s = "<script>
-      $(document).ready(function() {
-        prices = $('#".$this->id."').find('input[data-price=true]');
-        for (var i=0; i<prices.length; i++) {
-          p = jQuery(prices[i]);
-          p.priceFormat({prefix: '', centsSeparator: '', centsLimit: 0 });
-        }
-      });
-      
-    </script>
-    ";
+    $s = '<script>' . 
+        '$(document).ready(function() {' . 
+        $this->scripts .
+        '}); ' .
+        '</script>' ;
 
     return $s;
+  }
+
+  public function addScript($value)
+  {
+    $this->scripts .= $value;
   }
 
   private function create($field, $name=null, $extra=null, $label=null, $id=null)
@@ -105,6 +116,14 @@ class Form {
     }
   }
 
+  public function addFromArray($arr=array())
+  {
+    // handle exception
+    foreach($arr as $a) {
+      $this->add($a[0], $a[1], $a[2], $a[3], $a[4]);
+    }
+  }
+  
   public function remove($name)
   {
     if (isset($this->fields[$name])) {

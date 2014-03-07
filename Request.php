@@ -31,7 +31,7 @@ class Request {
 
     $this->base_url = $this->root_url . $_SERVER['SCRIPT_NAME'];
 
-    $this->query_string = $_SERVER['QUERY_STRING'];
+    $this->query_string = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''; 
 
     $this->path = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
     if ($this->path != '/') rtrim($this->path, '/');
@@ -129,6 +129,11 @@ class Request {
     }
 
     return $this->base_url . $this->getPathInfo() . '?'.self::MOD_ACCESSOR.'=' . $page;
+  }
+
+  public function getBaseUrl()
+  {
+    return $this->base_url;
   }
 
   public function getModule()

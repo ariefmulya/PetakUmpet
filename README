@@ -51,5 +51,6 @@ applications can set their own layouts by calling Template's setLayout()
 function. If an ajax request is detected the response shall be given without
 layout.
 
+additional docs: 
 
 life2play.net

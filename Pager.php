@@ -184,7 +184,7 @@ class Pager {
   public function formatValue($value)
   {
     if (is_bool($value)) {
-      return ($value ? '<i class="icon-ok"></i>' : '<i class="icon-remove"></i>');
+      return ($value ? '<i class="glyphicon glyphicon-ok"></i>' : '<i class="glyphicon glyphicon-remove"></i>');
     }
     // } else if (is_numeric($value)) {
     //   $value = number_format($value, 2);
@@ -242,7 +242,7 @@ class Pager {
 
   public function formatPager()
   {
-    $s  = '<div class="pagination pagination-centered"><ul>';
+    $s  = '<div class="pagination pagination-centered"><ul class="pagination">';
     $s .= $this->formatLeftPager();
     $s .= $this->formatRightPager();
     $s .= '</ul></div>';

@@ -44,6 +44,13 @@ abstract class MasterDataApplication extends Application {
     }
   }
 
+  public function setCrudInlineForm($tables, $mode)
+  {
+    foreach ($tables as $t) {
+      $this->ajaxCrudApps[$t]->setInlineForm($mode);
+    }
+  }
+
   public function setCrudFormTypes($tableName, $types)
   {
     $this->formTypes[$tableName] = $types;
