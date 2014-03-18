@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title><?php echo $config->getProjectTitle(); ?></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <link href="<?php echo $T->getResourceUrl('css/bootstrap.css') ?>" rel="stylesheet">
-    <link href="<?php echo $T->getResourceUrl('css/bootstrap-responsive.css') ?>" rel="stylesheet">
-    <link href="<?php echo $T->getResourceUrl('css/bootstrap-docs.css') ?>" rel="stylesheet">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="<?php echo $T->getResourceUrl('ico/favicon.ico') ?>">    
+    <title><?php echo $config->getProjectTitle(); ?></title>
+    <link href="<?php echo $T->getResourceUrl('css/bootstrap.min.css') ?>" rel="stylesheet">
+    <link href="<?php echo $T->getResourceUrl('css/bootstrap-theme.min.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/bootstrap-datetimepicker.min.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/custom.css') ?>" rel="stylesheet">
-    <script src="<?php echo $T->getResourceUrl('js/jquery.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/jquery.form.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/bootstrap.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/bootbox.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/jquery.cookie.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/bootstrap-datetimepicker.min.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/jquery.jstree/jquery.jstree.js') ?>"></script>
-    <script src="<?php echo $T->getResourceUrl('js/jquery.select-chain.js') ?>"></script>
+ 
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
   </head>
-  <body data-offset="50" data-target=".subnav">
 
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+  <body>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <div class="nav-collapse collapse">
-            <?php if ($session->getUser()) : ?>
-            <ul class="nav">
-              <?php $menu = array(
-                  'Home' => 'Home/index',
-                  'Admin' => 'Admin/index',
-                );
-                echo $T->navMenu($menu);
-              ?>
-            </ul>
-
-            <div class="btn-group pull-right">
-              <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                <i class="icon-user"></i> <?php if ($session->getUser()) echo $session->getUser()->getName() ?>
+          <a class="navbar-brand" href="#"><?php echo $config->getProjectTitle() ?></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <?php if ($session->getUser()) : ?>
+          <ul class="nav navbar-nav">
+            <?php $menu = array(
+                'Home' => 'Home/index',
+                'Admin' => 'Admin/index',
+              );
+              echo $T->navMenu($menu);
+            ?>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="glyphicon icon-user"></i> <?php if ($session->getUser()) echo $session->getUser()->getName() ?>
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
@@ -48,34 +52,32 @@
                 <li class="divider"></li>
                 <li><?php echo $T->link('Logout', 'Logout/index', '', 'icon-off') ?></li>
               </ul>
-            </div>
-            <?php else: ?>
-            <ul class="nav">
-              <?php echo $T->navMenu(array('Home' => 'Home/index', 'About' => 'Home/about')) ?>
-            </ul>
-            <?php endif ?>
-          </div><!--/.nav-collapse -->
-          <a class="brand" href="#"><?php echo $config->getProjectTitle() ?></a>
-          
-        </div>
+            </li>
+          </ul>
+          <?php else: ?>
+          <ul class="nav navbar-nav">
+            <?php echo $T->navMenu(array('Home' => 'Home/index', 'About' => 'Home/about')) ?>
+          </ul>
+          <?php endif ?> 
+        </div><!--/.nav-collapse -->
       </div>
     </div>
 
-    <div class="container">
-      <div class="row">
-        <div class="span12">
-          <?php echo $T->subNavMenu() ?>
-          <?php echo $__mainContents; ?>
-        </div>
-      </div>
-    </div>
+    <?php echo $T->subNavMenu() ?>
+    <?php echo $__mainContents; ?>
     
-    <footer>
-      <div class="container">
-        <hr/>
-        Copyright &copy; 2012
-      </div>
-    </footer>
+    <div class="container">
+      <hr/>
+      <footer>
+        Copyright &copy; ---YEAR---
+      </footer>
+    </div>
+    <script src="<?php echo $T->getResourceUrl('js/jquery-1.11.0.min.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/jquery.form.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/bootstrap.min.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/bootbox.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/bootstrap-datetimepicker.min.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/jquery.jstree/jstree.js') ?>"></script>
+    <script src="<?php echo $T->getResourceUrl('js/jquery.select-chain.js') ?>"></script>
   </body>
 </html>
-

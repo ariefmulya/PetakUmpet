@@ -1,18 +1,10 @@
 /*
 
 * Price Format jQuery Plugin
-* Created By Eduardo Cuducos cuducos [at] gmail [dot] com
+* Created By Eduardo Cuducos
 * Currently maintained by Flavio Silveira flavio [at] gmail [dot] com
-* Version: 1.7
-* Release: 2012-02-22
-
-* original char limit by Flavio Silveira <http://flaviosilveira.com>
-* original keydown event attachment by Kaihua Qi
-* keydown fixes by Thasmo <http://thasmo.com>
-* Clear Prefix on Blur suggest by Ricardo Mendes from PhonoWay
-* original allow negative by Cagdas Ucar <http://carsinia.com>
-* keypad fixes by Carlos Vinicius <http://www.kvinicius.com.br> and Rayron Victor
-* original Suffix by Marlon Pires Junior
+* Version: 2.0
+* Release: 2014-01-26
 
 */
 
@@ -34,17 +26,25 @@
 			centsLimit: 2,
 			clearPrefix: false,
             clearSufix: false,
-			allowNegative: false
+			allowNegative: false,
+			insertPlusSign: false,
+			clearOnEmpty:false
 		};
 
 		var options = $.extend(defaults, options);
 
 		return this.each(function()
 		{
-
 			// pre defined options
 			var obj = $(this);
+			var value = '';
 			var is_number = /[0-9]/;
+
+			// Check if is an input
+			if(obj.is('input'))
+				value = obj.val();
+			else
+				value = obj.html();
 
 			// load the pluggings settings
 			var prefix = options.prefix;
@@ -56,6 +56,29 @@
 			var clearPrefix = options.clearPrefix;
             var clearSuffix = options.clearSuffix;
 			var allowNegative = options.allowNegative;
+			var insertPlusSign = options.insertPlusSign;
+			var clearOnEmpty = options.clearOnEmpty;
+			
+			// If insertPlusSign is on, it automatic turns on allowNegative, to work with Signs
+			if (insertPlusSign) allowNegative = true;
+
+			function set(nvalue)
+			{
+				if(obj.is('input'))
+					obj.val(nvalue);
+				else
+					obj.html(nvalue);
+			}
+			
+			function get()
+			{
+				if(obj.is('input'))
+					value = obj.val();
+				else
+					value = obj.html();
+					
+				return value;
+			}
 
 			// skip everything that isn't a number
 			// and also skip the left zeroes
@@ -91,22 +114,32 @@
 			}
 
 			// format as price
-			function price_format (str)
+			function price_format (str, ignore)
 			{
+				if(!ignore && (str === '' || str == price_format('0', true)) && clearOnEmpty)
+					return '';
+
 				// formatting settings
 				var formatted = fill_with_zeroes(to_numbers(str));
 				var thousandsFormatted = '';
 				var thousandsCount = 0;
+
+				// Checking CentsLimit
+				if(centsLimit == 0)
+				{
+					centsSeparator = "";
+					centsVal = "";
+				}
 
 				// split integer from cents
 				var centsVal = formatted.substr(formatted.length-centsLimit,centsLimit);
 				var integerVal = formatted.substr(0,formatted.length-centsLimit);
 
 				// apply cents pontuation
-				formatted = integerVal+centsSeparator+centsVal;
+				formatted = (centsLimit==0) ? integerVal : integerVal+centsSeparator+centsVal;
 
 				// apply thousands pontuation
-				if (thousandsSeparator)
+				if (thousandsSeparator || $.trim(thousandsSeparator) != "")
 				{
 					for (var j=integerVal.length;j>0;j--)
 					{
@@ -115,12 +148,27 @@
 						if (thousandsCount%3==0) char_ = thousandsSeparator+char_;
 						thousandsFormatted = char_+thousandsFormatted;
 					}
+					
+					//
 					if (thousandsFormatted.substr(0,1)==thousandsSeparator) thousandsFormatted = thousandsFormatted.substring(1,thousandsFormatted.length);
-					formatted = thousandsFormatted+centsSeparator+centsVal;
+					formatted = (centsLimit==0) ? thousandsFormatted : thousandsFormatted+centsSeparator+centsVal;
 				}
 
 				// if the string contains a dash, it is negative - add it to the begining (except for zero)
-				if (allowNegative && str.indexOf('-') != -1 && (integerVal != 0 || centsVal != 0)) formatted = '-' + formatted;
+				if (allowNegative && (integerVal != 0 || centsVal != 0))
+				{
+					if (str.indexOf('-') != -1 && str.indexOf('+')<str.indexOf('-') )
+					{
+						formatted = '-' + formatted;
+					}
+					else
+					{
+						if(!insertPlusSign)
+							formatted = '' + formatted;
+						else
+							formatted = '+' + formatted;
+					}
+				}
 
 				// apply the prefix
 				if (prefix) formatted = prefix+formatted;
@@ -137,12 +185,12 @@
 				var code = (e.keyCode ? e.keyCode : e.which);
 				var typed = String.fromCharCode(code);
 				var functional = false;
-				var str = obj.val();
+				var str = value;
 				var newValue = price_format(str+typed);
 
 				// allow key numbers, 0 to 9
 				if((code >= 48 && code <= 57) || (code >= 96 && code <= 105)) functional = true;
-
+				
 				// check Backspace, Tab, Enter, Delete, and left/right arrows
 				if (code ==  8) functional = true;
 				if (code ==  9) functional = true;
@@ -150,36 +198,38 @@
 				if (code == 46) functional = true;
 				if (code == 37) functional = true;
 				if (code == 39) functional = true;
-				if (allowNegative && (code == 189 || code == 109)) functional = true; // dash as well
-
+				// Minus Sign, Plus Sign
+				if (allowNegative && (code == 189 || code == 109 || code == 173)) functional = true;
+				if (insertPlusSign && (code == 187 || code == 107 || code == 61)) functional = true;
+				
 				if (!functional)
 				{
+					
 					e.preventDefault();
 					e.stopPropagation();
-					if (str!=newValue) obj.val(newValue);
+					if (str!=newValue) set(newValue);
 				}
 
 			}
 
-			// inster formatted price as a value of an input field
+			// Formatted price as a value
 			function price_it ()
 			{
-				var str = obj.val();
+				var str = get();
 				var price = price_format(str);
-				if (str != price) obj.val(price);
+				if (str != price) set(price);
+				if(parseFloat(str) == 0.0 && clearOnEmpty) set('');
 			}
 
 			// Add prefix on focus
 			function add_prefix()
 			{
-				var val = obj.val();
-				obj.val(prefix + val);
+				obj.val(prefix + get());
 			}
             
             function add_suffix()
 			{
-				var val = obj.val();
-				obj.val(val + suffix);
+				obj.val(get() + suffix);
 			}
 
 			// Clear prefix on blur if is set to true
@@ -187,8 +237,8 @@
 			{
 				if($.trim(prefix) != '' && clearPrefix)
 				{
-					var array = obj.val().split(prefix);
-					obj.val(array[1]);
+					var array = get().split(prefix);
+					set(array[1]);
 				}
 			}
             
@@ -197,24 +247,25 @@
 			{
 				if($.trim(suffix) != '' && clearSuffix)
 				{
-					var array = obj.val().split(suffix);
-					obj.val(array[0]);
+					var array = get().split(suffix);
+					set(array[0]);
 				}
 			}
 
 			// bind the actions
-			$(this).bind('keydown', key_check);
-			$(this).bind('keyup', price_it);
+			obj.bind('keydown.price_format', key_check);
+			obj.bind('keyup.price_format', price_it);
+			obj.bind('focusout.price_format', price_it);
 
 			// Clear Prefix and Add Prefix
 			if(clearPrefix)
 			{
-				$(this).bind('focusout', function()
+				obj.bind('focusout.price_format', function()
 				{
 					clear_prefix();
 				});
 
-				$(this).bind('focusin', function()
+				obj.bind('focusin.price_format', function()
 				{
 					add_prefix();
 				});
@@ -223,19 +274,19 @@
 			// Clear Suffix and Add Suffix
 			if(clearSuffix)
 			{
-				$(this).bind('focusout', function()
+				obj.bind('focusout.price_format', function()
 				{
                     clear_suffix();
 				});
 
-				$(this).bind('focusin', function()
+				obj.bind('focusin.price_format', function()
 				{
                     add_suffix();
 				});
 			}
 
 			// If value has content
-			if ($(this).val().length>0)
+			if (get().length>0)
 			{
 				price_it();
 				clear_prefix();
@@ -246,20 +297,32 @@
 
 	};
 	
-	/******************
-	* Unmask Function *
-	*******************/
-	jQuery.fn.unmask = function(){
-		
-		var field = $(this).val();
+	/**********************
+    * Remove price format *
+    ***********************/
+    $.fn.unpriceFormat = function(){
+      return $(this).unbind(".price_format");
+    };
+
+    /******************
+    * Unmask Function *
+    *******************/
+    $.fn.unmask = function(){
+
+        var field;
 		var result = "";
 		
-		for(var f in field)
-		{
-			if(!isNaN(field[f]) || field[f] == "-") result += field[f];
-		}
-		
-		return result;
-	};
+		if($(this).is('input'))
+			field = $(this).val();
+		else
+			field = $(this).html();
+
+        for(var f in field)
+        {
+            if(!isNaN(field[f]) || field[f] == "-") result += field[f];
+        }
+
+        return result;
+    };
 
 })(jQuery);
