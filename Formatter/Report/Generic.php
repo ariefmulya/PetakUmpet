@@ -1,8 +1,10 @@
 <?php
 
-namespace PetakUmpet\Report;
+namespace PetakUmpet\Formatter\Report ;
 
-class BaseFormatter {
+use PetakUmpet\Formatter as Formatter;
+
+class Generic extends Formatter {
 
   private $report;
 

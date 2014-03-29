@@ -1,8 +1,10 @@
 <?php
 
-namespace PetakUmpet\Form\Formatter;
+namespace PetakUmpet\Formatter\Form;
 
-class CleanCanvasVertical {
+use PetakUmpet\Formatter as Formatter;
+
+class CleanCanvasVertical extends Formatter {
 
   private $form;
 

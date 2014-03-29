@@ -17,7 +17,7 @@ class Form {
   private $readOnly;
   private $useMultipart;
 
-  public function __construct($name='Form', $action=null, $id=null, $method='POST', $formatter='\\PetakUmpet\\Form\\Formatter\\BootstrapHorizontal')
+  public function __construct($name='Form', $action=null, $id=null, $method='POST', $formatter='\\PetakUmpet\\Formatter\\Form\\BootstrapHorizontal')
   {
     $this->name   = $name;
     $this->id     = ($id === null ? $name : $id);

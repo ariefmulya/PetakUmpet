@@ -1,8 +1,10 @@
 <?php
 
-namespace PetakUmpet\Form\Formatter;
+namespace PetakUmpet\Formatter\Form;
 
-class BootstrapHorizontal {
+use PetakUmpet\Formatter as Formatter;
+
+class BootstrapVertical extends Formatter {
 
   private $form;
 
@@ -10,7 +12,7 @@ class BootstrapHorizontal {
   {
     $this->form = $form;
 
-    $this->formClass = 'form-horizontal';
+    $this->formClass = 'form-vertical';
     $this->formStart = '<fieldset>';
     $this->formEnd = '</fieldset>';
 
@@ -42,7 +44,7 @@ class BootstrapHorizontal {
 
 
     $s = '<form method="' . $method 
-        . '" class="form-horizontal" '
+        . '" class="form-vertical" '
         . 'name="'.$name.'" id="'.$id.'" '
         . ($this->form->isMultipart() ? ' enctype="multipart/form-data" ' : '' )
         . ($action !== null ? 'action="'. $action . '" >': ' >'); 

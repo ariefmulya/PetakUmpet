@@ -1,8 +1,10 @@
 <?php
 
-namespace PetakUmpet\Form\Formatter;
+namespace PetakUmpet\Formatter\Form;
 
-class BootstrapVertical {
+use PetakUmpet\Formatter as Formatter;
+
+class BootstrapHorizontal extends Formatter {
 
   private $form;
 
@@ -10,27 +12,27 @@ class BootstrapVertical {
   {
     $this->form = $form;
 
-    $this->formClass = 'form-vertical';
+    $this->formClass = 'form-horizontal';
     $this->formStart = '<fieldset>';
     $this->formEnd = '</fieldset>';
 
-    $this->fieldRowStart['normal'] = '<div class="control-group">';
+    $this->fieldRowStart['normal'] = '<div class="form-group">';
     $this->fieldRowEnd['normal'] = '</div>';
 
-    $this->fieldRowStart['hide'] = '<div class="control-group" style="display: none;">';
+    $this->fieldRowStart['hide'] = '<div class="form-group" style="display: none;">';
 
-    $this->fieldRowStart['error'] = '<div class="control-group error">';
+    $this->fieldRowStart['error'] = '<div class="form-group has-error">';
     $this->fieldRowEnd['error'] = '</div>';
 
-    $this->fieldLabelClass = 'control-label';
+    $this->fieldLabelClass = 'col-sm-2 control-label';
 
-    $this->fieldStart = '<div class="controls">';
+    $this->fieldStart = '<div class="col-sm-10">';
     $this->fieldEnd = '</div>';
 
-    $this->fieldHelpTagFormat = '<span class="help-inline">%s</span>';
+    $this->fieldHelpTagFormat = '<span class="help-block">%s</span>';
 
-    $this->actionStart = '<div class="form-actions">';
-    $this->actionEnd = '</div>';
+    $this->actionStart = '<div class="form-group"><div class="col-sm-offset-2 col-sm-10">';
+    $this->actionEnd = '</div></div>';
   }
 
   public function __toString()
@@ -41,8 +43,8 @@ class BootstrapVertical {
     $action = $this->form->getAction();
 
 
-    $s = '<form method="' . $method 
-        . '" class="form-vertical" '
+    $s = '<form role="form" method="' . $method 
+        . '" class="form-horizontal" '
         . 'name="'.$name.'" id="'.$id.'" '
         . ($this->form->isMultipart() ? ' enctype="multipart/form-data" ' : '' )
         . ($action !== null ? 'action="'. $action . '" >': ' >'); 

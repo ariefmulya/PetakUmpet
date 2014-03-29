@@ -12,14 +12,11 @@ class Menu {
   private $menu;
   private $formatter;
 
-  public function __construct($menu=array(), $formatter='\\PetakUmpet\\Menu\\Formatter\\MenuBootstrap')
+  public function __construct($menu=array(), $formatter='\\PetakUmpet\\Formatter\\Menu\\Bootstrap')
   {
     $this->buildMenu($menu);
     $this->formatter = new $formatter($this);
 
-    var_dump($menu);
-    var_dump($this->tree);
-    $this->breadcrumb('Rumah Sakit');
   }
 
   private function buildMenu($menu, $parent=null)

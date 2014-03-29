@@ -140,7 +140,7 @@ class BaseField {
     return $s;
   }
 
-  public function getLabelTag($labelClass='control-label')
+  public function getLabelTag($labelClass='col-sm-2 control-label')
   {
     $nm = $this->attributes['name'];
     return '<label class="'.$labelClass.'" for="'.$nm.'">'.$this->getLabel().'</label>';

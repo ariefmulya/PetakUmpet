@@ -18,7 +18,7 @@ class Report {
 
   private $formatter;
 
-  public function __construct($title, $formatter='BaseFormatter')
+  public function __construct($title, $formatter='PetakUmpet\\Formatter\\Report\\Generic')
   { 
     $this->title = $title;
     $this->header = array();
@@ -56,7 +56,7 @@ class Report {
 
   public function __toString()
   {
-    $cname = '\\PetakUmpet\\Report\\' . $this->formatter;
+    $cname = $this->formatter;
     $formatter = new $cname($this);
     return (string) $formatter;
   }
