@@ -1,4 +1,4 @@
-<div class="span6">
+<div class="container">
   <div class="page-header">
     <h3>Please login to access system</h3>
   </div>

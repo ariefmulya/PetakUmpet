@@ -42,6 +42,8 @@
               );
               echo $T->navMenu($menu);
             ?>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="glyphicon icon-user"></i> <?php if ($session->getUser()) echo $session->getUser()->getName() ?>
@@ -69,7 +71,7 @@
     <div class="container">
       <hr/>
       <footer>
-        Copyright &copy; ---YEAR---
+        Copyright &copy; <?php echo date('Y') ; ?>
       </footer>
     </div>
     <script src="<?php echo $T->getResourceUrl('js/jquery-1.11.0.min.js') ?>"></script>
