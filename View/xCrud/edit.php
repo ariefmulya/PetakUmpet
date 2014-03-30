@@ -1,11 +1,12 @@
-<div class="span6" id="mainForm">
+<div class="container">
+<div class="col-md-6" id="mainForm">
     <h3>Input Data <?php echo ucwords(str_replace('_', ' ', $tableName)) ?></h3>
   <?php $T->snippet('flash-message'); ?>
   <?php echo $form; ?>
 </div>
 
 <?php if (isset($tabs) && count($tabs) > 0) : ?>
-<div class="span5">
+<div class="col-md-5">
   <ul class="nav nav-tabs" id="userTab">
   <?php $cnt=0; foreach ($tabs as $idx => $t) : $cnt++; ?>
     <li><a data-toggle="taba" id="<?php echo $idx.'Tab'; ?>" data-target="#<?php echo $idx ?>" href="<?php echo $tabHref . '&relkey=' . $t['relKey'] . '&relval=' . $id . '&tabid=' . $idx; ?>"><?php echo $t['name'] ?></a></li>
@@ -46,3 +47,4 @@
   }); 
 </script> 
 <?php endif ?>
+</div>

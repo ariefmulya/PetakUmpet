@@ -64,16 +64,16 @@ class TablePager extends Pager {
     $deleteHref = $this->deleteAction . '&id=' . $id;
     $pagerHref = $this->pagerAction;
 
-    $link = '<td><div class="btn-group">' ;
+    $link = '<td><div class="btn-group btn-group-xs">' ;
 
     if ($this->getInlineForm()) {
-      $link .=  "<a class=\"btn btn-mini btn-primary\" href=\"#\" onclick=\"$('#crud-form').load('$editHref');\" >";
+      $link .=  "<a class=\"btn btn-primary\" href=\"#\" onclick=\"$('#crud-form').load('$editHref');\" >";
     } else {
-      $link .=  "<a class=\"btn btn-mini btn-primary\" href=\"$editHref\" >";
+      $link .=  "<a class=\"btn btn-primary\" href=\"$editHref\" >";
     }
 
     $link .=  '<span class="glyphicon glyphicon-edit"></span></a>&nbsp;'
-          . '<a class="btn btn-mini btn-warning" href="#" ' 
+          . '<a class="btn btn-warning" href="#" ' 
           . "onclick=\"bootbox.confirm('Are you sure?', function(result) "
           . "   { if (result) $.ajax({url: '$deleteHref', success: function() " 
           . "       { $('#pager').load('$pagerHref'); } });  });\"> "

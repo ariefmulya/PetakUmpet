@@ -19,12 +19,12 @@ class ModalPager extends QueryPager {
     $deleteHref = $this->deleteAction . '&id=' . $id;
     $pagerHref = $this->pagerAction;
 
-    $link = '<td><div class="btn-group">' ;
+    $link = '<td><div class="btn-group btn-group-xs">' ;
 
-    $link .=  "<a class=\"btn btn-mini btn-primary\" data-toggle=\"modala\" data-target=\"#".$this->targetId."myModal\"  href=\"$editHref\" >";
+    $link .=  "<a class=\"btn btn-primary\" data-toggle=\"modala\" data-target=\"#".$this->targetId."myModal\"  href=\"$editHref\" >";
 
-    $link .=  '<i class="icon-pencil icon-white"></i></a>&nbsp;'
-          . '<a class="btn btn-mini btn-warning" href="#" ' 
+    $link .=  '<i class="glyphicon glyphicon-pencil"></i></a>&nbsp;'
+          . '<a class="btn btn-warning" href="#" ' 
           . "onclick=\"bootbox.confirm('Are you sure?', function(result) "
           . "   { if (result) $.ajax({url: '$deleteHref', success: function() " 
           . "       { $('#pager').load('$pagerHref'); "
@@ -33,7 +33,7 @@ class ModalPager extends QueryPager {
       $link .= "  $('#" . $this->targetId ."Tab').click(); ";
     }
     $link .= " } });  });\"> "
-          . '<i class="icon-remove icon-white"></i></a>&nbsp;'
+          . '<i class="glyphicon glyphicon-remove"></i></a>&nbsp;'
           . '</div></td>';
 
     return $link;

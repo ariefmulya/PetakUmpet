@@ -1,8 +1,8 @@
 <div id="<?php echo $targetId ?>Div">
   <?php echo $pager; ?>
 <hr>
-<a class="btn" id="<?php echo $targetId ?>AddModal" data-toggle="modala" data-target="#<?php echo $targetId ?>myModal" href="<?php echo $href ?>">Add Data</a>
-<div><div class="modal hide" id="<?php echo $targetId ?>myModal"></div></div>
+<a class="btn btn-default" id="<?php echo $targetId ?>AddModal" data-toggle="modala" data-target="#<?php echo $targetId ?>myModal" href="<?php echo $href ?>">Add Data</a>
+<div><div class="modal fade" id="<?php echo $targetId ?>myModal"></div></div>
 
 <script type="text/javascript">
 $(document).ready( function () {

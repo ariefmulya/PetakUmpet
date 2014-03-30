@@ -139,8 +139,8 @@ class Template {
 
     $s = '';
     if (is_array($subNavMenu) && count($subNavMenu) > 0) {
-      $s = '<div class="navbar navbar-default">'
-          . '<ul class="nav navbar-pills">'
+      $s = '<div class="navbar navbar-default"><div class="container">'
+          . '<ul class="nav navbar-nav">'
           ;
       foreach ($subNavMenu as $name => $action) {
         if (is_array($action)) {
@@ -149,7 +149,7 @@ class Template {
           $s .= '<li>' . $this->link($name, $action) . '</li>';
         }
       }
-      $s .= '</ul></div>';
+      $s .= '</ul></div></div>';
     }
     return $s;
   }

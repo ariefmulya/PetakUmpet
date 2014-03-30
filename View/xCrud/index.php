@@ -1,5 +1,5 @@
-<div class="row">
-  <div class="span5">
+<div class="container">
+  <div class="col-md-5">
     <h3>Find <?php echo ucwords(str_replace('_', ' ', $crudTitle)) ?></h3>
     <?php echo $filterForm; ?>
     <?php if ($readOnly === false) : ?>
@@ -17,7 +17,7 @@
     </div>
   </div>
   <?php if ($inlineForm) : ?>
-    <div class="span7">
+    <div class="col-md-7">
       <div id="crud-form">
       </div>
     </div>
