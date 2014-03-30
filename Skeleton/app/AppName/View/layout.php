@@ -12,7 +12,7 @@
     <link href="<?php echo $T->getResourceUrl('css/bootstrap-theme.min.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/bootstrap-datetimepicker.min.css') ?>" rel="stylesheet">
     <link href="<?php echo $T->getResourceUrl('css/custom.css') ?>" rel="stylesheet">
- 
+    <script src="<?php echo $T->getResourceUrl('js/jquery-1.11.0.min.js') ?>"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -24,7 +24,7 @@
     <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
-        <div class="navbar-header">
+        <div class="navbar-header navbar-right">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -46,7 +46,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="glyphicon icon-user"></i> <?php if ($session->getUser()) echo $session->getUser()->getName() ?>
+                <i class="glyphicon glyphicon-user"></i> <?php if ($session->getUser()) echo $session->getUser()->getName() ?>
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
@@ -55,6 +55,7 @@
                 <li><?php echo $T->link('Logout', 'Logout/index', '', 'icon-off') ?></li>
               </ul>
             </li>
+            <li>|||||</li>
           </ul>
           <?php else: ?>
           <ul class="nav navbar-nav">
@@ -74,7 +75,6 @@
         Copyright &copy; <?php echo date('Y') ; ?>
       </footer>
     </div>
-    <script src="<?php echo $T->getResourceUrl('js/jquery-1.11.0.min.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/jquery.form.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootstrap.min.js') ?>"></script>
     <script src="<?php echo $T->getResourceUrl('js/bootbox.js') ?>"></script>
