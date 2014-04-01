@@ -100,25 +100,19 @@ class MySQL {
         . 'CASE WHEN LOWER(is_nullable) = LOWER(\'YES\') THEN 1 ELSE 0 END AS notnull '
         . 'FROM information_schema.tables t JOIN information_schema.columns c '
         . 'USING(table_name, table_catalog, table_schema) WHERE table_schema=\'%s\' and table_name = ? ORDER BY ordinal_position', 
-        $db->getName()
+        $this->db->getName()
       ); 
   }
 
   public function getForeignKeyQuery()
   {
-    return  "SELECT a.conname, b.relname AS srctable, c.attname as srcid, "
-          . "d.relname AS dsttable, e.attname AS dstid "
-          . "FROM "
-          . "( "
-          . "  SELECT conname, confrelid, conrelid, "
-          . "     unnest(r.conkey) as ccol, unnest(r.confkey) as pcol "
-          . "  FROM pg_catalog.pg_constraint r WHERE contype = 'f' "
-          . ") a "
-          . "JOIN pg_class b ON a.conrelid = b.oid "
-          . "JOIN pg_attribute c ON a.conrelid = c.attrelid AND a.ccol = c.attnum "
-          . "JOIN pg_class d ON a.confrelid = d.oid "
-          . "JOIN pg_attribute e ON a.confrelid = e.attrelid AND a.pcol = e.attnum "
-          . "WHERE b.relname = ?" ;
+    return sprintf(
+          "select constraint_name as conname, table_name as srctable, "
+        . "column_name as srcid, referenced_table_name as dsttable, "
+        . "referenced_column_name as dstid from information_schema.key_column_usage "
+        . "where table_schema = '%s' and table_name = ? and constraint_name like 'FK%'" 
+        , $this->db->getName()
+      );
   }
 
   public function setDbo($db)
@@ -128,8 +122,6 @@ class MySQL {
 
   public function generateDSN($host, $dbname, $extra=null)
   {
-    if ($dbname===null) $dbname='template1';
-    
     return 'mysql:host='.$host.';dbname='.$dbname . ($extra==null ? '' : ';' . $extra);
   }
 
