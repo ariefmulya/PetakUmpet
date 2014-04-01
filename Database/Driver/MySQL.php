@@ -99,8 +99,8 @@ class MySQL {
         . 'CASE WHEN LOWER(column_key) = LOWER(\'PRI\') THEN 1 ELSE 0 END AS "primary", '
         . 'CASE WHEN LOWER(is_nullable) = LOWER(\'YES\') THEN 1 ELSE 0 END AS notnull '
         . 'FROM information_schema.tables t JOIN information_schema.columns c '
-        . 'USING(table_name, table_catalog, table_schema) WHERE table_schema=\'%s\' and table_name = ? ORDER BY ordinal_position', 
-        $this->db->getName()
+        . 'USING(table_name, table_catalog, table_schema) WHERE table_schema=\'%s\' and table_name = ? ORDER BY ordinal_position' 
+        , $this->db->getName()
       ); 
   }
 
@@ -110,7 +110,7 @@ class MySQL {
           "select constraint_name as conname, table_name as srctable, "
         . "column_name as srcid, referenced_table_name as dsttable, "
         . "referenced_column_name as dstid from information_schema.key_column_usage "
-        . "where table_schema = '%s' and table_name = ? and constraint_name like 'FK%'" 
+        . "where table_schema = '%s' and table_name = ? and constraint_name like 'FK%%'" 
         , $this->db->getName()
       );
   }
@@ -136,12 +136,12 @@ class MySQL {
 
   public function getLastIdQuery($idCol = 'id')
   {
-    return " RETURNING " . $this->db->escapeInput($idCol) ;
+    return ""; // RETURNING " . $this->db->escapeInput($idCol) ;
   }
 
   public function getColumnQuote()
   {
-    return '"';
+    return '`';
   }
 
   public function getPdoTypeMap($sqlType)

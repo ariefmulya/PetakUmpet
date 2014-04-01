@@ -186,6 +186,11 @@ class Database {
     return $this->errorInfo[2];
   }
 
+  public function getLastInsertId($sequenceName=null)
+  {
+    return $this->db->lastInsertId($sequenceName);
+  }
+  
   /* taken from http://stackoverflow.com/questions/574805/how-to-escape-strings-in-mssql-using-php */
   public function escapeInput($data) {
     if ( !isset($data) or empty($data) ) return '';
