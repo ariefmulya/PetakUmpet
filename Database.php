@@ -14,6 +14,7 @@ class Database {
   private $db;
   private $baseDriverObject;
   private $errorInfo;
+  private $dbname;
 
   public function __construct($configIndex=0, $initialize=true)
   {
@@ -25,6 +26,8 @@ class Database {
     $db_user = $dbConfig[Config::DBUSER];
     $db_cred = $dbConfig[Config::DBCRED];
     $db_name = $dbConfig[Config::DBNAME];
+
+    $this->dbname = $db_name;
 
     $class_name = '\\PetakUmpet\\Database\\Driver\\' .  $db_type;
 
@@ -40,6 +43,11 @@ class Database {
   public function getDbo()
   {
     return $this->db;
+  }
+
+  public function getName()
+  {
+    return $this->dbname;
   }
 
   public function getDriver()
