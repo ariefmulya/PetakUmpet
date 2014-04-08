@@ -27,16 +27,24 @@ class Process {
 	{
 		$this->sanitize();
 
-		$this->load($this->request->getPage());
+		$this->load($this->request->getPathInfo());
 	}
 
-	public function load($page)
+	public function load($path)
 	{
-		$app = $this->request->getApplication();
+		$page = $this->config->getRouting($path);
 
-		if ($page == '/') $page = $this->config->getStartPage();
+		list($app, $mod, $act) = explode('/', $page);
 
-		list($mod, $act) = explode('/', $page);
+    $this->request->setTriplets($app, $mod, $act);
+
+    /* we want Request to sanitize the triplets, and re-get the results here 
+    	 this is mainly for backward compatibility purpose, keeping it for now*/ 
+    $app = $this->request->getApplication();
+    $mod = $this->request->getModule();
+    $act = $this->request->getAction();
+    
+    
 		$appfile = 'app' . DS . $app . DS . $mod . 'Application.php';
 		$target  = PU_DIR . DS . $appfile;
 

@@ -16,6 +16,8 @@ class Request {
   private $method;
   private $is_post;
 
+  private $app;
+
   public function __construct()
   {
     $port  =& $_SERVER['SERVER_PORT'];
@@ -76,14 +78,16 @@ class Request {
     $this->requestData[$name] = $value;
   }
 
-  public function setApplication($value)
+  public function setTriplets($app, $mod, $act)
   {
-    return $this->set(self::APP_ACCESSOR, $value);
-  }
-
-  public function getApplication()
-  {
-    return $this->get(self::APP_ACCESSOR);
+    $this->app = $app;
+    /* trade-off for backward compatibility for now */
+    if (!isset($this->requestData[self::MOD_ACCESSOR])) {
+      $this->requestData[self::MOD_ACCESSOR] = $mod;
+    }
+    if (!isset($this->requestData[self::ACT_ACCESSOR])) {
+      $this->requestData[self::ACT_ACCESSOR] = $act;
+    }
   }
 
   public function getPathInfo()
@@ -118,6 +122,11 @@ class Request {
       return $m . '/index';
     }
     return $m.'/'.$a;
+  }
+
+  public function getApplication()
+  {
+    return $this->app;
   }
 
   public function getAppUrl($page, $attr=array())
