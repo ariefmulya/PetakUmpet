@@ -70,9 +70,7 @@ class Template {
 
   public function link($name, $page, $class="", $icon=null)
   {
-    $page = str_replace('/', '&a=', $page);
-
-    $href = $this->request->getAppUrl($page);
+    $href = $this->config->getRoutingLinkFromPage($page);
 
     return '<a class="'.$class.'" href="'.$href.'">' . 
            ($icon === null ? '' : '<i class="'.$icon.'"></i>&nbsp;') . $name . '</a>';
@@ -137,6 +135,7 @@ class Template {
 
   public function subNavMenu()
   {
+    return '';
     $subNavMenu = $this->request->getSubNavMenu(); 
     if ($subNavMenu === false) return '';
     
@@ -147,11 +146,11 @@ class Template {
     }
 
     $s = '';
-    if (is_array($subNavMenu) && count($subNavMenu) > 0) {
+    if (is_array($subnavmenu) && count($subnavmenu) > 0) {
       $s = '<div class="navbar navbar-default"><div class="container">'
           . '<ul class="nav navbar-nav">'
           ;
-      foreach ($subNavMenu as $name => $action) {
+      foreach ($subnavmenu as $name => $action) {
         if (is_array($action)) {
           $s .= $this->dropdown($name, $action);
         } else {

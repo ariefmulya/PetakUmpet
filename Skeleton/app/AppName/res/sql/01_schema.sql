@@ -6,6 +6,7 @@ CREATE TABLE userdata (
   status varchar(10),
   is_admin boolean,
   parent_id integer,
+  first_login boolean,
   PRIMARY KEY (id),
   FOREIGN KEY (parent_id) REFERENCES userdata (id)
 );

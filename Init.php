@@ -20,7 +20,6 @@ class Init {
     $session = Singleton::acquire('\\PetakUmpet\\Session');
     $config  = Singleton::acquire('\\PetakUmpet\\Config');
 
-    $request->setApplication($config->getApplication($request->getPathInfo()));
     $process  = new Process($request, $session, $config);
                             
     return $process->run() ;
