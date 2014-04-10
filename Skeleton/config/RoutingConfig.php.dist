@@ -14,8 +14,8 @@ class RoutingConfig extends RoutingEngine {
       'home-index' => array(
         self::PAGE => 'Home/index',
       ),
-      'about' => array(
-        self::PAGE => 'Home/about',
+      'support' => array(
+        self::PAGE => 'Home/support',
       ),
 
       /* if one wants to customize their 404 page, set like this */
@@ -27,6 +27,7 @@ class RoutingConfig extends RoutingEngine {
     /* application path map */
     $map = array(
         '/' => 'frontend',
+        '/backend' => 'backend',
       );
 
     /* don't forget this! ;-) */
