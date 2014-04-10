@@ -59,6 +59,15 @@ class Template {
     $this->menu = new Menu($menu);
   }
   
+  public function buttonlink($name, $page, $class="", $icon=null)
+  {
+    $page = str_replace('/', '&a=', $page);
+
+    $href = $this->request->getAppUrl($page);
+
+    return '<a href="'.$href.'" class="btn btn-default '.$class.'">'.$name.'</a>';
+  }
+
   public function link($name, $page, $class="", $icon=null)
   {
     $page = str_replace('/', '&a=', $page);
