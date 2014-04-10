@@ -43,7 +43,8 @@ class Process {
     $app = $this->request->getApplication();
     $mod = $this->request->getModule();
     $act = $this->request->getAction();
-    
+
+    $this->config->setApplication($app); /* config needs to know what is active app now */
     
 		$appfile = 'app' . DS . $app . DS . $mod . 'Application.php';
 		$target  = PU_DIR . DS . $appfile;

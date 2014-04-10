@@ -155,17 +155,5 @@ class Request {
     return $this->get(self::ACT_ACCESSOR);
   }
 
-  public function setSubNavMenu($value)
-  {
-    $this->requestData['subNavMenu'] = $value;
-  }
-
-  public function getSubNavMenu()
-  {
-    if (isset($this->requestData['subNavMenu']))
-      return $this->requestData['subNavMenu'];
-    return null;
-  }
-
 }
 

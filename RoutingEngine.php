@@ -10,6 +10,8 @@ class RoutingEngine {
   private $routingTable;
   private $reverseTable;
   private $appList;
+  private $appMap;
+  private $reverseMap;
 
   /* Never Edit Following Functions, 
      all walking deads will rise up and hunt you ;-) */
@@ -27,17 +29,18 @@ class RoutingEngine {
     $ba = array();
     $rmap = array_flip($map);
 
+    $this->appMap = $map;
+    $this->reverseMap = $rmap;
+
     foreach ($table as $app => $arr) {
       /* collect known apps */
       $this->appList[$app] = $app;
 
       /* compile routing table */
       foreach ($arr as $route => $config) {
-        $ix = '/'. $app.'/'.$route;
+        $ix = $this->cleanIndex('/'. $app.'/'.$route);
         $routePath = $app . '/' . $config[self::PAGE];
         $rc = array(self::PAGE => $routePath , self::APP => $app);
-
-        $ix = $this->cleanIndex($ix);
 
         $ab[$ix] = $rc;
         $ba[$routePath] = $ix;
@@ -47,8 +50,10 @@ class RoutingEngine {
           $rapp = $rmap[$app];
           $this->appList[$rapp] = $rapp;
 
-          $nx = '/' . $rapp . '/' . $route;
-          $ab[$this->cleanIndex($nx)] = $rc;
+          $nx = $this->cleanIndex('/' . $rapp . '/' . $route);
+          $shortPath = $this->cleanIndex($rapp . '/' . $config[self::PAGE]);
+          $ab[$nx] = $rc;
+          $ba[$shortPath] = $nx;
         }
 
       }
@@ -99,4 +104,18 @@ class RoutingEngine {
 
     return $this->routingTable[$app . '/' . self::ERROR_404_ROUTE][self::PAGE];
   }
+
+  public function getRoutingLinkFromPage($page, $app)
+  {
+    if (isset($this->reverseMap[$app])) {
+      $app = $this->reverseMap[$app];
+    }
+    $path = $this->cleanIndex($app . '/' . $page);
+
+    if (isset($this->reverseTable[$path])) {
+      return $this->reverseTable[$path];
+    }
+    return '/'; // preferred set to main page then null
+  }
+
 }
