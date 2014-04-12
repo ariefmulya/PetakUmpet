@@ -1,4 +1,6 @@
 <?php
+/* Central Processing of PetakUmpet Framework */
+
 namespace PetakUmpet;
 
 class Process {
