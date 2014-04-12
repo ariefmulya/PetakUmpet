@@ -68,11 +68,6 @@ class Template {
 		$this->layout =  $this->baseViewDir . ($layout === null ? 'layout' : $layout) . '.php' ;
 	}
 
-  public function setUI(PetakUmpet\UI $ui)
-  {
-    $this->UI = $ui;
-  }
-
   public function url($page)
   {
     return $this->request->getAppUrl($page);
