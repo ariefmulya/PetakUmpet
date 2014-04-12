@@ -3,7 +3,7 @@ namespace PetakUmpet;
 
 abstract class Formatter {
 
-  public function construct()
+  public function __construct()
   {
     
   }

@@ -31,7 +31,7 @@ class BaseField {
 
     if ($id === null) $id = $name;
     if ($label === null) $label = ucfirst($name);
-    
+
     $this->attributes = array(
       'name' => $name,
       'id' => $id,
@@ -63,6 +63,11 @@ class BaseField {
   public function addChild(BaseField $child, $name)
   {
     $this->child[$name] = $child;
+  }
+
+  public function useLabel()
+  {
+    return $this->attributes['label'] === false ? false : true;
   }
 
   public function useOptions()
