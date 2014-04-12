@@ -10,6 +10,7 @@ class Template {
   private $session;
   private $config;
 
+  private $UI;
   private $menu;
 	
 	public function __construct(Request $request, Session $session, Config $config)
@@ -54,8 +55,13 @@ class Template {
 		$this->layout =  $this->baseViewDir . ($layout === null ? 'layout' : $layout) . '.php' ;
 	}
 
-  public function setMenu($menu)
+  public function setUI(PetakUmpet\UI $ui)
   {
+    $this->UI = $ui;
+  }
+  
+  public function setMenu($menu)
+  {     
     $this->menu = new Menu($menu);
   }
   
