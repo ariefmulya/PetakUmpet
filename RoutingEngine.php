@@ -98,11 +98,11 @@ class RoutingEngine {
   {
     $app = $this->getApp($path);
 
-    if (!isset($this->routingTable[$app . '/' . self::ERROR_404_ROUTE])) {
-      return 'Error/err404';
+    if (!isset($this->routingTable['/' . $app . '/' . self::ERROR_404_ROUTE])) {
+      return '/Error/err404';
     };
 
-    return $this->routingTable[$app . '/' . self::ERROR_404_ROUTE][self::PAGE];
+    return $this->routingTable['/' . $app . '/' . self::ERROR_404_ROUTE][self::PAGE];
   }
 
   public function getRoutingLinkFromPage($page, $app)

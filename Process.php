@@ -34,7 +34,11 @@ class Process {
 	{
 		$longPage = $this->config->getRouting($path);
 
-		list($app, $mod, $act) = explode('/', $longPage);
+		$result = explode('/', $longPage);
+		if (count($result) < 3) {
+			return $this->load404();
+		}
+		list($app, $mod, $act) = $result;
 
     $this->request->setTriplets($app, $mod, $act);
 
@@ -92,7 +96,7 @@ class Process {
 
 	public function redirect($page)
 	{
-		$href = $this->config->getRoutingLinkFromPage($page);
+		$href = $this->config->getRoutingLinkFromPage($page, $this->request->getApplication());
     Header("Location: $href");
     exit();
 	}

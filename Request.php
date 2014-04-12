@@ -126,6 +126,9 @@ class Request {
 
   public function getApplication()
   {
+    if ($this->app === NULL) {
+      die("<p><strong>PetakUmpetErrorMessage:</strong> Something is wrong, please verify your route or config file.</p>");
+    }
     return $this->app;
   }
 
