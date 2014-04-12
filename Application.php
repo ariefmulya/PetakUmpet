@@ -9,6 +9,7 @@ abstract class Application {
   protected $session;
   protected $config;
 
+  protected $templateObj;
   protected $tplVars;
 
   public function __construct(Process $process, Request $request, Session $session, Config $config)
@@ -19,6 +20,7 @@ abstract class Application {
     $this->config  = $config;
 
     $this->tplVars = array();
+    $this->templateObj = null;
   }
 
   protected function setVariable($name, $value)
@@ -26,9 +28,17 @@ abstract class Application {
     $this->tplVars[$name] = $value;
   }
 
+  protected function setTemplate($template)
+  {
+    $this->templateObj = $template;
+  }
+
   protected function renderView($view, $variables=array(), $layout=null)
   {
-    $T = new Template($this->request, $this->session, $this->config);
+    $T = $this->templateObj;
+    if ($T === null) {
+      $T = new Template($this->request, $this->session, $this->config);
+    }
 
     $vars = array_merge($this->tplVars, $variables);
 
