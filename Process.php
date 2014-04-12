@@ -32,9 +32,9 @@ class Process {
 
 	public function load($path)
 	{
-		$page = $this->config->getRouting($path);
+		$longPage = $this->config->getRouting($path);
 
-		list($app, $mod, $act) = explode('/', $page);
+		list($app, $mod, $act) = explode('/', $longPage);
 
     $this->request->setTriplets($app, $mod, $act);
 
@@ -43,6 +43,9 @@ class Process {
     $app = $this->request->getApplication();
     $mod = $this->request->getModule();
     $act = $this->request->getAction();
+
+    /* temporary measures until we align Config and RoutingConfig changes */
+    $page = $mod .'/' . $act;
 
     $this->config->setApplication($app); /* config needs to know what is active app now */
     
@@ -89,7 +92,7 @@ class Process {
 
 	public function redirect($page)
 	{
-    $href = $this->request->getAppUrl($page);
+		$href = $this->config->getRoutingLinkFromPage($page);
     Header("Location: $href");
     exit();
 	}
