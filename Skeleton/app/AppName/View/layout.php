@@ -40,7 +40,7 @@
                 'Home' => 'Home/index',
                 'Admin' => 'Admin/index',
               );
-              echo $T->navMenu($menu);
+              echo $UI->navMenu($menu);
             ?>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -50,24 +50,24 @@
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><?php echo $T->link('Profile', 'User/profile') ?></li>
+                <li><?php echo $UI->link('Profile', 'User/profile') ?></li>
                 <li class="divider"></li>
-                <li><?php echo $T->link('Logout', 'Logout/index', '', 'icon-off') ?></li>
+                <li><?php echo $UI->link('Logout', 'Logout/index', '', 'icon-off') ?></li>
               </ul>
             </li>
             <li>|||||</li>
           </ul>
           <?php else: ?>
           <ul class="nav navbar-nav">
-            <?php echo $T->navMenu(array('Home' => 'Home/index', 'About' => 'Home/about')) ?>
+            <?php echo $UI->navMenu(array('Home' => 'Home/index', 'About' => 'Home/about')) ?>
           </ul>
           <?php endif ?> 
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
-    <?php echo $T->subNavMenu() ?>
-    <?php echo $__mainContents; ?>
+    <?php echo $UI->subNavMenu() ?>
+    <?php echo $T->block('content') ; ?>
     
     <div class="container">
       <hr/>
