@@ -98,7 +98,7 @@ class Template {
 
   public function block($v)
   {
-    echo $this->blocks[$v];
+    if (isset($this->blocks[$v])) echo $this->blocks[$v];
   }
 
   public function blockStart($block)
