@@ -66,6 +66,16 @@ class ConfigEngine {
     return PU_DIR . DS . 'web' . DS . 'uploads' . DS;
   }
 
+  public function getAppAlias($v)
+  {
+    return $this->rc->getAppAlias($v);
+  }
+
+  public function getApp($v)
+  {
+    return $this->rc->getApp($v);
+  }
+
   public function getRouting($path)
   {
     return $this->rc->getRouting($path);

@@ -77,6 +77,17 @@ class RoutingEngine {
     return null;
   }
 
+  public function getAppAlias($v)
+  {
+    if (isset($this->appMap[$v])) {
+      return $this->appMap[$v];
+    }
+    if (isset($this->reverseMap[$v])) {
+      return $this->reverseMap[$v];
+    }
+    return null;
+  }
+
   public function getRouting($path)
   {
     $path = preg_replace('/\/$/', '', $path);
@@ -115,7 +126,7 @@ class RoutingEngine {
     if (isset($this->reverseTable[$path])) {
       return $this->reverseTable[$path];
     }
-    return '/'; // preferred set to main page then null
+    return '/'; // set to main page rather than null
   }
 
 }

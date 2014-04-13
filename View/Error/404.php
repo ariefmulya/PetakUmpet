@@ -1,3 +1,4 @@
+<?php $T->blockStart('content') ?>
 <div class="jumbotron">
   <div class="container">
     <h1 class="warning">404 - Page Not Found</h1>
@@ -12,3 +13,4 @@
     </p>
   </div>
 </div>
+<?php $T->blockEnd('content') ?>

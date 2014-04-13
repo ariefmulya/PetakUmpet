@@ -14,6 +14,8 @@ class Process {
 		$this->request  = $request;
 		$this->session  = $session;
 		$this->config   = $config;
+
+		$this->request->setConfig($config);
 	}
 
 	public function sanitize()

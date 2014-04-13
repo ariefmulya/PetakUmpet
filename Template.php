@@ -112,6 +112,16 @@ class Template {
     $this->blocks[$block] = ob_get_clean();
   }
 
+  public function ajaxBlock($block, $page)
+  {
+    echo '<div id="'. $block.'"></div>';
+    echo '<script language="javascript"> ' . 
+          '$(document).ready(function() {' . 
+          '$("#'.$block.'").load("' . $this->request->getAppUrl($page) . '");' . 
+          '});' . 
+        '</script>';
+  }
+
   public function addCss($vals)
   {
     if (!is_array($vals)) {

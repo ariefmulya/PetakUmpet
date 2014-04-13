@@ -17,6 +17,7 @@ class Request {
   private $is_post;
 
   private $app;
+  private $config;
 
   public function __construct()
   {
@@ -60,6 +61,11 @@ class Request {
     return ($ajax && $secure);
   }
 
+  public function setConfig(Config $confObj)
+  {
+    $this->config = $confObj;
+  }
+
   public function isPost()
   {
     return $this->is_post;
@@ -80,7 +86,8 @@ class Request {
 
   public function setTriplets($app, $mod, $act)
   {
-    $this->app = $app;
+    $this->app = ($app==='' || $app === null ? $this->config->getAppAlias('/') : $app);
+
     /* trade-off for backward compatibility for now */
     if (!isset($this->requestData[self::MOD_ACCESSOR])) {
       $this->requestData[self::MOD_ACCESSOR] = $mod;
@@ -134,6 +141,11 @@ class Request {
 
   public function getAppUrl($page, $attr=array())
   {
+    $link = $this->config->getRoutingLinkFromPage($page);
+    if ($link) {
+      return $this->base_url . $link;
+    } 
+
     $page = str_replace('/', '&' . self::ACT_ACCESSOR .'=', $page);
 
     foreach ($attr as $k => $v) {
