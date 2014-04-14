@@ -112,9 +112,11 @@ class Template {
     $this->blocks[$block] = ob_get_clean();
   }
 
-  public function ajaxBlock($block, $page)
+  public function ajaxBlock($block, $page, $attr = array())
   {
-    echo '<div id="'. $block.'"></div>';
+    $sattr = '';
+    foreach ($attr as $k=>$v) { $sattr .= $k . '="' . $v . '" ' ; }
+    echo '<div id="'. $block.'" '.$sattr.'></div>';
     echo '<script language="javascript"> ' . 
           '$(document).ready(function() {' . 
           '$("#'.$block.'").load("' . $this->request->getAppUrl($page) . '");' . 
