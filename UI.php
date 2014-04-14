@@ -84,10 +84,8 @@ class UI {
   }
   
   public function buttonlink($name, $page, $class="", $icon=null)
-  {
-    $page = str_replace('/', '&a=', $page);
-
-    $href = $this->request->getAppUrl($page);
+  {    
+    $href = $this->config->getRoutingLinkFromPage($page);
 
     return '<a href="'.$href.'" class="btn btn-default '.$class.'">'.$name.'</a>';
   }
