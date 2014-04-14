@@ -118,6 +118,11 @@ class RoutingEngine {
 
   public function getRoutingLinkFromPage($page, $app)
   {
+    if (strstr($page, '?')) {
+      $splitthis = explode('?', $page);
+      $page = $splitthis[0]; 
+    }
+
     if (isset($this->reverseMap[$app])) {
       $app = $this->reverseMap[$app];
     }

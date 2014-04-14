@@ -15,6 +15,7 @@ class Request {
   private $full_url;
   private $method;
   private $is_post;
+  private $server_name;
 
   private $app;
   private $config;
@@ -29,6 +30,7 @@ class Request {
       }
 
     $this->requestData =& $_REQUEST;
+    $this->server_name = $_SERVER['SERVER_NAME'];
     $this->root_url = $protocol . '://' . $_SERVER['SERVER_NAME'] . 
                   ($port == '80' ? '' : ":$port" ) ;  
 
@@ -168,6 +170,11 @@ class Request {
   public function getAction()
   {
     return $this->get(self::ACT_ACCESSOR);
+  }
+
+  public function getServerName()
+  {
+    return $this->server_name;
   }
 
 }
