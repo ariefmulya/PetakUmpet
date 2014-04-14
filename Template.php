@@ -30,7 +30,7 @@ class Template {
     $this->js = array();
     $this->blocks = array();
 
-    $this->UI = new UI($this->request, $this->session, $this->config);
+    $this->UI = new UI($this->request, $this->session, $this->config, $this);
 	}
 
 	public function render($view, $variables=array(), $renderLayout=null)

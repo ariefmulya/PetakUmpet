@@ -21,11 +21,19 @@ class UI {
   private $session;
   private $config;
 
-  public function __construct(Request $request, Session $session, Config $config)
+  private $T; /* our great Template object */
+
+  public function __construct(Request $request, Session $session, Config $config, Template $T)
   {
     $this->request = $request;
     $this->session = $session;
     $this->config  = $config;
+    $this->T = $T;
+  }
+
+  public function getTemplate()
+  {
+    return $this->T;
   }
 
   public function setMenu($menu)
