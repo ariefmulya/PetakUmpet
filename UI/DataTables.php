@@ -100,9 +100,9 @@ class DataTables {
     }
 
 
-    $s = '<div id="puDTDiv'. $this->id.'" ></div>';
+    $s = '<div id="puDTDiv'. $this->id.'"></div>';
 
-    $s .= '<table id="'.$this->id.'" class="table table-striped table-bordered"><thead><tr>';
+    $s .= '<table id="'.$this->id.'" class="table table-bordered table-hover"><thead><tr>';
     $s .= $thColNames . $actionTh;
     $s .= '</tr></thead></table>' ;
 
