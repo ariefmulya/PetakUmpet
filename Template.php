@@ -147,7 +147,7 @@ class Template {
     foreach ($this->css as $c) {
       $cx = '<link href="';
       $cx .= (filter_var($c, FILTER_VALIDATE_URL)) ? $c : $this->getResourceUrl('css/' . $c . '.css');
-      $cx .= '" rel="stylesheet">'
+      $cx .= '" rel="stylesheet">';
 
       echo $cx;
     }
