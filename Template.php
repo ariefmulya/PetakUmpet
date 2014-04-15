@@ -145,14 +145,22 @@ class Template {
   public function getCss()
   {
     foreach ($this->css as $c) {
-      echo '<link href="' . $this->getResourceUrl('css/' . $c . '.css') . '" rel="stylesheet">';
+      $cx = '<link href="';
+      $cx .= (filter_var($c, FILTER_VALIDATE_URL)) ? $c : $this->getResourceUrl('css/' . $c . '.css');
+      $cx .= '" rel="stylesheet">';
+
+      echo $cx;
     }
   }
 
   public function getJs()
   {
     foreach ($this->js as $j) {
-      echo '<script src="' . $this->getResourceUrl('js/' . $j . '.js') . '"></script>';
+      $jx = '<script src="';
+      $jx .= (filter_var($j, FILTER_VALIDATE_URL)) ? $j : $this->getResourceUrl('js/' . $j . '.js');
+      $jx .= '"></script>';
+
+      echo $jx;
     }
   }
 
