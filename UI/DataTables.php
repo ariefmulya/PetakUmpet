@@ -11,6 +11,7 @@ class DataTables {
   {
     $this->request = $request;
     $this->page = $request->getPage();
+    $this->actAdd = null;
     $this->actView = null;
     $this->actEdit = null;
     $this->actDelete = null;
@@ -32,6 +33,11 @@ class DataTables {
     $this->column_aliases = $aliases;
   }
 
+  public function setAddAction($v)
+  {
+    $this->actAdd = $v;
+  }
+
   public function setViewAction($v)
   {
     $this->actView = $v;
@@ -50,9 +56,9 @@ class DataTables {
   public function __toString()
   {
     $link = $this->request->getAppUrl($this->page);
-    $add = $this->actView === null ? 
+    $add = $this->actAdd === null ? 
                   $this->request->getAppUrl($this->page) . '?dtact=Add' :
-                           $this->request->getAppUrl($this->actView) . '?id=';
+                           $this->request->getAppUrl($this->actAdd);
     $view = $this->actView === null ? 
                   $this->request->getAppUrl($this->page) . '?dtact=View&id=' :
                            $this->request->getAppUrl($this->actView) . '?id='; 
