@@ -19,19 +19,17 @@ class DataTablePager {
     $aColumns = $this->columns;
     $ncol = count($aColumns);
 
-    if ($request->get('iDisplayStart') && $request->get('iDisplayLength') != '-1') {
-      $limit  = intval($request->get('iDisplayStart'));
-      $offset = intval($request->get('iDisplayLength'));
+    if ($request->get('iDisplayStart') !== null && $request->get('iDisplayLength') != '-1') {
+      $offset  = intval($request->get('iDisplayStart'));
+      $limit = intval($request->get('iDisplayLength'));
     }
     
-    if ($request->get('iSortCol_0')) {
-
+    if ($request->get('iSortCol_0')!==null) {
       for ($i=0; $i < intval($request->get('iSortingCols')); $i++) {
-
         if ($request->get('bSortable_'.intval($request->get('iSortCol_'.$i))) == "true") {
           $col = $aColumns[ intval($request->get('iSortCol_'.$i)) ]; 
-          $dir = $request->get('sSortDir_'.$i)==='ASC' ? 'ASC' : 'DESC' ;
-          $order[] = array($col => $dir);
+          $dir = strtolower($request->get('sSortDir_'.$i))==='asc' ? 'ASC' : 'DESC' ;
+          $order[$col] = $dir;
         }
       }
     }
@@ -41,7 +39,7 @@ class DataTablePager {
       for ( $i=0 ; $i<$ncol; $i++ ) {
         $col = $aColumns[$i];
         $val = '%'.$request->get('sSearch').'%';
-        $filterOr[] = array ($col => $val);
+        $filterOr[$col] = $val;
       }
     }
     
@@ -52,6 +50,7 @@ class DataTablePager {
               $request->get('sSearch_'.$i) != '' ) {
         $col = $aColumns[$i];
         $val = '%'.$request->get('sSearch_'.$i).'%';
+        $filterAnd [$col] = $val;
       }
     }  
 
@@ -72,17 +71,18 @@ class DataTablePager {
 
     if (count($filter) > 0) {
       $marker = array();
-      foreach ($this->filter as $k => $v) {
+      foreach ($filter as $k => $v) {
+        if ($k == 'id') { continue; }
         if (in_array($k, $this->columns)) {
           $k = $this->db->escapeInput($k);
           $s =  $k . ' ILIKE :' . $k;
           $marker[] = $s;
-          $params[] = $v;
+          $params[$k] = $v;
         }
-        if (count($marker) > 0) {
-          $where .= ' (' . implode(' '. $type . ' ', $marker) . ') ' ;
-        } 
       }
+      if (count($marker) > 0) {
+        $where = ' (' . implode(' '. $type . ' ', $marker) . ') ' ;
+      } 
     }
     return array($where, $params);
   }
@@ -91,13 +91,12 @@ class DataTablePager {
   {
     $s = '';
     if (count($this->order) > 0) {
-      $s = ' ORDER BY ';
       foreach($this->order as $col => $dir) {
         $s .= ', ' . $this->db->escapeInput($col) . ' ' . $this->db->escapeInput($dir);
       }
       $s = substr($s, 1); // remove initial comma
-    }
-
+      $s = ' ORDER BY ' . $s;
+    } 
     return $s;
   }
 
@@ -126,13 +125,15 @@ class DataTablePager {
     } 
 
     $q .= $where;
+    $countQuery = $q;
+
     $q .= $this->buildOrder();
 
     if ($this->limit != -1) {
       $q = $this->db->getDriver()->generateLimit($q, $this->limit, $this->offset);
     }
 
-    return array($q, $params);
+    return array($q, $countQuery, $params);
   }
 
   private function execute()
@@ -151,8 +152,9 @@ class DataTablePager {
     // get displayed data
     $query = '';
     $params = array();
-    list($query, $params) = $this->buildQuery();
-    $filterCountQuery = "SELECT COUNT(*) AS cnt FROM ( " .$query. " ) src ";
+    list($query, $countQuery, $params) = $this->buildQuery();
+
+    $filterCountQuery = "SELECT COUNT(*) AS cnt FROM ( " .$countQuery. " ) src ";
     $filterCount = $db->queryFetchOne($filterCountQuery, $params);
     $aaData = $db->queryFetchAll($query, $params);
 

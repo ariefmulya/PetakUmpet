@@ -67,7 +67,10 @@ class BaseField {
 
   public function useLabel()
   {
-    return $this->attributes['label'] === false ? false : true;
+    if (isset($this->attributes['label'])) {
+      return $this->attributes['label'] === false ? false : true;
+    }
+    return false;
   }
 
   public function useOptions()

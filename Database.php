@@ -193,7 +193,7 @@ class Database {
   
   /* taken from http://stackoverflow.com/questions/574805/how-to-escape-strings-in-mssql-using-php */
   public function escapeInput($data) {
-    if ( !isset($data) or empty($data) ) return '';
+    if ( !isset($data) ) return '';
     if ( is_numeric($data) ) return $data;
 
     $non_displayables = array(
