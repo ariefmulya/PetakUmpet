@@ -11,6 +11,7 @@ class DataTables {
   {
     $this->request = $request;
     $this->page = $request->getPage();
+    $this->actAdd = null;
     $this->actView = null;
     $this->actEdit = null;
     $this->actDelete = null;
@@ -31,6 +32,11 @@ class DataTables {
   public function setColumnAlias($aliases = array())
   {
     $this->column_aliases = $aliases;
+  }
+
+  public function setAddAction($v)
+  {
+    $this->actAdd = $v;
   }
 
   public function setViewAction($v)
@@ -56,6 +62,9 @@ class DataTables {
   public function __toString()
   {
     $link = $this->request->getAppUrl($this->page);
+    $add = $this->actAdd === null ? 
+                  $this->request->getAppUrl($this->page) . '?dtact=Add' :
+                           $this->request->getAppUrl($this->actAdd);
     $view = $this->actView === null ? 
                   $this->request->getAppUrl($this->page) . '?dtact=View&id=' :
                            $this->request->getAppUrl($this->actView) . '?id='; 
@@ -119,12 +128,36 @@ class DataTables {
     $s .= '<script language="javascript"> ' . 
           '$(document).ready(function() {' . 
               '$("#' . $this->id . '").dataTable( {' .
+                '"bLengthChange": false,'.
                 '"bProcessing" : true, ' .
                 $serverSide .
                 '"sAjaxSource" : "' . $link . '", ' . 
                 '"aoColumns": [ '  . 
                   $colNames .
                 ']' . $actionScript . 
+
+                ',"sDom": \'<"icon-search"r><"H"lf>Tt<"F"ip>\''.
+                ',"oTableTools": {'.
+                  '"sSwfPath" : "../res/datatables/media/swf/copy_csv_xls.swf",'.
+                  '"aButtons": ['.
+                    '{'.
+                      '"sExtends":    "text",'.
+                      '"sButtonText": "Add record",'.
+                      '"fnClick": function ( nButton, oConfig, oFlash ) {'.
+                      'window.location.href = "'.$add.'";'.
+                      '}'.
+                    '},'.
+                    '{'.
+                      '"sExtends":    "collection",'.
+                      '"sButtonText": "Export",'.
+                      '"aButtons":    [ "csv", "xls", "pdf" ]'.
+                    '},'.
+
+                    // $this->morebuttons. for more flexible button addition
+
+                  ']'.
+                '}'.
+
              '});' . 
           '});' . 
         '</script>';
