@@ -14,6 +14,7 @@ class DataTables {
     $this->actView = null;
     $this->actEdit = null;
     $this->actDelete = null;
+    $this->server_side = true;
     $this->id = uniqid("puDT".str_replace("/", "", $request->getServerName() . $request->getApplication() . $this->page));
   }
 
@@ -45,6 +46,11 @@ class DataTables {
   public function setDeleteAction($v)
   {
     $this->actDelete = $v;
+  }
+
+  public function setServerSide($bool=false)
+  {
+    $this->server_side = $bool;
   }
 
   public function __toString()
@@ -99,6 +105,10 @@ class DataTables {
                 '} ]' ;
     }
 
+    $serverSide = '"bServerSide" : true, ';
+    if (!$this->server_side) {
+      $serverSide = '"bServerSide" : false, ';
+    }
 
     $s = '<div id="puDTDiv'. $this->id.'"></div>';
 
@@ -110,6 +120,7 @@ class DataTables {
           '$(document).ready(function() {' . 
               '$("#' . $this->id . '").dataTable( {' .
                 '"bProcessing" : true, ' .
+                $serverSide .
                 '"sAjaxSource" : "' . $link . '", ' . 
                 '"aoColumns": [ '  . 
                   $colNames .
