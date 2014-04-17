@@ -135,10 +135,9 @@ class DataTables {
                 '"aoColumns": [ '  . 
                   $colNames .
                 ']' . $actionScript . 
-
                 ',"sDom": \'<"icon-search"r><"H"lf>Tt<"F"ip>\''.
                 ',"oTableTools": {'.
-                  '"sSwfPath" : "../res/datatables/media/swf/copy_csv_xls.swf",'.
+                  '"sSwfPath": "../res/datatables/media/swf/copy_csv_xls_pdf.swf", ' . 
                   '"aButtons": ['.
                     '{'.
                       '"sExtends":    "text",'.
@@ -150,7 +149,7 @@ class DataTables {
                     '{'.
                       '"sExtends":    "collection",'.
                       '"sButtonText": "Export",'.
-                      '"aButtons":    [ "csv", "xls", "pdf" ]'.
+                      '"aButtons":    [ "csv", "pdf" ]'.
                     '},'.
 
                     // $this->morebuttons. for more flexible button addition
