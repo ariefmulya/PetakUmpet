@@ -107,8 +107,14 @@ class DataTables {
                       '\'+data+\'"><span class="glyphicon glyphicon-list-alt"></span></a> &nbsp; ' .
                     '<a href="' . $edit . 
                       '\'+data+\'"><span class="glyphicon glyphicon-edit"></span></a> &nbsp; '.
-                    '<a href="' . $delete  . 
-                      '\'+data+\'"><span class="glyphicon glyphicon-remove"></span></a> '.
+                    '<a href="#" onclick="bootbox.confirm(\\\'Are you sure?\\\', '  . 
+                      'function(result) { ' .
+                      '  if (result) $.ajax({ url: \\\'' . $delete . '\'+data+\'\\\', ' . 
+                      '    success: function() { '. 
+                      '     dtRowClick(\'+data+\');' .
+                      '  } }); ' . 
+                      '});"> ' .
+                      '<span class="glyphicon glyphicon-remove"></span></a> '.
                     '\';' .  
                   '}' .
                 '} ]' ;
@@ -159,6 +165,10 @@ class DataTables {
 
              '});' . 
           '});' . 
+          'function dtRowClick(rid) { ' .
+          '  var tbl = $("#' . $this->id . '").dataTable(); ' . 
+          '  tbl.fnDeleteRow(rid); ' .
+          '}' . 
         '</script>';
 
     return $s;
