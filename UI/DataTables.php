@@ -16,7 +16,7 @@ class DataTables {
     $this->actEdit = null;
     $this->actDelete = null;
     $this->server_side = true;
-    $this->id = uniqid("puDT".str_replace("/", "", $request->getServerName() . $request->getApplication() . $this->page));
+    $this->id = uniqid("puDT".str_replace("/", "", str_replace('.', '', $request->getServerName() . $request->getApplication() . $this->page)));
   }
 
   public function setDataSourceAction($page)
