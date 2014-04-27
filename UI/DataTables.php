@@ -141,6 +141,7 @@ class DataTables {
                 '"aoColumns": [ '  . 
                   $colNames .
                 ']' . $actionScript . 
+/*
                 ',"sDom": \'<"icon-search"r><"H"lf>Tt<"F"ip>\''.
                 ',"oTableTools": {'.
                   '"sSwfPath": "../res/datatables/media/swf/copy_csv_xls_pdf.swf", ' . 
@@ -157,11 +158,11 @@ class DataTables {
                       '"sButtonText": "Export",'.
                       '"aButtons":    [ "csv", "pdf" ]'.
                     '},'.
-
                     // $this->morebuttons. for more flexible button addition
 
                   ']'.
                 '}'.
+*/
 
              '});' . 
           '});' . 
