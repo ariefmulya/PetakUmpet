@@ -3,10 +3,24 @@ namespace PetakUmpet;
 
 class Session {
 
+  private $app;
+
   public function __construct()
   {
     $this->config = Singleton::acquire('\\PetakUmpet\\Config');
+    $this->app = '/' . $_SERVER['SERVER_NAME'];
+
     if (session_id() == '') return $this->start();
+  }
+
+  public function setApplication($val)
+  {
+    if ($val === null || $val == '') {
+      die('Session App Error... exiting.');
+    } 
+    session_destroy();
+    $this->app = $val;
+    $this->start();
   }
 
   public function start()
@@ -14,12 +28,17 @@ class Session {
     // FIXME: need a better session_id source, 
     // possibly using random generators
     // also need prevention against session hijacking
-    if (session_id() == '') session_start();
+    if (session_id() == '') {
+      $app = $this->app;
+      if ($this->app === null) $app = '/' . $_SERVER['SERVER_NAME'];
+      session_name($app);
+      session_start();
+    }
   }
 
   public function destroy()
   {
-    if (session_id() == '') $this->start();
+    session_regenerate_id(true);
     session_destroy();
   }
 
@@ -76,6 +95,9 @@ class Session {
   
   public function setAuthenticated($value=true)
   {
+    if ($value === true) {
+      session_regenerate_id(true);
+    }
     $_SESSION['authenticated'] = $value;
   }
   

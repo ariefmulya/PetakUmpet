@@ -52,6 +52,8 @@ class Process {
     $mod = $this->request->getModule();
     $act = $this->request->getAction();
 
+    $this->session->setApplication($app);
+    
     /* temporary measures until we align Config and RoutingConfig changes */
     $page = $mod .'/' . $act;
 
