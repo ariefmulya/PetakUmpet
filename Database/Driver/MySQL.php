@@ -129,7 +129,7 @@ class MySQL {
   {
     $s = $query . " LIMIT " . $this->db->escapeInput((string) $limit) ;
     if ($offset !== null && $offset != 0) 
-      $s .= " OFFSET " . $this->db->escapeInput((string) $offset);
+      $s .= " , " . $this->db->escapeInput((string) $offset);
 
     return $s;
   }

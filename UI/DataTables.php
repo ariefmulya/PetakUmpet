@@ -15,7 +15,8 @@ class DataTables {
     $this->actView = null;
     $this->actEdit = null;
     $this->actDelete = null;
-    $this->id = uniqid("puDT".str_replace("/", "", $request->getServerName() . $request->getApplication() . $this->page));
+    $this->server_side = true;
+    $this->id = uniqid("puDT".str_replace("/", "", str_replace('.', '', $request->getServerName() . $request->getApplication() . $this->page)));
   }
 
   public function setDataSourceAction($page)
@@ -51,6 +52,11 @@ class DataTables {
   public function setDeleteAction($v)
   {
     $this->actDelete = $v;
+  }
+
+  public function setServerSide($bool=false)
+  {
+    $this->server_side = $bool;
   }
 
   public function __toString()
@@ -101,19 +107,33 @@ class DataTables {
                       '\'+data+\'"><span class="glyphicon glyphicon-list-alt"></span></a> &nbsp; ' .
                     '<a href="' . $edit . 
                       '\'+data+\'"><span class="glyphicon glyphicon-edit"></span></a> &nbsp; '.
+<<<<<<< HEAD
                     // '<a href="' . $delete  .                     
                     //   '\'+data+\'"><span class="glyphicon glyphicon-remove"></span></a> '.
                     '<a href="#" onclick="deldata(\'+data+\')">'.
+=======
+                    '<a href="#" onclick="bootbox.confirm(\\\'Are you sure?\\\', '  . 
+                      'function(result) { ' .
+                      '  if (result) $.ajax({ url: \\\'' . $delete . '\'+data+\'\\\', ' . 
+                      '    success: function() { '. 
+                      '     dtRowClick(\'+data+\');' .
+                      '  } }); ' . 
+                      '});"> ' .
+>>>>>>> 8abd23f51cbb79777c5e197c26c8af3b4b6bf079
                       '<span class="glyphicon glyphicon-remove"></span></a> '.
                     '\';' .  
                   '}' .
                 '} ]' ;
     }
 
+    $serverSide = '"bServerSide" : true, ';
+    if (!$this->server_side) {
+      $serverSide = '"bServerSide" : false, ';
+    }
 
     $s = '<div id="puDTDiv'. $this->id.'"></div>';
 
-    $s .= '<table id="'.$this->id.'" class="table table-bordered table-hover"><thead><tr>';
+    $s .= '<table id="'.$this->id.'" class="table table-condensed table-bordered table-hover"><thead><tr>';
     $s .= $thColNames . $actionTh;
     $s .= '</tr></thead></table>' ;
 
@@ -122,14 +142,15 @@ class DataTables {
               '$("#' . $this->id . '").dataTable( {' .
                 '"bLengthChange": false,'.
                 '"bProcessing" : true, ' .
+                $serverSide .
                 '"sAjaxSource" : "' . $link . '", ' . 
                 '"aoColumns": [ '  . 
                   $colNames .
                 ']' . $actionScript . 
-
+/*
                 ',"sDom": \'<"icon-search"r><"H"lf>Tt<"F"ip>\''.
                 ',"oTableTools": {'.
-                  '"sSwfPath" : "../res/datatables/media/swf/copy_csv_xls.swf",'.
+                  '"sSwfPath": "../res/datatables/media/swf/copy_csv_xls_pdf.swf", ' . 
                   '"aButtons": ['.
                     '{'.
                       '"sExtends":    "text",'.
@@ -141,22 +162,29 @@ class DataTables {
                     '{'.
                       '"sExtends":    "collection",'.
                       '"sButtonText": "Export",'.
-                      '"aButtons":    [ "csv", "xls", "pdf" ]'.
+                      '"aButtons":    [ "csv", "pdf" ]'.
                     '},'.
-
                     // $this->morebuttons. for more flexible button addition
 
                   ']'.
                 '}'.
+*/
 
              '});' . 
           '});' . 
+<<<<<<< HEAD
           
           'function deldata(id) {'.
             'if(confirm("delete data?")) {'.
               'alert(id);'.  
             '}'.            
           '}'.
+=======
+          'function dtRowClick(rid) { ' .
+          '  var tbl = $("#' . $this->id . '").dataTable(); ' . 
+          '  tbl.fnDeleteRow(rid); ' .
+          '}' . 
+>>>>>>> 8abd23f51cbb79777c5e197c26c8af3b4b6bf079
         '</script>';
 
     return $s;

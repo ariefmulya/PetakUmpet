@@ -5,9 +5,17 @@ use PetakUmpet\Singleton;
 
 class Accessor {
 
+  const FILTER_TYPE = 'type';
+  const FILTER_DATA = 'data';
+
+  const FILTER_OR = 0;
+  const FILTER_AND = 1;
+
   private $db;
   private $sourceData;  /* Can be tablename or a sub-query alias */
   private $schema;
+
+  private $filter;
 
   public function __construct($sourceData, $db=null, $schema=null)
   {
@@ -15,8 +23,12 @@ class Accessor {
       $db = Singleton::acquire('\\PetakUmpet\\Database');
 
     $this->db = $db;
+
+    $sourceData = $db->escapeInput($sourceData); 
+    $this->sourceData = $sourceData;
+
     $this->schema = $schema;
-    $this->sourceData = $db->escapeInput($sourceData);
+    if ($this->schema === null) { $this->schema = new Schema($sourceData); }
   }
 
   public function countAll()
