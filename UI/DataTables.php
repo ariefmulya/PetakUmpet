@@ -101,8 +101,10 @@ class DataTables {
                       '\'+data+\'"><span class="glyphicon glyphicon-list-alt"></span></a> &nbsp; ' .
                     '<a href="' . $edit . 
                       '\'+data+\'"><span class="glyphicon glyphicon-edit"></span></a> &nbsp; '.
-                    '<a href="' . $delete  . 
-                      '\'+data+\'"><span class="glyphicon glyphicon-remove"></span></a> '.
+                    // '<a href="' . $delete  .                     
+                    //   '\'+data+\'"><span class="glyphicon glyphicon-remove"></span></a> '.
+                    '<a href="#" onclick="deldata(\'+data+\')">'.
+                      '<span class="glyphicon glyphicon-remove"></span></a> '.
                     '\';' .  
                   '}' .
                 '} ]' ;
@@ -149,6 +151,12 @@ class DataTables {
 
              '});' . 
           '});' . 
+          
+          'function deldata(id) {'.
+            'if(confirm("delete data?")) {'.
+              'alert(id);'.  
+            '}'.            
+          '}'.
         '</script>';
 
     return $s;
