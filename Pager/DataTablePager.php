@@ -75,7 +75,7 @@ class DataTablePager {
         if ($k == 'id') { continue; }
         if (in_array($k, $this->columns)) {
           $k = $this->db->escapeInput($k);
-          $s =  $k . ' ILIKE :' . $k;
+          $s =  'CAST( ' . $k . ' AS text) ILIKE :' . $k;
           $marker[] = $s;
           $params[$k] = $v;
         }
