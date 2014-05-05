@@ -12,6 +12,8 @@ class User {
 
   private $parentId;
   private $isAdmin;
+  private $userTable;
+  private $userProfile;
 
   // shortcuts values
   private $id;
@@ -19,14 +21,19 @@ class User {
   private $userid;
   private $profile;
   private $confirmedAt;
+  private $accessQuery;
 
-  public function __construct($username, $password)
+  public function __construct($username, $password, $userTable = 'userdata', $userProfile='user_profile')
   {
-    $dba = new Accessor('userdata');
+    $this->userTable = $userTable;
+    $this->userProfile = $userProfile;
+
+    $dba = new Accessor($this->userTable);
     $userdata = $dba->findOneBy(array('userid' => $username, 'password' => $password));
     unset($userdata['password']);
 
     $this->data = $userdata;
+    $this->accessQuery = null;
     $this->name = null;
     $this->id = null;
     $this->userid = null;
@@ -52,7 +59,7 @@ class User {
     $this->first_login = $value;
     $data['id'] = $this->id;
     $data['first_login'] = $value;
-    $m = new Model('userdata');
+    $m = new Model($this->userTable);
     $m->save($data);
   }
   
@@ -67,7 +74,7 @@ class User {
   public function setProfileData($key, $value)
   {
     $this->profile[$key] = $value;
-    $dba = new Model('user_profile');
+    $dba = new Model($this->userProfile);
     $dba->save($this->profile, array('user_id'));
   }
 
@@ -79,25 +86,33 @@ class User {
       $this->id = $this->data['id'];
       $this->firstLogin = $this->data['first_login'];
       $this->confirmedAt = $this->data['confirmed_at'];
-      $dba = new Accessor('user_profile');
+      $dba = new Accessor($this->userProfile);
       $this->profile = $dba->findOneBy(array('user_id' => $this->id));
       return true;
     }
     return false;
   }
   
+  public function setAccessQuery($query)
+  {
+    $this->accessQuery = $query;
+  }
+
   public function hasAccess($page, $refresh=false)
   {
-    $query = "SELECT a.name FROM userdata u "
+    $db = Singleton::acquire('\\PetakUmpet\\Database');
+
+    $query = $this->accessQuery;
+    if ($query === null) {
+      $query = "SELECT a.name FROM userdata u "
             . "JOIN user_role ur ON u.id = ur.user_id "
             . "JOIN role_access ra ON ra.role_id = ur.role_id "
             . "JOIN accessdata a ON ra.access_id = a.id "
             . "WHERE u.userid = ?" ;
+    }
 
     $access = array();
     $status = false;
-
-    $db = Singleton::acquire('\\PetakUmpet\\Database');
 
     $rows = $db->queryFetchAll($query, array($this->userid));
 
