@@ -107,11 +107,6 @@ class DataTables {
                       '\'+data+\'"><span class="glyphicon glyphicon-list-alt"></span></a> &nbsp; ' .
                     '<a href="' . $edit . 
                       '\'+data+\'"><span class="glyphicon glyphicon-edit"></span></a> &nbsp; '.
-<<<<<<< HEAD
-                    // '<a href="' . $delete  .                     
-                    //   '\'+data+\'"><span class="glyphicon glyphicon-remove"></span></a> '.
-                    '<a href="#" onclick="deldata(\'+data+\')">'.
-=======
                     '<a href="#" onclick="bootbox.confirm(\\\'Are you sure?\\\', '  . 
                       'function(result) { ' .
                       '  if (result) $.ajax({ url: \\\'' . $delete . '\'+data+\'\\\', ' . 
@@ -119,7 +114,6 @@ class DataTables {
                       '     dtRowClick(\'+data+\');' .
                       '  } }); ' . 
                       '});"> ' .
->>>>>>> 8abd23f51cbb79777c5e197c26c8af3b4b6bf079
                       '<span class="glyphicon glyphicon-remove"></span></a> '.
                     '\';' .  
                   '}' .
@@ -137,20 +131,20 @@ class DataTables {
     $s .= $thColNames . $actionTh;
     $s .= '</tr></thead></table>' ;
 
-    $s .= '<script language="javascript"> ' . 
-          '$(document).ready(function() {' . 
+    $s .= '<script language="javascript"> ' .
+          '$(document).ready(function() {' .
               '$("#' . $this->id . '").dataTable( {' .
                 '"bLengthChange": false,'.
                 '"bProcessing" : true, ' .
                 $serverSide .
-                '"sAjaxSource" : "' . $link . '", ' . 
-                '"aoColumns": [ '  . 
+                '"sAjaxSource" : "' . $link . '", ' .
+                '"aoColumns": [ '  .
                   $colNames .
-                ']' . $actionScript . 
+                ']' . $actionScript .
 
                 ',"sDom": \'<"icon-search"r><"H"lf>Tt<"F"ip>\''.
                 ',"oTableTools": {'.
-                  '"sSwfPath": "../res/datatables/media/swf/copy_csv_xls_pdf.swf", ' . 
+                  '"sSwfPath": "../res/datatables/media/swf/copy_csv_xls_pdf.swf", ' .
                   '"aButtons": ['.
                     '{'.
                       '"sExtends":    "text",'.
@@ -170,21 +164,11 @@ class DataTables {
                 '}'.
 
 
-             '});' . 
-          '});' . 
-<<<<<<< HEAD
-          
-          'function deldata(id) {'.
-            'if(confirm("delete data?")) {'.
-              'alert(id);'.  
-            '}'.            
-          '}'.
-=======
+             '});' .
+          '});' .
           'function dtRowClick(rid) { ' .
-          '  var tbl = $("#' . $this->id . '").dataTable(); ' . 
-          '  tbl.fnDeleteRow(rid); ' .
+          '  ; ' .
           '}' . 
->>>>>>> 8abd23f51cbb79777c5e197c26c8af3b4b6bf079
         '</script>';
 
     return $s;
