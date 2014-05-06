@@ -165,10 +165,11 @@ class DataTables {
 
 
              '});' .
-          '});' .
-          'function dtRowClick(rid) { ' .
-          '  ; ' .
-          '}' . 
+          '});' . "\n" . 
+          'function dtRowClick(rid) { ' . "\n" . 
+          '  var tbl = $("#' . $this->id . '").dataTable( {"bretrieve" : true } ); ' . "\n" .
+          '  tbl.fnDeleteRow(rid); ' . "\n" . 
+          '}' . "\n" . 
         '</script>';
 
     return $s;
