@@ -119,7 +119,9 @@ class User {
     if ($rows) {
       foreach ($rows as $r) {
         $access[$r['name']] = true;
-        if ($page == $r['name']) $status = true;
+        if ($page == $r['name']) {
+          $status = true;
+        }
       }
     }
     return $status;

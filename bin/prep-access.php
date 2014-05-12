@@ -12,7 +12,7 @@ if (!isset($argv[1]) || $argv[1] == '') {
 
 $app = $argv[1];
 $target_table = isset($argv[2]) ? $argv[2] : 'accessdata';
-$mode = isset($argv[3]) ? $argv[3] : '--normal';
+$mode = isset($argv[3]) ? $argv[3] : '--standard';
 
 $src = TARGETDIR . 'app' . DS . $app;
 
@@ -28,7 +28,7 @@ foreach ($files as $file) {
     foreach ($methods as $m) {
       $name = preg_replace("/^.*function[ ]+/", "", $m);
       $name = preg_replace("/Action.*$/", "", $name);
-      $accessnames[] =  $cname . '\\' .  trim($name);
+      $accessnames[] =  $cname . '/' .  trim($name);
     }
   }
 }
@@ -60,8 +60,12 @@ $n=0;
 foreach ($accessnames as $a) {
   $a = $db->escapeInput($a);
   $query = "INSERT INTO $t (name) VALUES ('$a');";
-  petakumpet_exec($db, $query);
   $n++;
+  if ($mode == "--print") {
+    echo $query ."\n";
+    continue;
+  }
+  petakumpet_exec($db, $query);
 }
 
 echo "  --- Finished: $n access added --- ";
