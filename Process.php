@@ -36,6 +36,7 @@ class Process {
 
 	public function load($path)
 	{
+		$this->session->start();
 		$longPage = $this->config->getRouting($path);
 
 		$result = explode('/', $longPage);
@@ -62,18 +63,24 @@ class Process {
 		$appfile = 'app' . DS . $app . DS . $mod . 'Application.php';
 		$target  = PU_DIR . DS . $appfile;
 
-		if (!is_file($target))
+		if (!is_file($target) && $this->config->isOpenApp($app)) {
 			return $this->load404();
+		} 
 
+    $user = $this->session->getUser();
+
+    /* for app with non-public access, verifications needed */
 		if (!$this->config->isOpenApp($app)) {
 			if (!$this->config->isAnonymousPage($page)) {
-        $this->session->start();
-        $user = $this->session->getUser();
 				if (!$user || !is_object($user)) {
 					return $this->redirect($this->config->getLoginPage());
 				}
 				if (!$user->hasAccess($page)) {
 					return $this->redirect($this->config->getNoAccessPage());
+				}
+			} else {
+				if ($user && $page == $this->config->getLoginPage()) {
+					return $this->redirect($this->config->getStartPage());
 				}
 			}
 		}
