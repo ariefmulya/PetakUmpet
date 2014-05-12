@@ -102,7 +102,12 @@ class DataTablePager {
 
   private function buildQuery() 
   {
-    $q = "SELECT * FROM " . $this->db->escapeInput($this->source) . " ";
+    $source = $this->source;
+    if (stristr($source, 'SELECT')) { // from query
+      $source = '( ' . $source . ' ) AS src ' ;
+
+    }
+    $q = "SELECT * FROM " . $this->db->escapeInput($source) . " ";
 
     $where = '';
     $params = array();
