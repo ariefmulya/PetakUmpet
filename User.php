@@ -29,8 +29,15 @@ class User {
     $this->userProfile = $userProfile;
 
     $dba = new Accessor($this->userTable);
-    $userdata = $dba->findOneBy(array('userid' => $username, 'password' => $password));
-    unset($userdata['password']);
+    $userdata = $dba->findOneBy(array('userid' => $username));
+    
+    if ($userdata['password'] != $password) {
+      $userdata = null;
+    }
+    
+    if (isset($userdata['password'])) { 
+      unset($userdata['password']); 
+    }
 
     $this->data = $userdata;
     $this->accessQuery = null;
