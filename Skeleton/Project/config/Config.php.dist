@@ -9,18 +9,18 @@ class Config extends ConfigEngine {
   public function __construct()
   {
     /* project environment setup */
-    $this->projectTitle = 'Application Title';
-    $this->loginPage    = 'Login/index';
-    $this->startPage    = 'Home/index';
-    $this->noAccessPage = 'User/noAccess';
-
-
+    $this->projectTitle = 'PetakUmpet Framework';
     $this->eventLogging = true;
     $this->development  = true;
     $this->logLevel     = \PetakUmpet\Logger::DEBUG;
 
+    /* activate routing engine */
     $this->rc = new RoutingConfig; 
 
+    /* important app routes */
+    $this->loginPage    = 'Login/index';
+    $this->startPage    = 'Home/index';
+    $this->noAccessPage = 'User/noAccess';
     $this->anonPages    = array(
         'Home/about',
         'Home/contact',
@@ -29,6 +29,7 @@ class Config extends ConfigEngine {
         'User/noAccess',
       );
 
+    /* apps secured by login page */
     $this->appsOpenState = array(
         'frontend' => true,
       );
@@ -43,5 +44,4 @@ class Config extends ConfigEngine {
         self::DBCRED => 'testpasswd',
       );
   }
-
 }

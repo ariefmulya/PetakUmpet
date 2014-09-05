@@ -48,7 +48,7 @@ class Process {
     $this->request->setTriplets($app, $mod, $act);
 
     /* we want Request to sanitize the triplets, and re-get the results here 
-    	 this is mainly for backward compatibility purpose, keeping it for now*/ 
+    	 this is mainly for backward compatibility purpose, keeping it for now */ 
     $app = $this->request->getApplication();
     $mod = $this->request->getModule();
     $act = $this->request->getAction();

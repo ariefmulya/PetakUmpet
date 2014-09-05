@@ -1,7 +1,7 @@
 <?php
 
 define('DS', DIRECTORY_SEPARATOR);
-define('SKELDIR', __DIR__ . DS . '..' . DS . 'Skeleton' . DS);
+define('SKELDIR', __DIR__ . DS . '..' . DS . 'Skeleton' . DS . 'Project');
 define('TARGETDIR', SKELDIR . '..' . DS . '..' . DS . '..' . DS);
 
 if (!isset($argv[1]) || $argv[1] == '') {
