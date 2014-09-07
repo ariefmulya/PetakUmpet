@@ -28,7 +28,7 @@ class Accessor {
     $this->sourceData = $sourceData;
 
     $this->schema = $schema;
-    if ($this->schema === null) { $this->schema = new Schema($sourceData); }
+    if ($this->schema === null && !strstr($sourceData, 'SELECT')) { $this->schema = new Schema($sourceData); }
   }
 
   public function countAll()

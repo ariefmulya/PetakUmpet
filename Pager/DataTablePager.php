@@ -3,6 +3,7 @@
 namespace PetakUmpet\Pager;
 
 use PetakUmpet\Request;
+use PetakUmpet\Logger;
 
 class DataTablePager {
 
@@ -148,7 +149,7 @@ class DataTablePager {
 
     // count available data
     if (strstr($this->source, "SELECT")) {
-      $query = "SELECT COUNT(*) AS cnt FROM (SELECT * FROM " . $db->escapeInput($this->source) . ") src" ;
+      $query = "SELECT COUNT(*) AS cnt FROM (" . $db->escapeInput($this->source) . ") src" ;
     } else {
       $query = "SELECT COUNT(*) AS cnt FROM " . $db->escapeInput($this->source) . " src" ;
     }
