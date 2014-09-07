@@ -10,7 +10,7 @@ class Template {
   private $session;
   private $config;
 
-  private $UI;
+  public $UI;
   private $menu;
 
   private $blocks;
