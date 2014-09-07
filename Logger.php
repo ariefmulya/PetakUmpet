@@ -9,6 +9,8 @@ class Logger {
 
   public static function log($message='', $level=self::INFO)
   {
+    $dbg = debug_backtrace();
+
     $marker = array(
       self::INFO => '[PetakUmpet INFO ] ',
       self::DEBUG => '[PetakUmpet DEBUG] ',
@@ -24,7 +26,7 @@ class Logger {
       if (!is_file($logfile) || !is_writable($logfile)) {
         die ("Logger Error, have you setup logfile and access mode correctly?");
       }
-      file_put_contents($logfile, '['. $curtime->format('Y-m-d H:i:s') . ']' . $marker[$level] . $message . "\n", FILE_APPEND | LOCK_EX);
+      file_put_contents($logfile, '['. $curtime->format('Y-m-d H:i:s') . ']' . $marker[$level] . basename($dbg[0]['file']) . '(' .$dbg[0]['line'] . ') : ' . $message . "\n", FILE_APPEND | LOCK_EX);
     }
   }
   
