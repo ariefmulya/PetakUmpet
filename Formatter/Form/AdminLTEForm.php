@@ -2,7 +2,7 @@
 
 namespace PetakUmpet\Formatter\Form;
 
-class BootstrapVertical extends BaseFormFormatter {
+class AdminLTEForm extends BaseFormFormatter {
 
   protected $form;
 
@@ -10,9 +10,9 @@ class BootstrapVertical extends BaseFormFormatter {
   {
     $this->form = $form;
 
-    $this->formClass = 'form-vertical';
-    $this->formStart = '<fieldset>';
-    $this->formEnd = '</fieldset>';
+    $this->formClass = '';
+    $this->formStart = '<div class="body bg-gray">';
+    $this->formEnd = '</div>';
 
     $this->fieldRowStart['normal'] = '<div class="form-group">';
     $this->fieldRowEnd['normal'] = '</div>';
@@ -22,7 +22,7 @@ class BootstrapVertical extends BaseFormFormatter {
     $this->fieldRowStart['error'] = '<div class="form-group error">';
     $this->fieldRowEnd['error'] = '</div>';
 
-    $this->fieldLabelClass = 'form-label';
+    $this->fieldLabelClass = '';
 
     $this->fieldStart = '';
     $this->fieldEnd = '';
