@@ -4,7 +4,7 @@ namespace PetakUmpet;
 
 use PetakUmpet\Database\Accessor;
 use PetakUmpet\Database\Model;
-
+use PetakUmpet\Security\Password;
 
 class User {
 
@@ -23,6 +23,16 @@ class User {
   private $confirmedAt;
   private $accessQuery;
 
+  private function getPropAndDestroy($arr, $prop) 
+  {
+    $ret = null;
+    if (isset($arr) && isset($arr[$prop])) {
+      $ret = $arr[$prop];
+      unset($arr[$prop]);
+    }
+    return $ret;
+  }
+
   public function __construct($username, $password, $userTable = 'userdata', $userProfile='user_profile')
   {
     $this->userTable = $userTable;
@@ -31,12 +41,10 @@ class User {
     $dba = new Accessor($this->userTable);
     $userdata = $dba->findOneBy(array('userid' => $username));
     
-    if ($userdata['password'] != $password) {
-      $userdata = null;
-    }
+    $upassword = $this->getPropAndDestroy($userdata, 'password');
     
-    if (isset($userdata['password'])) { 
-      unset($userdata['password']); 
+    if (!Password::check($password, $upassword)) {
+      $userdata = null; 
     }
 
     $this->data = $userdata;
@@ -93,6 +101,7 @@ class User {
       $this->id = $this->data['id'];
       $this->firstLogin = $this->data['first_login'];
       $this->confirmedAt = $this->data['confirmed_at'];
+      $this->isAdmin = $this->data['is_admin'];
       $dba = new Accessor($this->userProfile);
       $this->profile = $dba->findOneBy(array('user_id' => $this->id));
       return true;
@@ -107,6 +116,7 @@ class User {
 
   public function hasAccess($page, $refresh=false)
   {
+    if ($this->isAdmin) return true;
     $db = Singleton::acquire('\\PetakUmpet\\Database');
 
     $query = $this->accessQuery;
