@@ -95,7 +95,7 @@ class Process {
 
 		if ($app instanceof \PetakUmpet\Application && is_callable(array($app, $function_full_name))) {
 
-			Logger::log("Process: loading $class_name->$function_full_name", Logger::DEBUG);
+			Logger::log("Loading $class_name->$function_full_name", Logger::DEBUG);
 
 			Event::log("loading");
 
