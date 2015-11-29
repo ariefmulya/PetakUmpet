@@ -46,6 +46,7 @@ class User {
     if (!Password::check($password, $upassword)) {
       $userdata = null; 
     }
+    $upassword = $password = null ;
 
     $this->data = $userdata;
     $this->accessQuery = null;

@@ -1,5 +1,5 @@
-INSERT INTO userdata (userid, name, password, is_admin) VALUES ('admin', 'Administrator', '1', true);
-INSERT INTO userdata (userid, name, password, is_admin) VALUES ('user', 'Test User', '1', false);
+INSERT INTO userdata (userid, name, password, is_admin) VALUES ('admin', 'Administrator', crypt('1',gen_salt('md5')), true); -- PostgreSQL specific
+INSERT INTO userdata (userid, name, password, is_admin) VALUES ('user', 'Test User', crypt('1',gen_salt('md5')), false); -- PostgreSQL specific
 
 INSERT INTO roledata (name) VALUES ('Default');
 INSERT INTO roledata (name) VALUES ('Administrator');
