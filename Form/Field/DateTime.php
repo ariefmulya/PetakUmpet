@@ -19,9 +19,9 @@ class DateTime extends Text {
     $id = $this->getAttribute('id');
     $this->removeAttribute('id');
 
-    $s  = '<div id="'.$id.'" class="input-append">';
+    $s  = '<div id="'.$id.'" class="input-append date">';
     $s .= parent::__toString();
-    $s .= '<span class="add-on"><i data-time-icon="icon-time" data-date-icon="icon-calendar"></i></span>';
+    $s .= '<span class="add-on"><i class="fa fa-calendar"></i></span>';
     $s .= '</div>';
     $s .= '<script type="text/javascript">$(\'#'.$id.'\').datetimepicker();</script>';
     return $s;
