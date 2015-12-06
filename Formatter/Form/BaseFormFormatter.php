@@ -44,6 +44,12 @@ class BaseFormFormatter extends Formatter {
 
         $s .= $this->fieldStart;
 
+        if (isset($this->fieldAttributes) && is_array($this->fieldAttributes)) {
+          foreach ($this->fieldAttributes as $k => $v) {
+            $f->setAttribute($k, $v);
+          }
+        }
+
         $s .= (string) $f; 
         if ($errorText != '') {
           $s .= sprintf($this->fieldHelpTagFormat, $errorText);

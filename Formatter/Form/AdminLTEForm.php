@@ -11,7 +11,7 @@ class AdminLTEForm extends BaseFormFormatter {
     $this->form = $form;
 
     $this->formClass = '';
-    $this->formStart = '<div class="body bg-gray">';
+    $this->formStart = '<div class="box-body">';
     $this->formEnd = '</div>';
 
     $this->fieldRowStart['normal'] = '<div class="form-group">';
@@ -26,6 +26,7 @@ class AdminLTEForm extends BaseFormFormatter {
 
     $this->fieldStart = '';
     $this->fieldEnd = '';
+    $this->fieldAttributes = array('class' => 'form-control');
 
     $this->fieldHelpTagFormat = '<span class="help-inline">%s</span>';
 
