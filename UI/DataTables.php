@@ -167,7 +167,7 @@ class DataTables {
              '});' .
           '});' . "\n" . 
           'function dtRowClick(rid) { ' . "\n" . 
-          '  var tbl = $("#' . $this->id . '").dataTable( {"bretrieve" : true } ); ' . "\n" .
+          '  var tbl = $("#' . $this->id . '").dataTable( {"bRetrieve" : true, "bDestroy" : true } ); ' . "\n" .
           '  tbl.fnDeleteRow(rid); ' . "\n" . 
           '}' . "\n" . 
         '</script>';
