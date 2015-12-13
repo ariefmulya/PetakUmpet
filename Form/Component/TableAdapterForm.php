@@ -114,6 +114,11 @@ class TableAdapterForm {
     return 'text';
   }
 
+  public function setCancelPage($cancelPage)
+  {
+    $this->cancelAction = "window.location.href = '".$cancelPage. "'";
+  }
+
   public function getName()
   {
     return $this->getFormObject()->getName();

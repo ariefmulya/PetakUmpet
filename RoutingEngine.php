@@ -13,7 +13,7 @@ class RoutingEngine {
   private $appMap;
   private $reverseMap;
 
-  /* Never Edit Following Functions, 
+  /* Never Edit Following Function, 
      all walking deads will rise up and hunt you ;-) */
   protected function cleanIndex($index)
   {
