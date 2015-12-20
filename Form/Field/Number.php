@@ -32,9 +32,6 @@ class Number extends TagInput {
   public function getValue()
   {
     $value = $this->getAttribute('value');
-    $value = str_replace(",", "", $value);
-    $value = str_replace(".", "", $value);
-
     return $value;
   }
 
