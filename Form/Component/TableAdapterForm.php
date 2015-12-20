@@ -13,13 +13,13 @@ use PetakUmpet\Database\Model;
 
 class TableAdapterForm {
 
-  private $db;
-  private $tableName;
-  private $schema;
-  private $form;
-  private $filter;
+  protected $db;
+  protected $tableName;
+  protected $schema;
+  protected $form;
+  protected $filter;
 
-  private $readOnly;
+  protected $readOnly;
 
   public function __construct($tableName, $columns=array(), $skip=array(), $action=null, $formatter=null)
   {

@@ -86,6 +86,13 @@ class Request {
     $this->requestData[$name] = $value;
   }
 
+  public function unsetValue($name)
+  {
+    if (isset($this->requestData[$name])) {
+      unset($this->requestData[$name]);
+    }
+  }
+
   public function setTriplets($app, $mod, $act)
   {
     $this->app = ($app==='' || $app === null ? $this->config->getAppAlias('/') : $app);
