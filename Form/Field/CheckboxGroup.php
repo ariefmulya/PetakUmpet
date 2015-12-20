@@ -11,4 +11,8 @@ class CheckboxGroup extends GroupField {
     $this->multiple = true;
   }
 
+  public function setMultiple($bool)
+  {
+    $this->multiple = $bool;
+  }
 }

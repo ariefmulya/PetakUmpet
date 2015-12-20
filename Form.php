@@ -135,6 +135,13 @@ class Form {
     }
   }
 
+  public function removeFieldAttribute($name, $key)
+  {
+    if (isset($this->fields[$name])) {
+      return $this->fields[$name]->removeAttribute($key);
+    }
+  }
+
   public function setFieldValue($name, $value)
   {
     if (isset($this->fields[$name])) {

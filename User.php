@@ -115,6 +115,11 @@ class User {
     $this->accessQuery = $query;
   }
 
+  public function isAdmin()
+  {
+    return $this->isAdmin;
+  }
+  
   public function hasAccess($page, $refresh=false)
   {
     if ($this->isAdmin) return true;

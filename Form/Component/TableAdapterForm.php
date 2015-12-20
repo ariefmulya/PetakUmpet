@@ -106,8 +106,8 @@ class TableAdapterForm {
         'date' => 'date',
         'timestamp' => 'dateTime',
         'datetime' => 'dateTime',
-        'boolean' => 'radioGroup',
-        'bool' => 'radioGroup',
+        'boolean' => 'checkboxGroup',
+        'bool' => 'checkboxGroup',
       );
     if (isset($a[$coltype])) return $a[$coltype];
 
