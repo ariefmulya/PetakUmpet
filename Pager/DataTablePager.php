@@ -108,7 +108,7 @@ class DataTablePager {
       $source = '( ' . $source . ' ) AS src ' ;
 
     }
-    $q = "SELECT * FROM " . $this->db->escapeInput($source) . " ";
+    $q = "SELECT * FROM " . $source . " ";
 
     $where = '';
     $params = array();
